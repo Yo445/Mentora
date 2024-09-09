@@ -1,11 +1,9 @@
 /* Our Colors Pallete*/
 pallete {
-  color: #20b2aa; /* extra color logo , hovers, simple */
-  color: #66cdaa; /* background or shadow */
-  color: #fff; /* fonts and background pages */
-  color: #f0fff0; /* body background color */
-  color: #2f4f4f; /* Shadows , hovers , fonts and */
-  color: #008080; /* fonts and borders */
+  color: #c9dcd2;
+  color: #272129;
+  color: #ddff7d;
+  color: #e8eeec;
 }
 
 /*=========================================== SideBar.css ============================================*/
