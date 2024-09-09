@@ -5,12 +5,12 @@
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-<!-- - [Project Structure](#project-structure) -->
 - [Getting Started](#getting-started)
 - [API Documentation](#api-documentation)
-<!-- - [Environment Variables](#environment-variables) -->
 - [Contributing](#contributing)
 - [Contact](#contact)
+<!-- - [Project Structure](#project-structure) -->
+<!-- - [Environment Variables](#environment-variables) -->
 
 ## Project Overview
 
@@ -92,5 +92,5 @@ This project is maintained by:
 
 For any inquiries, feel free to reach out:
 
-- **Yassin Ali** - [LinkedIn](https://www.linkedin.com/in/yassin-ali) | Email: (yassinalilearning77076@gmail.com)
+- **Yassin Ali** - [LinkedIn](https://www.linkedin.com/in/yassin-ali) | Email: yassinalilearning77076@gmail.com
 - **Youssef Ali** - [LinkedIn](https://www.linkedin.com/in/youssef-ali-840227217/) | Email: aliy94476@gmail.com
