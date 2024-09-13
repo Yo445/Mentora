@@ -5,20 +5,29 @@ import Course from '../models/courseModel.js';
 // @access  Public
 const getCourses = async (req, res) => {
     try {
-        // const { category, difficulty, instructor, page=1, limit=10} = req.query;
         const pageSize = Number(req.query.size) || 10;
         const page = Number(req.query.pageNumber) || 1;
-        const keyword = req.query.keyword ? {
-            title: {
-                $regex: req.query.keyword,
-                $options: 'i',
-            },
-            category,
-            difficulty,
-            instructor
-        } : {};
+        const filters = {
+            ...(req.query.title && {
+                title: { $regex: req.query.title, $options: 'i' },
+            }),
+            ...(req.query.category && {
+                category: { $regex: req.query.category, $options: 'i' },
+            }),
+            ...(req.query.difficulty && {
+                difficulty: { $regex: req.query.difficulty, $options: 'i' },
+            }),
+            ...(req.query.instructor && {
+                instructor: { $regex: req.query.instructor, $options: 'i' },
+            }),
+        }
+        const sortOption = req.query.sortBy || '-createdAt';
         const count = await Course.countDocuments({ ...keyword });
-        const courses = await Course.find({ ...keyword }).limit(pageSize).skip(pageSize * (page - 1));
+        const courses = await Course.find({ ...filters })
+                .sort(sortOption)
+                .limit(pageSize)
+                .skip(pageSize * (page - 1));
+                
         res.json({ courses, totalAmount: count, page, totalPages: Math.ceil(count / pageSize) });
     } catch (error) {
         res.status(500).json({ message: error.message });
