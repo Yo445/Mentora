@@ -1,4 +1,5 @@
 import express from 'express';
+import passport from 'passport';
 import { facebookLogin, getUserCourses, googleLogin, loginUser, refreshToken, registerUser } from '../controllers/userController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
@@ -11,13 +12,13 @@ router.route('/login')
             .post(loginUser);
 
 router.route('/facebook-login')
-            .post(facebookLogin);
+            .post(passport.authenticate('facebook', { scope: ['email'] }));
 
 router.route('/facebook-callback')
             .get(facebookLogin);
 
 router.route('/google-login')
-            .post(googleLogin);
+            .post(passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.route('google-callback')
             .get(googleLogin);
