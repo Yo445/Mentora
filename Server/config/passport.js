@@ -4,8 +4,6 @@ import FacebookStrategy from 'passport-facebook';
 import GoogleStrategy from 'passport-google-oauth20';
 import User from '../models/userModel.js';
 
-
-// Serialize user to store in session (if using session-based auth)
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -14,13 +12,12 @@ passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => done(err, user));
 });
 
-// Google OAuth Strategy
 passport.use(
     new GoogleStrategy(
         {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/auth/google/callback',
+        callbackURL: '/api/users/google-callback',
         },
         async (accessToken, refreshToken, profile, done) => {
         try {
@@ -47,13 +44,12 @@ passport.use(
     )
 );
 
-// Facebook OAuth Strategy
 passport.use(
     new FacebookStrategy(
         {
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: '/auth/facebook/callback',
+        callbackURL: '/api/users/facebook-callback',
         profileFields: ['id', 'displayName', 'emails'],
         },
         async (accessToken, refreshToken, profile, done) => {

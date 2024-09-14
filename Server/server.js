@@ -8,6 +8,7 @@ import userRoutes from './routes/userRoutes.js';
 // import uploadRoutes from './routes/uploadRoutes.js';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import passport from './config/passport.js';
 import errorHandler from './middleware/errorMiddleware.js';
 import NotFoundMiddleware from './middleware/nofFoundMiddleware.js';
 
@@ -17,6 +18,9 @@ const __dirname = path.resolve();
 
 const app = express();
 const port = process.env.PORT;
+
+app.use(passport.initialize());
+
 const swaggerDocument = YAML.load('./swagger.yaml');
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
