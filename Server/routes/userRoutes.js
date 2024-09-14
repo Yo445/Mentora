@@ -13,8 +13,14 @@ router.route('/login')
 router.route('/facebook-login')
             .post(facebookLogin);
 
+router.route('/facebook-callback')
+            .get(facebookLogin);
+
 router.route('/google-login')
             .post(googleLogin);
+
+router.route('google-callback')
+            .get(googleLogin);
 
 router.route('/refresh-token')
             .post(refreshToken);

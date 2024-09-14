@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
 // @access  Public
 // login by email google
 const googleLogin = async (req, res) => {
-    passport.authenticate('google', { session: false }, (err, user, info) => {
+    passport.authenticate('google', { session: false, scope: ['profile', 'email'] }, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
                 message: 'Google login failed',
@@ -72,7 +72,7 @@ const googleLogin = async (req, res) => {
 // @access  Public
 // login by facebook email
 const facebookLogin = async (req, res) => {
-    passport.authenticate('facebook', { session: false }, (err, user, info) => {
+    passport.authenticate('facebook', { session: false, scope: ['email'] }, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
                 message: 'Facebook login failed',
