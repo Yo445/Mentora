@@ -1,13 +1,21 @@
+openapi: 3.0.0
 info:
   title: Course Management API
   description: API documentation for the Course Management System
   version: 1.0.0
 servers:
-  - url: http://localhost:5000/api
+  - url: http://localhost:5000
     description: Development server
+tags:
+  - name: Courses
+    description: Operations related to courses
+  - name: Users
+    description: Operations related to users
 paths:
-  /courses:
+  /api/courses:
     get:
+      tags:
+        - Courses
       summary: Get all courses with filters
       description: Retrieve a paginated list of courses with optional filters for category, difficulty, title or instructor
       parameters:
@@ -46,6 +54,8 @@ paths:
                   totalPages:
                     type: integer
     post:
+      tags:
+        - Courses
       summary: Create a course
       description: Create a new course
       requestBody:
@@ -61,8 +71,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Course'
-  /courses/{id}:
+  /api/courses/{id}:
     get:
+      tags:
+        - Courses
       summary: Get a course by ID
       description: Retrieve a course by its ID
       parameters:
@@ -80,6 +92,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Course'
     put:
+      tags:
+        - Courses
       summary: Update a course
       description: Update a course by its ID
       parameters:
@@ -103,6 +117,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Course'
     delete:
+      tags:
+        - Courses
       summary: Delete a course
       description: Delete a course by its ID
       parameters:
@@ -115,8 +131,10 @@ paths:
       responses:
         '204':
           description: Course deleted
-  /courses/{id}/enroll:
+  /api/courses/{id}/enroll:
     post:
+      tags:
+        - Courses
       summary: Enroll a student in a course
       description: Enroll a student in a course by its ID
       parameters:
@@ -149,45 +167,10 @@ paths:
                     type: integer
                   enrolledAt:
                     type: string
-  /courses/{id}/reviews:
-    get:
-      summary: Get all reviews for a course
-      description: Retrieve all reviews for a course by its ID
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: ID of the course to retrieve reviews for
-          schema:
-            type: string
-      responses:
-        '200':
-          description: A list of reviews
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  reviews:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                        rating:
-                          type: integer
-                        comment:
-                          type: string
-                        createdAt:
-                          type: string
-                  totalAmount:
-                    type: integer
-                  page:
-                    type: integer
-                  totalPages:
-                    type: integer
+  /api/courses/{id}/reviews:
     post:
+      tags:
+        - Courses
       summary: Create a review for a course
       description: Create a review for a course by its ID
       parameters:
@@ -224,37 +207,222 @@ paths:
                     type: string
                   createdAt:
                     type: string
-  responses:
-    '400':
-      description: Invalid input, Object invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    '401':
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    '403':
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    '404':
-      description: Not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    '500':
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+  /api/users/register:
+    post:
+      tags:
+        - Users
+      summary: Register a new user
+      description: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/users/login:
+    post:
+      tags:
+        - Users
+      summary: Login a user
+      description: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/users/facebook-login:
+    post:
+      tags:
+        - Users
+      summary: Login a user with Facebook
+      description: Login a user with Facebook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+      responses:
+        '200':
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/users/google-login:
+    post:
+      tags:
+        - Users
+      summary: Login a user with Google
+      description: Login a user with Google
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tokenId:
+                  type: string
+      responses:
+        '200':
+          description: User logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/users/refresh-token:
+    post:
+      tags:
+        - Users
+      summary: Refresh a user's token
+      description: Refresh a user's token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: User not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Refresh Token is required!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    /api/users/{id}/courses:
+      get:
+        tags:
+          - Users
+        summary: Get all courses for a user
+        description: Retrieve all courses and enrollments for a user by his ID
+        parameters:
+          - in: path
+            name: id
+            required: true
+            description: ID of the user to retrieve courses and enrollments for
+            schema:
+              type: string
+        responses:
+          '200':
+            description: A list of courses & enrollments
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    courses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Course'
+                    enrolledCourses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Course'
+          '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
 components:
   schemas:
     Course:

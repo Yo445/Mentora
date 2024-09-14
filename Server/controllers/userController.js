@@ -108,7 +108,7 @@ const refreshToken = async (req, res) => {
         console.log(decoded);
         const user = await User.findById(decoded.id);
         if (!user) {
-            return res.status(403).json({ message: 'User not found.' });
+            return res.status(401).json({ message: 'User not found.' });
         }
         const newToken = generateToken(user.id);
 
@@ -127,7 +127,7 @@ const getUserCourses = async (req, res) => {
         const courses = await Course.find({ user: req.params.id });
         const enrollments = await Enrollment.find({ user: req.params.id });
         const enrolledCourses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
-        res.json({ courses, enrolledCourses });
+        res.status(200).json({ courses, enrolledCourses });
     }
     catch(error) {
         res.status(500).json({ message: error.message });
