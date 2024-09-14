@@ -1,5 +1,5 @@
 import express from 'express';
-import passport from 'passport';
+import passport from '../config/passport.js';
 import { facebookLogin, getUserCourses, googleLogin, loginUser, refreshToken, registerUser } from '../controllers/userController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
