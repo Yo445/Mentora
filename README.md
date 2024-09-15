@@ -92,5 +92,5 @@ This project is maintained by:
 
 For any inquiries, feel free to reach out:
 
-- **Yassin Ali** - [LinkedIn](https://www.linkedin.com/in/yassin-ali) | Email: yassinalilearning77076@gmail.com
+- **Yassin Ali** - [LinkedIn](https://www.linkedin.com/in/yassin-ali-10497a252/) | Email: yassinalilearning77076@gmail.com
 - **Youssef Ali** - [LinkedIn](https://www.linkedin.com/in/youssef-ali-840227217/) | Email: aliy94476@gmail.com
