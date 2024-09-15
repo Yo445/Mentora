@@ -1,12 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
-import Cover from "../../imgs/libry.jpg";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import Img from "../../assets/img/register_bg_2.png";
-import "../components.css";
+
 const Login = () => {
   const navigate = useNavigate();
   const handlerec = () => {
@@ -116,17 +115,9 @@ const Login = () => {
                 placeholder="Password"
                 value=""
               />
-              <p className="mb-3 mt-2 text-sm text-gray-500">
-                <a
-                  href="/forgot-password"
-                  className="text-blue-800 hover:text-blue-600"
-                >
-                  Reset your password?
-                </a>
-              </p>
               <button
                 type="submit"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
+                className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
               >
                 Continue
               </button>
@@ -134,9 +125,9 @@ const Login = () => {
 
             <div className="mt-6 text-center text-sm text-slate-600">
               Don't have an account?
-              <a href="/signup" className="font-medium text-[#4285f4]">
+              <Link href="/signup" className="font-medium text-[#4285f4]">
                 Sign up
-              </a>
+              </Link>
             </div>
           </div>
         </div>

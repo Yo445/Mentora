@@ -1,14 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import NotFound from "./Components/Shared/NotFound";
-import Home from "./Pages/Home";
+import Home from "./Dashboard/Pages/Home";
 import Loader from "./Components/Shared/Loader";
-import Wishlist from './Pages/Wishlist';
 import Guest from "./middleware/Guest";
 import Auth from "./middleware/Auth";
-import Login from "./Components/Login";
-import Profile from "./Pages/Profile";
-import AddBook from './Pages/AddBook';
+import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 
 export const router = createBrowserRouter([
@@ -40,18 +37,7 @@ export const router = createBrowserRouter([
       {
         element: <Auth />, // Authenticated users only
         children: [
-          {
-            path: "wishlist",
-            element: <Wishlist />,
-          },
-          {
-            path: "profile",
-            element: <Profile />,
-          },
-          {
-            path: "add-book",
-            element: <AddBook />,
-          },
+    
         ],
       },
       {
