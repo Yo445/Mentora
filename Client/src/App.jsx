@@ -3,7 +3,8 @@ import './App.css';
 import SideBar from './Components/Shared/SideBar';
 import { Outlet } from 'react-router-dom';
 import Login from './Components/Auth/Login';
-import LandingPage from './Pages/LandingPage';
+import LandingPage from './Home/LandingPage';
+import Dashboard from './Dashboard/Dashboard';
 
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -26,7 +27,7 @@ export default function App() {
           </div>
         </div>
       </div> */}
-      <LandingPage/>
+      <Dashboard />
     </>
   );
 }

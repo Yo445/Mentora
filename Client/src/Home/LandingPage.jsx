@@ -34,7 +34,7 @@ export default function LandingPage() {
           <div className="flex justify-center">
             <Link className="mr-5 font-semibold text-[1.3em] w-[12em] h-[3em] bg-[#2a2f3f] text-[#ddff7d] border border-[#ddff7d] border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
               <span className="bg-[#ddff7d] shadow-[#ddff7d] absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]" />
-              Get Started
+              <h1 className="text-[1.19em]">Get Started</h1>
             </Link>
           </div>
         </div>
