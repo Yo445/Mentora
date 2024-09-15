@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../components.css";
 import { useNavigate } from "react-router-dom";
-import Cover from "../../imgs/2.jpg";
+// import Cover from "../../imgs/2.jpg";
 import { setAuthUser } from "../../helper/Storage";
 
 import axios from "axios";
@@ -45,94 +45,112 @@ const Register = () => {
   };
 
   return (
-    <section className="bg-90  flex box-border justify-center items-center mt-[30px]">
-      <div className="bg-[#91c8c1] rounded-2xl flex max-w-3xl p-5 items-center">
-        <div className="md:w-1/2 px-8">
-          <h2 className="font-bold text-3xl text-[#2a626e] mb-[30px]">Register</h2>
-          {/* Error Alert */}
-          {register.err.map((error, index) => (
-            <div
-            key={index}
-              className="flex inline-flex justify-between bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded  "
-              role="alert"
-            >
-              <span className="block sm:inline pl-2">{register.err}</span>
-              <span
-                className="inline"
-                onClick={(e) => e.currentTarget.parentNode.remove()}
-              >
-                <svg
-                  className="fill-current h-6 w-6"
-                  role="button"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <title>Close</title>
-                  <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z" />
-                </svg>
-              </span>
-            </div>
-          ))}
-          <form onSubmit={RegisterFun} className="flex flex-col gap-4">
+    <div
+    id="login-popup"
+    tabindex="-1"
+    class="   fixed top-[20em] right-0 left-0 z-50 h-full items-center justify-center flex"
+  >
+    <div class="relative p-4 w-full max-w-md h-full md:h-auto">
+      <div class="relative bg-white rounded-lg shadow">
+        <div class="p-5">
+          <h3 class="text-2xl mb-0.5 font-medium"></h3>
+          <p class="mb-4 text-sm font-normal text-gray-800"></p>
+
+          <div class="text-center">
+            <p class="mb-3 text-2xl font-semibold leading-5 text-slate-900">
+              Login to your account
+            </p>
+            <p class="mt-2 text-sm leading-4 text-slate-600">
+              You must be logged in to perform this action.
+            </p>
+          </div>
+
+          <div class="mt-7 flex flex-col gap-2">
+            <button class="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
+              <img
+                src="https://www.svgrepo.com/show/512317/github-142.svg"
+                alt="GitHub"
+                class="h-[18px] w-[18px] "
+              />
+              Continue with GitHub
+            </button>
+
+            <button class="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google"
+                class="h-[18px] w-[18px] "
+              />
+              Continue with Google
+            </button>
+
+            <button class="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
+              <img
+                src="https://www.svgrepo.com/show/448234/linkedin.svg"
+                alt="Google"
+                class="h-[18px] w-[18px] "
+              />
+              Continue with LinkedIn
+            </button>
+          </div>
+
+          <div class="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
+            <div class="h-px w-full bg-slate-200"></div>
+            OR
+            <div class="h-px w-full bg-slate-200"></div>
+          </div>
+
+          <form class="w-full">
+            <label for="email" class="sr-only">
+              Email address
+            </label>
             <input
-              className="p-2 mt-8 rounded-xl border w-full"
-              type="text"
-              name="name"
-              placeholder="Username"
-              value={register.username}
-              onChange={(e) =>
-                setRegister({ ...register, username: e.target.value })
-              }
-            />
-            <input
-              className="p-2  rounded-xl border w-full"
-              type="email"
               name="email"
-              placeholder="Email"
-              value={register.email}
-              onChange={(e) =>
-                setRegister({ ...register, email: e.target.value })
-              }
+              type="email"
+              autocomplete="email"
+              required=""
+              class="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
+              placeholder="Email Address"
+              value=""
             />
+            <label for="password" class="sr-only">
+              Password
+            </label>
             <input
-              className="p-2 rounded-xl border w-full"
-              type="password"
               name="password"
-              id="password"
+              type="password"
+              autocomplete="current-password"
+              required=""
+              class="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
               placeholder="Password"
-              value={register.password}
-              onChange={(e) =>
-                setRegister({ ...register, password: e.target.value })
-              }
+              value=""
             />
+            <p class="mb-3 mt-2 text-sm text-gray-500">
+              <a
+                href="/forgot-password"
+                class="text-blue-800 hover:text-blue-600"
+              >
+                Reset your password?
+              </a>
+            </p>
             <button
-              className="bg-[#2a626e] text-white py-2 rounded-xl hover:scale-105 duration-300 hover:bg-[#6dabb8] font-medium w-full"
               type="submit"
-              disabled={register.loading === true}
+              class="inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
             >
-              Register
+              Continue
             </button>
           </form>
 
-          <div className="mt-4 text-sm flex justify-between items-center container-mr">
-            <p className="mr-3 md:mr-0 text-[gray]">already have an account</p>
-            <button
-              className="hover:border register text-white bg-[#20b2aa] hover:border-gray-400 rounded-xl py-2 px-5 hover:scale-110 hover:bg-[#002c7424] font-semibold duration-300"
-              onClick={handlere}
-            >
-              Login
-            </button>
+          <div class="mt-6 text-center text-sm text-slate-600">
+            Don't have an account?
+            <a href="/signup" class="font-medium text-[#4285f4]">
+              Sign up
+            </a>
           </div>
         </div>
-        <div className="md:block hidden w-1/2">
-          <img
-            className="rounded-2xl max-h-[1600px]"
-            src={Cover}
-            alt="login form image"
-          />
-        </div>
       </div>
-    </section>
+    </div>
+  </div>
   );
 };
 
