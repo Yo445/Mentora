@@ -33,8 +33,17 @@ const courseSchema = new mongoose.Schema({
     materials: [
         {
             title: { type: String, required: true },
-            url: String,  // URLs for S3 uploaded files
-            // url: { type: String, validate: /^https?:\/\//},
+            url: {
+                type: String,
+                validate: /^https?:\/\//
+            },
+            fileType: {
+                type: String,
+                enum: ['video', 'audio', 'pdf', 'image', 'zip', 'doc', 'other'],
+            },
+            fileSize: {
+                type: Number,
+            },
         },
     ],
     createdAt: {
