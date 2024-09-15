@@ -6,7 +6,7 @@ import Loader from "./Components/Shared/Loader";
 import Wishlist from './Pages/Wishlist';
 import Guest from "./middleware/Guest";
 import Auth from "./middleware/Auth";
-import Login from "./Components/Auth/Login";
+import Login from "./Components/Login";
 import Profile from "./Pages/Profile";
 import AddBook from './Pages/AddBook';
 import Register from "./Components/Auth/Register";
