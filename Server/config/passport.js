@@ -17,16 +17,16 @@ passport.use(
         {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: '/api/users/google-callback',
+        callbackURL: 'http://localhost:5000/api/users/google-callback',
         },
         async (accessToken, refreshToken, profile, done) => {
+            console.log('profile', profile);
         try {
             let user = await User.findOne({ googleId: profile.id });
 
             if (!user) {
                 if (!profile.emails && !profile.emails.length) {
                     return done( new Error('Google profile email is required'));
-                    
                 }
                 user = await User.create({
                     googleId: profile.id,
@@ -35,6 +35,7 @@ passport.use(
                 });
             }
 
+            console.log('user', user);
             done(null, user);
         } catch (error) {
             console.error(error);
@@ -49,7 +50,7 @@ passport.use(
         {
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: '/api/users/facebook-callback',
+        callbackURL: 'http://localhost:5000/api/users/facebook-callback',
         profileFields: ['id', 'displayName', 'emails'],
         },
         async (accessToken, refreshToken, profile, done) => {

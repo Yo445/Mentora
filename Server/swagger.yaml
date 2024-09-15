@@ -314,15 +314,6 @@ paths:
         - Users
       summary: Login a user with Google
       description: Login a user with Google
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                tokenId:
-                  type: string
       responses:
         '200':
           description: User logged in

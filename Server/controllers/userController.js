@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
-import passport from 'passport';
+import passport from '../config/passport.js';
 import Course from '../models/courseModel.js';
 import Enrollment from '../models/enrollmentModel.js';
 import User from '../models/userModel.js';
@@ -52,7 +52,8 @@ const loginUser = async (req, res) => {
 const googleLogin = async (req, res) => {
     // try
     // const response = await axios.post('/api/users/google-login');
-    passport.authenticate('google', { session: false, scope: ['profile', 'email'] }, (err, user, info) => {
+    console.log('google login');
+    passport.authenticate('google', { session: false }, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
                 message: 'Google login failed',
@@ -60,6 +61,7 @@ const googleLogin = async (req, res) => {
                 error: err || info,
             });
         }
+        console.log("userrrrrr", user);
         req.login(user, { session: false }, async (error) => {
             if (error) {
                 res.send(error);
@@ -67,7 +69,7 @@ const googleLogin = async (req, res) => {
             const token = generateToken(user._id);
             return res.json({ id: user._id, name: user.name, email: user.email, token });
         });
-    })(req, res);
+    })(req, res, next);
 }
 
 // @desc    Authenticate user with Facebook OAuth & get token
@@ -77,7 +79,7 @@ const googleLogin = async (req, res) => {
 const facebookLogin = async (req, res) => {
     // try
     // const response = await axios.post('/api/users/facebook-login');
-    passport.authenticate('facebook', { session: false, scope: ['email'] }, (err, user, info) => {
+    passport.authenticate('facebook', { session: false }, (err, user, info) => {
         if (err || !user) {
             return res.status(400).json({
                 message: 'Facebook login failed',
@@ -92,7 +94,7 @@ const facebookLogin = async (req, res) => {
             const token = generateToken(user._id);
             return res.json({ id: user._id, name: user.name, email: user.email, token });
         });
-    })(req, res);
+    })(req, res, next);
 }
 
 // @desc    Refresh user token
