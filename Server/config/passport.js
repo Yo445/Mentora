@@ -1,15 +1,15 @@
 import 'dotenv/config';
 import passport from 'passport';
-import FacebookStrategy from 'passport-facebook';
-import GoogleStrategy from 'passport-google-oauth20';
+import { Strategy as FacebookStrategy } from 'passport-facebook';
+import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../models/userModel.js';
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
+passport.serializeUser((user, cb) => {
+    cb(null, user.id);
 });
 
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => done(err, user));
+passport.deserializeUser((id, cb) => {
+    User.findById(id, (err, user) => cb(err, user));
 });
 
 passport.use(
@@ -17,29 +17,28 @@ passport.use(
         {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'http://localhost:5000/api/users/google-callback',
+        callbackURL: process.env.GOOGLE_REDIRECT_URI,
         },
-        async (accessToken, refreshToken, profile, done) => {
-            console.log('profile', profile);
+        async (accessToken, refreshToken, profile, cb) => {
         try {
             let user = await User.findOne({ googleId: profile.id });
 
             if (!user) {
                 if (!profile.emails && !profile.emails.length) {
-                    return done( new Error('Google profile email is required'));
+                    return cb( new Error('Google profile email is required'));
                 }
                 user = await User.create({
                     googleId: profile.id,
                     name: profile.displayName,
                     email: profile.emails[0].value,
+                    password: "password",
                 });
             }
 
-            console.log('user', user);
-            done(null, user);
+            cb(null, user);
         } catch (error) {
             console.error(error);
-            done(error, null);
+            cb(error, null);
         }
         }
     )
@@ -50,27 +49,28 @@ passport.use(
         {
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-        callbackURL: 'http://localhost:5000/api/users/facebook-callback',
+        callbackURL: process.env.FACEBOOK_REDIRECT_URI,
         profileFields: ['id', 'displayName', 'emails'],
         },
-        async (accessToken, refreshToken, profile, done) => {
+        async (accessToken, refreshToken, profile, cb) => {
         try {
             let user = await User.findOne({ facebookId: profile.id });
 
             if (!user) {
                 if (!profile.emails || !profile.emails.length) {
-                    return done(new Error('Facebook profile email is required'));
+                    return cb(new Error('Facebook profile email is required'));
                 }
                 user = await User.create({
                     facebookId: profile.id,
                     name: profile.displayName,
                     email: profile.emails[0].value,
+                    password: 'password',
                 });
             }
 
-            done(null, user);
+            cb(null, user);
         } catch (error) {
-            done(error, null);
+            cb(error, null);
         }
         }
     )

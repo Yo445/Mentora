@@ -1,6 +1,5 @@
 import express from 'express';
-import passport from 'passport';
-import { facebookLogin, getUserCourses, loginUser, refreshToken, registerUser } from '../controllers/userController.js';
+import { facebookLogin, facebookLoginCallback, getUserCourses, googleLogin, googleLoginCallback, loginUser, refreshToken, registerUser } from '../controllers/userController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -12,20 +11,16 @@ router.route('/login')
             .post(loginUser);
 
 router.route('/facebook-login')
-            .post(passport.authenticate('facebook', { scope: ['email'] }));
+            .get(facebookLogin);
 
 router.route('/facebook-callback')
-            .post(facebookLogin);
+            .get(facebookLoginCallback);
 
 router.route('/google-login')
-            .post(passport.authenticate('google', { scope: ['profile', 'email'] }));
+            .get(googleLogin);
 
-router.route('google-callback')
-            .post(passport.authenticate('google', { session: false }), (req, res) => {
-                const token = generateToken(req.user._id);
-                res.json({ id: req.user._id, name: req.user.name, email: req.user.email, token });
-            });
-            // .post(googleLogin);
+router.route('/google-callback')
+            .get(googleLoginCallback);
 
 router.route('/refresh-token')
             .post(refreshToken);
