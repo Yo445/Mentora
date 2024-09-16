@@ -3,7 +3,7 @@ import SideBar from "../Components/Shared/SideBar";
 import { Outlet } from "react-router-dom";
 
 export default function Dashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);

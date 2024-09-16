@@ -73,6 +73,7 @@ const Register = () => {
             </p>
           </div>
 
+          {/* Use Social Media */}
           <div className="mt-7 flex flex-col gap-2">
             <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
               <FaFacebook fontSize={"23px"} color={"#1877F2"} />

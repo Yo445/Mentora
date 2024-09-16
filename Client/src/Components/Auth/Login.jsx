@@ -125,7 +125,7 @@ const Login = () => {
 
             <div className="mt-6 text-center text-sm text-slate-600">
               Don't have an account?
-              <Link href="/signup" className="font-medium text-[#4285f4]">
+              <Link to="/signup" className="font-medium text-[#4285f4]">
                 Sign up
               </Link>
             </div>
