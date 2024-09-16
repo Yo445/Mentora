@@ -1,4 +1,4 @@
-import { S3Client } from '@aws-sdk/client-s3';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import 'dotenv/config';
 
 const s3 = new S3Client({
@@ -9,7 +9,17 @@ const s3 = new S3Client({
     region: process.env.AWS_REGION,
 });
 
-export default s3;
+const uploadToS3 = async (params) => {
+    try {
+        const data = await s3.send(new PutObjectCommand(params));
+        console.log('Successfully uploaded data to ' + params.Bucket + '/' + params.Key);
+        return data;
+    } catch (err) {
+        console.log('Error', err);
+    }
+}
+
+export { s3, uploadToS3 };
 
 
 // const s3 = new S3({

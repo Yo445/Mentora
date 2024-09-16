@@ -5,7 +5,6 @@ import Course from '../models/courseModel.js';
 import Enrollment from '../models/enrollmentModel.js';
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
-// import axios from 'axios';
 
 // @desc    Register a new user
 // @route   POST /api/users/register
@@ -46,54 +45,44 @@ const loginUser = async (req, res) => {
 }
 
 // @desc    Authenticate user with Google OAuth & get token
-// @route   POST /api/users/login/google
+// @route   POST /api/users/google-login
 // @access  Public
-// login by email google
-const googleLogin = async (req, res) => {
-    // try
-    // const response = await axios.post('/api/users/google-login');
-    console.log('google login');
-    passport.authenticate('google', { session: false }, (err, user, info) => {
-        if (err || !user) {
-            return res.status(400).json({
-                message: 'Google login failed',
-                user: user,
-                error: err || info,
-            });
-        }
-        console.log("userrrrrr", user);
-        req.login(user, { session: false }, async (error) => {
-            if (error) {
-                res.send(error);
-            }
-            const token = generateToken(user._id);
-            return res.json({ id: user._id, name: user.name, email: user.email, token });
-        });
-    })(req, res, next);
-}
+const googleLogin = passport.authenticate('google', { scope: ['profile', 'email'] });
 
-// @desc    Authenticate user with Facebook OAuth & get token
-// @route   POST /api/users/login/facebook
+// @desc    Authenticate user with Google OAuth & get token
+// @route   POST /api/users/google-callback
+// @access  Public
+const googleLoginCallback = (req, res, next) => {
+    passport.authenticate('google', { session: false }, (err, user) => {
+        if (err || !user) {
+            return res.status(400).json({ message: 'Google authentication failed' });
+        }
+
+        const token = generateToken(user._id);
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
+    })(req, res, next);
+};
+
+// @desc    Authenticate user with Facebook OAuth
+// @route   POST /api/users/facebook-login
 // @access  Public
 // login by facebook email
-const facebookLogin = async (req, res) => {
-    // try
-    // const response = await axios.post('/api/users/facebook-login');
-    passport.authenticate('facebook', { session: false }, (err, user, info) => {
-        if (err || !user) {
-            return res.status(400).json({
-                message: 'Facebook login failed',
-                user: user,
-                error: err || info,
-            });
+const facebookLogin = passport.authenticate('facebook', { scope: ['email'] });
+
+// @desc    Authenticate user with Facebook OAuth & get token
+// @route   POST /api/users/facebook-callback
+// @access  Public
+const facebookLoginCallback = (req, res, next) => {
+    passport.authenticate('facebook', { session: false }, (err, user) => {
+        if(!user){
+            return res.status(400).json({ message: 'Facebook authentication user failed' });
         }
-        req.login(user, { session: false }, async (error) => {
-            if (error) {
-                res.send(error);
-            }
-            const token = generateToken(user._id);
-            return res.json({ id: user._id, name: user.name, email: user.email, token });
-        });
+        if (err) {
+            return res.status(400).json({ message: 'Facebook authentication failed' });
+        }
+
+        const token = generateToken(user._id);
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
     })(req, res, next);
 }
 
@@ -136,7 +125,7 @@ const getUserCourses = async (req, res) => {
     }
 }
 
-export { facebookLogin, getUserCourses, googleLogin, loginUser, refreshToken, registerUser };
+export { facebookLogin, facebookLoginCallback, getUserCourses, googleLogin, googleLoginCallback, loginUser, refreshToken, registerUser };
 
 
 // const getUserCourses = async (req, res) => {
@@ -148,49 +137,3 @@ export { facebookLogin, getUserCourses, googleLogin, loginUser, refreshToken, re
 //         res.status(500).json({ message: error.message });
 //     }
 // }
-
-
-
-// model for refresh token
-// const mongoose = require("mongoose");
-// const config = require("../config/auth.config");
-// const { v4: uuidv4 } = require('uuid');
-
-// const RefreshTokenSchema = new mongoose.Schema({
-//   token: String,
-//   user: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "User",
-//   },
-//   expiryDate: Date,
-// });
-
-// RefreshTokenSchema.statics.createToken = async function (user) {
-//   let expiredAt = new Date();
-
-//   expiredAt.setSeconds(
-//     expiredAt.getSeconds() + config.jwtRefreshExpiration
-//   );
-
-//   let _token = uuidv4();
-
-//   let _object = new this({
-//     token: _token,
-//     user: user._id,
-//     expiryDate: expiredAt.getTime(),
-//   });
-
-//   console.log(_object);
-
-//   let refreshToken = await _object.save();
-
-//   return refreshToken.token;
-// };
-
-// RefreshTokenSchema.statics.verifyExpiration = (token) => {
-//   return token.expiryDate.getTime() < new Date().getTime();
-// }
-
-// const RefreshToken = mongoose.model("RefreshToken", RefreshTokenSchema);
-
-// module.exports = RefreshToken;
