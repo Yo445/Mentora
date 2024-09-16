@@ -32,13 +32,7 @@ const Home = () => {
       avatars: [],
     },
     {
-      id: 'card-3',
-      title: 'What does success as a UX designer look like and how to get there systematically',
-      date: 'March 28, 2020',
-      avatars: [],
-    },
-    {
-      id: 'card-3',
+      id: 'card-4',
       title: 'What does success as a UX designer look like and how to get there systematically',
       date: 'March 28, 2020',
       avatars: [],
