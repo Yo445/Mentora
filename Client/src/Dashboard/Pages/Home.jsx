@@ -10,35 +10,38 @@ const Home = () => {
   /* data */
   const cardsData = [
     {
-      id: 'card-1',
-      title: 'What does success as a UX designer look like and how to get there systematically',
-      date: 'March 28, 2020',
+      id: "card-1",
+      title:
+        "What does success as a UX designer look like and how to get there systematically",
+      date: "March 28, 2020",
       avatars: [
-        'https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_0.png',
-        'https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_1.png',
-        'https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_2.png',
+        "https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_0.png",
+        "https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_1.png",
+        "https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_2.png",
       ],
     },
     {
-      id: 'card-2',
-      title: 'What does success as a UX designer look like and how to get there systematically',
-      date: 'March 28, 2020',
+      id: "card-2",
+      title:
+        "What does success as a UX designer look like and how to get there systematically",
+      date: "March 28, 2020",
       avatars: [],
     },
     {
-      id: 'card-3',
-      title: 'What does success as a UX designer look like and how to get there systematically',
-      date: 'March 28, 2020',
+      id: "card-3",
+      title:
+        "What does success as a UX designer look like and how to get there systematically",
+      date: "March 28, 2020",
       avatars: [],
     },
     {
-      id: 'card-4',
-      title: 'What does success as a UX designer look like and how to get there systematically',
-      date: 'March 28, 2020',
+      id: "card-4",
+      title:
+        "What does success as a UX designer look like and how to get there systematically",
+      date: "March 28, 2020",
       avatars: [],
     },
   ];
-
 
   const [showModal, setShowModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -136,45 +139,10 @@ const Home = () => {
 
             <main className="my-8">
               <div className="container mx-auto px-6">
-                <div
-                  className="h-64 rounded-md overflow-hidden bg-cover bg-center"
-                  style={{
-                    backgroundImage:
-                      "url('https://images.unsplash.com/photo-1577655197620-704858b270ac?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1280&q=144')",
-                  }}
-                >
-                  <div className="bg-gray-900 bg-opacity-50 flex items-center h-full">
-                    <div className="px-10 max-w-xl">
-                      <h2 className="text-2xl text-white font-semibold">
-                        Sport Shoes
-                      </h2>
-                      <p className="mt-2 text-gray-400">
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Tempore facere provident molestias ipsam sint
-                        voluptatum pariatur.
-                      </p>
-                      <button className="flex items-center mt-4 px-3 py-2 bg-blue-600 text-white text-sm uppercase font-medium rounded hover:bg-blue-500 focus:outline-none focus:bg-blue-500">
-                        <span>Shop Now</span>
-                        <svg
-                          className="h-5 w-5 mx-2"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="md:flex mt-8 md:-mx-4">
                   {/* Back Pack Section */}
                   <div
-                    className="w-full h-64 md:mx-4 rounded-md overflow-hidden bg-cover bg-center md:w-1/2"
+                    className="w-full h-64 md:mx-4 rounded-[18px] overflow-hidden bg-cover bg-center md:w-1/2"
                     style={{
                       backgroundImage:
                         "url('https://images.unsplash.com/photo-1547949003-9792a18a2601?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80')",
@@ -210,7 +178,7 @@ const Home = () => {
 
                   {/* Games Section */}
                   <div
-                    className="w-full h-64 mt-8 md:mx-4 rounded-md overflow-hidden bg-cover bg-center md:mt-0 md:w-1/2"
+                    className="w-full h-64 mt-8 md:mx-4 rounded-[18px] overflow-hidden bg-cover bg-center md:mt-0 md:w-1/2"
                     style={{
                       backgroundImage:
                         "url('https://images.unsplash.com/photo-1486401899868-0e435ed85128?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80')",
@@ -246,14 +214,19 @@ const Home = () => {
                 </div>
 
                 {/* Display Cards */}
-                <div className="mx-auto container py-20 px-6">
-      <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {cardsData.map((card) => (
-          <Card key={card.id} id={card.id} title={card.title} date={card.date} avatars={card.avatars} />
-        ))}
-      </div>
-    </div>
-  
+                <div className="md:flex mt-8 md:-mx-0">
+                  <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {cardsData.map((card) => (
+                      <Card
+                        key={card.id}
+                        id={card.id}
+                        title={card.title}
+                        date={card.date}
+                        avatars={card.avatars}
+                      />
+                    ))}
+                  </div>
+                </div>
               </div>
             </main>
           </div>

@@ -76,7 +76,7 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
             <RiHome6Fill fontSize={"20px"}/>
           </div>
           <Link
-            to={"login"}
+            to={""}
             className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex"
           >
             {/* Icon */}
