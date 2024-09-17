@@ -28,9 +28,11 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
         if(!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
+
         const isMatch = await user.matchPassword(password);
         if(isMatch) {
             res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
@@ -95,12 +97,15 @@ const refreshToken = async (req, res) => {
         if (!refreshToken) {
             return res.status(403).json({ message: 'Refresh Token is required!' });
         }
+
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        console.log(decoded);
+        // console.log(decoded);
+
         const user = await User.findById(decoded.id);
         if (!user) {
             return res.status(401).json({ message: 'User not found.' });
         }
+
         const newToken = generateToken(user.id);
 
         res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: newToken });
@@ -115,8 +120,8 @@ const refreshToken = async (req, res) => {
 // @access  Private
 const getUserCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ user: req.params.id });
-        const enrollments = await Enrollment.find({ user: req.params.id });
+        const courses = await Course.find({ user: req.user._id });
+        const enrollments = await Enrollment.find({ user: req.user._id });
         const enrolledCourses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
         res.status(200).json({ courses, enrolledCourses });
     }
