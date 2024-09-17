@@ -11,10 +11,10 @@ import generateToken from '../utils/generateToken.js';
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        const user = new User({ name, email, password });
+        const { name, email, password, role } = req.body;
+        const user = new User({ name, email, password, role });
         await user.save();
-        res.status(201).json({ id: user._id, name: user.name, email: user.email, token: generateToken(user._id) });
+        res.status(201).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -28,12 +28,14 @@ const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+
         if(!user) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
+
         const isMatch = await user.matchPassword(password);
         if(isMatch) {
-            res.json({ id: user._id, name: user.name, email: user.email, token: generateToken(user._id) });
+            res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
         }
         else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -59,7 +61,7 @@ const googleLoginCallback = (req, res, next) => {
         }
 
         const token = generateToken(user._id);
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token });
     })(req, res, next);
 };
 
@@ -82,7 +84,7 @@ const facebookLoginCallback = (req, res, next) => {
         }
 
         const token = generateToken(user._id);
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token });
     })(req, res, next);
 }
 
@@ -95,15 +97,18 @@ const refreshToken = async (req, res) => {
         if (!refreshToken) {
             return res.status(403).json({ message: 'Refresh Token is required!' });
         }
+
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        console.log(decoded);
+        // console.log(decoded);
+
         const user = await User.findById(decoded.id);
         if (!user) {
             return res.status(401).json({ message: 'User not found.' });
         }
+
         const newToken = generateToken(user.id);
 
-        res.json({ id: user._id, name: user.name, email: user.email, token: newToken });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: newToken });
     }
     catch(error) {
         res.status(500).json({ message: error.message });
@@ -115,9 +120,18 @@ const refreshToken = async (req, res) => {
 // @access  Private
 const getUserCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ user: req.params.id });
-        const enrollments = await Enrollment.find({ user: req.params.id });
+        const courses = await Course.find({ user: req.user._id });
+        if (!courses) {
+            return res.status(404).json({ message: 'No courses found' });
+        }
+        const enrollments = await Enrollment.find({ user: req.user._id });
+        if (!enrollments) {
+            return res.status(404).json({ message: 'No enrollments found' });
+        }
         const enrolledCourses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
+        if (!enrolledCourses) {
+            return res.status(404).json({ message: 'No enrolled courses found' });
+        }
         res.status(200).json({ courses, enrolledCourses });
     }
     catch(error) {

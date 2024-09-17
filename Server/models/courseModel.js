@@ -35,11 +35,11 @@ const courseSchema = new mongoose.Schema({
             title: { type: String, required: true },
             url: {
                 type: String,
-                validate: /^https?:\/\//
+                // validate: /^https?:\/\//
             },
             fileType: {
                 type: String,
-                enum: ['video', 'audio', 'pdf', 'image', 'zip', 'doc', 'other'],
+                // enum: ['video', 'audio', 'pdf', 'image', 'zip', 'doc', 'other'],
             },
             fileSize: {
                 type: Number,
