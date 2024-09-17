@@ -19,6 +19,6 @@ router.route('/:id/enroll')
             .post(authMiddleware, checkStudentMiddleware, enrollCourse) // (authenticated)
 
 router.route('/:id/review')
-            .post(authMiddleware, reviewCourse) // (authenticated)
+            .post(authMiddleware, checkStudentMiddleware, reviewCourse) // (authenticated)
 
 export default router;
