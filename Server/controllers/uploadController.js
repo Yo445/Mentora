@@ -1,14 +1,15 @@
 import 'dotenv/config';
-import { minioClient } from '../config/minio.js';
+import minioClient from '../config/minio.js';
 import Course from '../models/courseModel.js';
 
 const uploadFileToMinio = async (req, res) => {
     try {
         const file = req.file;
         if (!file){
-            return res.status(400).json({error: 'No file provided'});
+            return res.status(400).json({message: 'No file provided'});
         }
-        console.log("bucket name", process.env.MINIO_BUCKET_NAME);
+        // console.log("bucket name", process.env.MINIO_BUCKET_NAME);
+
         const params = {
             bucket: process.env.MINIO_BUCKET_NAME,
             ObjectName: `${req.user.id}/${Date.now()}_${file.originalname}`,
@@ -17,7 +18,7 @@ const uploadFileToMinio = async (req, res) => {
         };
 
         if (!params.bucket || typeof params.bucket !== 'string'){
-            return res.status(400).json({ error: 'Invalid bucket name'});
+            return res.status(400).json({ message: 'Invalid bucket name'});
         }
 
         const url = await minioClient.presignedPutObject(params.bucket, params.ObjectName, (err, url) => {
@@ -26,7 +27,7 @@ const uploadFileToMinio = async (req, res) => {
 
         const course = await Course.findById(req.body.courseId);
         if (!course) {
-            return res.status(404).json({ error: 'Course not found' });
+            return res.status(404).json({ message: 'Course not found' });
         }
 
         course.materials.push({
@@ -45,7 +46,7 @@ const uploadFileToMinio = async (req, res) => {
         res.status(201).json({ url });
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: 'Failed to upload file to Minio'});
+        res.status(500).json({ message: 'Failed to upload file to Minio' });
     }
 }
 
