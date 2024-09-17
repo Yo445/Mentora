@@ -4,14 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
-import Img from "../../assets/img/register_bg_2.png";
+import Img from "../../assets/img/back2.svg";
 import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
-  const handlere = () => {
-    navigate("/login");
-  };
+
+  // const handlere = () => {
+  //   navigate("/login");
+  // };
 
   const [register, setRegister] = useState({
     email: "",
@@ -33,7 +34,7 @@ const Register = () => {
       .then((resp) => {
         setRegister({ ...register, loading: false, err: [] });
         setAuthUser(resp.data);
-        navigate("/");
+        navigate("/dashboard");
       })
       .catch((errors) => {
         console.log(errors);
@@ -92,7 +93,7 @@ const Register = () => {
             <div className="h-px w-full bg-slate-200"></div>
           </div>
 
-          <form className="w-full">
+          <form onSubmit={RegisterFun} className="w-full">
           <label for="username" className="sr-only">
               Username
             </label>
@@ -103,7 +104,9 @@ const Register = () => {
               required=""
               className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
               placeholder="Username"
-              value=""
+              value={register.username}
+              onChange={(e) => setRegister({ ...register, username: e.target.value })}
+
             />
             <label for="email" className="sr-only">
               Email address
@@ -115,7 +118,8 @@ const Register = () => {
               required=""
               className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
               placeholder="Email Address"
-              value=""
+              value={register.email}
+              onChange={(e) => setRegister({ ...register, email: e.target.value })}
             />
             <label for="password" className="sr-only">
               Password
@@ -127,7 +131,8 @@ const Register = () => {
               required=""
               className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
               placeholder="Password"
-              value=""
+              value={register.password}
+              onChange={(e) => setRegister({ ...register, password: e.target.value })}
             />
             <button
               type="submit"

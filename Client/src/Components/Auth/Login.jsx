@@ -4,16 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
-import Img from "../../assets/img/register_bg_2.png";
+import Img from "../../assets/img/back.svg";
 
 const Login = () => {
   const navigate = useNavigate();
-  const handlerec = () => {
-    navigate("/signup");
-  };
+
+  // const handlerec = () => {
+  //   navigate("/signup");
+  // };
 
   const [login, setLogin] = useState({
-    username: "",
+    email:"",
     password: "",
     loading: "false",
     err: [],
@@ -23,14 +24,14 @@ const Login = () => {
     e.preventDefault();
     setLogin({ ...Login, loading: true, err: [] });
     axios
-      .post("http://localhost:5000/api/auth/login", {
-        username: login.username,
+      .post("http://localhost:5000/api/users/login", {
+        email: login.email,
         password: login.password,
       })
       .then((resp) => {
         setLogin({ ...Login, loading: false, err: [] });
         setAuthUser(resp.data);
-        navigate("/");
+        navigate("/dashboard");
       })
       .catch((errors) => {
         console.log(errors);
@@ -53,15 +54,13 @@ const Login = () => {
         backgroundImage: `url(${Img})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
+        backgroundRepeat: "no-repeat",
       }}
     >
-            <div className="absolute top-0 w-full h-full bg-gray-900 opacity-70"></div>
-
+      <div className="absolute top-0 w-full h-full bg-gray-900 opacity-70"></div>
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
         <div className="relative bg-[white] rounded-lg shadow">
           <div className="p-5">
-            <h3 className="text-2xl mb-0.5 font-medium"></h3>
             <p className="mb-4 text-sm font-normal text-gray-800"></p>
             <div className="text-center">
               <p className="mb-3 text-2xl font-semibold leading-5 text-slate-900">
@@ -73,6 +72,22 @@ const Login = () => {
             </div>
 
             <div className="mt-7 flex flex-col gap-2">
+              {/* Error Alert */}
+              {login.err.map((error, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded"
+                  role="alert"
+                >
+                  <span>{login.err}</span>
+                  <button
+                    onClick={(e) => e.currentTarget.parentNode.remove()}
+                    className="text-red-700 text-[20px]"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
               <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
                 <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
@@ -90,7 +105,7 @@ const Login = () => {
               <div className="h-px w-full bg-slate-200"></div>
             </div>
 
-            <form className="w-full">
+            <form  onSubmit={LoginFun} className="w-full">
               <label for="email" className="sr-only">
                 Email address
               </label>
@@ -101,7 +116,8 @@ const Login = () => {
                 required=""
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
                 placeholder="Email Address"
-                value=""
+                value={login.email}
+                onChange={(e) => setLogin({ ...login, email: e.target.value })}
               />
               <label for="password" className="sr-only">
                 Password
@@ -113,7 +129,8 @@ const Login = () => {
                 required=""
                 className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
                 placeholder="Password"
-                value=""
+                value={login.password}
+                onChange={(e) => setLogin({ ...login, password: e.target.value })}
               />
               <button
                 type="submit"

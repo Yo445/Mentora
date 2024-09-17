@@ -4,6 +4,8 @@ import Right from "../assets/img/side2.svg";
 import Down from "../assets/img/patternpad.svg";
 import Text from "../assets/img/textBg.svg";
 import { FaChevronRight } from "react-icons/fa";
+import { FaRegHandPointRight } from "react-icons/fa6";
+
 import { Link } from "react-router-dom";
 export default function LandingPage() {
   return (
