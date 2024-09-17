@@ -1,17 +1,28 @@
-import { uploadToS3 } from '../config/s3.js';
+import 'dotenv/config';
+import { minioClient } from '../config/minio.js';
+import Course from '../models/courseModel.js';
 
-const uploadFileToS3 = async (req, res) => {
+const uploadFileToMinio = async (req, res) => {
     try {
-        // const file = req.files.file;
         const file = req.file;
+        if (!file){
+            return res.status(400).json({error: 'No file provided'});
+        }
+        console.log("bucket name", process.env.MINIO_BUCKET_NAME);
         const params = {
-            Bucket: process.env.AWS_BUCKET_NAME,
-            Key: `${req.user.id}/${Date.now()}_${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-            ACL: 'public-read',
+            bucket: process.env.MINIO_BUCKET_NAME,
+            ObjectName: `${req.user.id}/${Date.now()}_${file.originalname}`,
+            fileBuffer: file.buffer,
+            mimeType: file.mimetype,
         };
-        const data = await uploadToS3(params);
+
+        if (!params.bucket || typeof params.bucket !== 'string'){
+            return res.status(400).json({ error: 'Invalid bucket name'});
+        }
+
+        const url = await minioClient.presignedPutObject(params.bucket, params.ObjectName, (err, url) => {
+            if (err) throw err
+            console.log('Presigned put url:', url, err)});
 
         const course = await Course.findById(req.body.courseId);
         if (!course) {
@@ -20,18 +31,22 @@ const uploadFileToS3 = async (req, res) => {
 
         course.materials.push({
             title: file.originalname,
-            url: data.Location,
+            url,
             fileType: file.mimetype.split('/')[0],
             fileSize: file.size,
         });
 
+        course.updatedAt = Date.now();
+
         await course.save();
 
-        res.status(201).json({ url: data.Location });
+        console.log("course", course);
+
+        res.status(201).json({ url });
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: 'Failed to upload file to S3'});
+        res.status(500).json({error: 'Failed to upload file to Minio'});
     }
 }
 
-export { uploadFileToS3 };
+export { uploadFileToMinio };

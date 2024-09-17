@@ -1,7 +1,6 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import path from 'path';
 import connectDB from './config/db.js';
 import courseRoutes from './routes/courseRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
@@ -16,8 +15,6 @@ import errorHandler from './middleware/errorMiddleware.js';
 import NotFoundMiddleware from './middleware/nofFoundMiddleware.js';
 
 connectDB();
-
-const __dirname = path.resolve();
 
 const app = express();
 const port = process.env.PORT;
@@ -39,7 +36,6 @@ app.use(passport.session());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/api/uploads', uploadRoutes);
-// app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);

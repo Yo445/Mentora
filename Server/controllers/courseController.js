@@ -22,7 +22,7 @@ const getCourses = async (req, res) => {
             }),
         }
         const sortOption = req.query.sortBy || '-createdAt';
-        const count = await Course.countDocuments({ ...keyword });
+        const count = await Course.countDocuments({ ...filters });
         const courses = await Course.find({ ...filters })
                 .sort(sortOption)
                 .limit(pageSize)

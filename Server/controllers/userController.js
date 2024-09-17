@@ -11,10 +11,10 @@ import generateToken from '../utils/generateToken.js';
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
-        const user = new User({ name, email, password });
+        const { name, email, password, role } = req.body;
+        const user = new User({ name, email, password, role });
         await user.save();
-        res.status(201).json({ id: user._id, name: user.name, email: user.email, token: generateToken(user._id) });
+        res.status(201).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -33,7 +33,7 @@ const loginUser = async (req, res) => {
         }
         const isMatch = await user.matchPassword(password);
         if(isMatch) {
-            res.json({ id: user._id, name: user.name, email: user.email, token: generateToken(user._id) });
+            res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
         }
         else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -59,7 +59,7 @@ const googleLoginCallback = (req, res, next) => {
         }
 
         const token = generateToken(user._id);
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token });
     })(req, res, next);
 };
 
@@ -82,7 +82,7 @@ const facebookLoginCallback = (req, res, next) => {
         }
 
         const token = generateToken(user._id);
-        res.status(200).json({ id: user._id, name: user.name, email: user.email, token });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token });
     })(req, res, next);
 }
 
@@ -103,7 +103,7 @@ const refreshToken = async (req, res) => {
         }
         const newToken = generateToken(user.id);
 
-        res.json({ id: user._id, name: user.name, email: user.email, token: newToken });
+        res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: newToken });
     }
     catch(error) {
         res.status(500).json({ message: error.message });
