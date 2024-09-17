@@ -28,7 +28,7 @@ const getCourses = async (req, res) => {
                 .limit(pageSize)
                 .skip(pageSize * (page - 1));
                 
-        res.json({ courses, totalAmount: count, page, totalPages: Math.ceil(count / pageSize) });
+        res.status(200).json({ courses, totalAmount: count, page, totalPages: Math.ceil(count / pageSize) });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -40,7 +40,10 @@ const getCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
-        res.json(course);
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        res.status(200).json(course);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -68,13 +71,18 @@ const createCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
         if (course.instructor.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: 'Not authorized to update this course' });
         }
         Object.assign(course, req.body);
         course.updatedAt = Date.now();
         await course.save();
-        res.json(course);
+        res.status(200).json(course);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -86,11 +94,17 @@ const updateCourse = async (req, res) => {
 const deleteCourse = async (req, res) => {
     try {
         const course = await Course.findById(req.params.id);
+
+        if (!course) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+
         if (course.instructor.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: 'Not authorized to delete this course' });
         }
+
         await course.remove();
-        res.json({ message: 'Course removed' });
+        res.status(204).json({ message: 'Course removed' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -109,8 +123,8 @@ const enrollCourse = async (req, res) => {
         if (enrollment) {
             return res.status(400).json({ message: 'Already enrolled in this course' });
         }
-        await Enrollment.create({ course: req.params.id, student: req.user._id });
-        res.json({ message: 'Enrolled in course' });
+        const newEnrollment = await Enrollment.create({ course: req.params.id, student: req.user._id });
+        res.status(201).json(newEnrollment);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -135,7 +149,7 @@ const reviewCourse = async (req, res) => {
         }
         course.reviews.push({ user: req.user._id, ...req.body });
         await course.save();
-        res.json({ message: 'Course reviewed' });
+        res.status(201).json(course);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

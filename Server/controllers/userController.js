@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
 
         const isMatch = await user.matchPassword(password);
         if(isMatch) {
-            res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
+            res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: generateToken(user._id) });
         }
         else {
             res.status(401).json({ message: 'Invalid email or password' });
@@ -108,7 +108,7 @@ const refreshToken = async (req, res) => {
 
         const newToken = generateToken(user.id);
 
-        res.json({ id: user._id, name: user.name, email: user.email, role: user.role, token: newToken });
+        res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token: newToken });
     }
     catch(error) {
         res.status(500).json({ message: error.message });
@@ -121,8 +121,17 @@ const refreshToken = async (req, res) => {
 const getUserCourses = async (req, res) => {
     try {
         const courses = await Course.find({ user: req.user._id });
+        if (!courses) {
+            return res.status(404).json({ message: 'No courses found' });
+        }
         const enrollments = await Enrollment.find({ user: req.user._id });
+        if (!enrollments) {
+            return res.status(404).json({ message: 'No enrollments found' });
+        }
         const enrolledCourses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
+        if (!enrolledCourses) {
+            return res.status(404).json({ message: 'No enrolled courses found' });
+        }
         res.status(200).json({ courses, enrolledCourses });
     }
     catch(error) {

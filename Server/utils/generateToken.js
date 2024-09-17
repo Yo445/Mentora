@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
-// generate access and refresh tokens
 const generateToken = (id) => {
     return {
         accessToken: jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION }),
