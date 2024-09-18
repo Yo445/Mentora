@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Card from "../../Components/Card";
-import BookDetails from "../../Components/BookDetails";
+import BookDetails from "../../Components/CourseDetails";
 
 import axios from "axios";
 import { getAuthUser } from "..//../helper/Storage";

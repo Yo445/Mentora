@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import App from "./App";
+import App from './App'; // No need to change this import
 import Guest from "./middleware/Guest";
 import LandingPage from "./Home/LandingPage";
-import Dashboard from "./Dashboard/Dashboard";
+import Dashboard from './Dashboard/Dashboard';
 import Home from "./Dashboard/Pages/Home";
 import Auth from "./middleware/Auth";
 import Login from "./Components/Auth/Login";
@@ -10,22 +10,17 @@ import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
 import Loader from "./Components/Shared/Loader";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <App />, // Change nothing here, App is correctly referenced
     children: [
       {
-        index: true,
-        element: <Navigate to="start" replace />,
-      },
-      {
-        path: "start",
+        path: "/",
         element: <LandingPage />,
       },
       {
-        element: <Guest />, // Guest users only
+        element: <Guest />,
         children: [
           {
             path: "login",
@@ -37,28 +32,20 @@ export const router = createBrowserRouter([
           },
         ],
       },
-
       {
         path: "dashboard",
         element: <Dashboard />,
         children: [
           {
-            path: "", // home
+            path: "home",
             element: <Home />,
           },
-          // {
-          //   path: "signup",
-          //   element: <Register />,
-          // },
           {
-            element: <Auth />, // Authenticated users only
-            children: [
-        
-            ],
+            element: <Auth />,
+            children: [],
           },
         ],
       },
-
       {
         path: "*",
         element: <NotFound />,

@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import SideBar from "../Components/Shared/SideBar";
 import { Outlet } from "react-router-dom";
 
-export default function Dashboard() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const Dashboard: React.FC = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (): void => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
   return (
     <>
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -17,11 +18,13 @@ export default function Dashboard() {
         }`}
       >
         <div className="flex flex-wrap p-0">
-          <div className="w-full ">
+          <div className="w-full">
             <Outlet />
           </div>
         </div>
       </div>
     </>
   );
-}
+};
+
+export default Dashboard;
