@@ -71,10 +71,10 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
             isOpen ? "hidden" : "flex"
           }`}
         >
-          <div className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to={"/home"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             {/* Icon */}
             <RiHome6Fill fontSize={"20px"}/>
-          </div>
+          </Link >
           <Link
             to={""}
             className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex"
