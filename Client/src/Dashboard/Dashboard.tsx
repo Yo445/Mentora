@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import SideBar from "../Components/Shared/SideBar";
 import { Outlet } from "react-router-dom";
+import Home from "./Pages/Home";
+import CourseMat from "./Pages/CourseMat";
 
-const Dashboard: React.FC = () => {
+export default function Dashboard(): JSX.Element {
+
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const toggleSidebar = (): void => {
@@ -19,12 +22,11 @@ const Dashboard: React.FC = () => {
       >
         <div className="flex flex-wrap p-0">
           <div className="w-full">
-            <Outlet />
+            {/* Pass the required title prop */}
+            <CourseMat title="Course Materials" />
           </div>
         </div>
       </div>
     </>
   );
 };
-
-export default Dashboard;

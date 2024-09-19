@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from "react";
 import Card from "../../Components/Card";
-import BookDetails from "../../Components/CourseDetails";
-
 import axios from "axios";
-import { getAuthUser } from "..//../helper/Storage";
+import { getAuthUser } from "../../helper/Storage";
 import Loader from "../../Components/Shared/Loader";
 
-const Home = () => {
-  /* data */
-  const cardsData = [
+// Define types for book and card data
+interface CardData {
+  id: string;
+  title: string;
+  date: string;
+  avatars: string[];
+}
+
+interface Book {
+  title: string;
+  [key: string]: any; // Add specific properties if known
+}
+
+interface BooksState {
+  loading: boolean;
+  results: Book[];
+  err: string;
+  reload: boolean;
+}
+
+const Home: React.FC = () => {
+  // Card data
+  const cardsData: CardData[] = [
     {
       id: "card-1",
-      title:
-        "What does success as a UX designer look like and how to get there systematically",
+      title: "What does success as a UX designer look like and how to get there systematically",
       date: "March 28, 2020",
       avatars: [
         "https://tuk-cdn.s3.amazonaws.com/assets/components/avatars/a_4_0.png",
@@ -22,33 +39,36 @@ const Home = () => {
     },
     {
       id: "card-2",
-      title:
-        "What does success as a UX designer look like and how to get there systematically",
+      title: "What does success as a UX designer look like and how to get there systematically",
       date: "March 28, 2020",
       avatars: [],
     },
     {
-      id: "card-3",
-      title:
-        "What does success as a UX designer look like and how to get there systematically",
+      id: "card-2",
+      title: "What does success as a UX designer look like and how to get there systematically",
       date: "March 28, 2020",
       avatars: [],
     },
     {
-      id: "card-4",
-      title:
-        "What does success as a UX designer look like and how to get there systematically",
+      id: "card-2",
+      title: "What does success as a UX designer look like and how to get there systematically",
+      date: "March 28, 2020",
+      avatars: [],
+    },
+    {
+      id: "card-2",
+      title: "What does success as a UX designer look like and how to get there systematically",
       date: "March 28, 2020",
       avatars: [],
     },
   ];
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [userEmail, setUserEmail] = useState(getAuthUser());
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [userEmail, setUserEmail] = useState<string | null>(getAuthUser()?.email || null);
 
-  const [books, setBooks] = useState({
+  const [books, setBooks] = useState<BooksState>({
     loading: false,
     results: [],
     err: "",
@@ -57,14 +77,15 @@ const Home = () => {
 
   useEffect(() => {
     const fetchBooks = () => {
-      if (getAuthUser()) {
-        setUserEmail(getAuthUser());
+      const user = getAuthUser();
+      if (user) {
+        setUserEmail(user.email);
       } else {
         console.error("User is not authenticated or email is missing.");
         return;
       }
 
-      setBooks({ ...books, loading: true });
+      setBooks((prevBooks) => ({ ...prevBooks, loading: true }));
       axios
         .get("http://localhost:5000/api/books/", {
           params: { searchTerm: "" },
@@ -84,7 +105,7 @@ const Home = () => {
     fetchBooks();
   }, [books.reload]); // Trigger when 'reload' changes
 
-  const handleCardClick = (book) => {
+  const handleCardClick = (book: Book) => {
     setSelectedBook(book);
     setShowModal(true);
   };
@@ -94,7 +115,7 @@ const Home = () => {
     setSelectedBook(null);
   };
 
-  const handleSearch = (event) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 
@@ -132,6 +153,8 @@ const Home = () => {
                     className="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline"
                     type="text"
                     placeholder="Search"
+                    value={searchTerm}
+                    onChange={handleSearch}
                   />
                 </div>
               </div>
