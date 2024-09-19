@@ -81,6 +81,16 @@ const courseSchema = new mongoose.Schema({
     ],
 }, { timestamps: true });
 
+courseSchema.index({ title: 1 });
+courseSchema.index({ category: 1 });
+courseSchema.index({ difficulty: 1 });
+courseSchema.index({ instructor: 1 });
+
+courseSchema.pre('save', function (next) {
+    this.updatedAt = Date.now();
+    next();
+});
+
 courseSchema.virtual('studentCount').get(function () {
     return this.students.length;
 });
