@@ -10,6 +10,11 @@ const uploadFileToMinio = async (req, res) => {
         }
         // console.log("bucket name", process.env.MINIO_BUCKET_NAME);
 
+        // const bucketExists = await minioClient.bucketExists(process.env.MINIO_BUCKET_NAME);
+        // if (!bucketExists) {
+        //     await minioClient.makeBucket(process.env.MINIO_BUCKET_NAME, 'us-east-1');
+        // }
+
         const params = {
             bucket: process.env.MINIO_BUCKET_NAME,
             ObjectName: `${req.user.id}/${Date.now()}_${file.originalname}`,
@@ -18,7 +23,7 @@ const uploadFileToMinio = async (req, res) => {
         };
 
         if (!params.bucket || typeof params.bucket !== 'string'){
-            return res.status(400).json({ message: 'Invalid bucket name'});
+            return res.status(500).json({ message: 'Invalid bucket name'});
         }
 
         const url = await minioClient.presignedPutObject(params.bucket, params.ObjectName, (err, url) => {
@@ -32,6 +37,7 @@ const uploadFileToMinio = async (req, res) => {
 
         course.materials.push({
             title: file.originalname,
+            materialType: req.body.materialType,
             url,
             fileType: file.mimetype.split('/')[0],
             fileSize: file.size,

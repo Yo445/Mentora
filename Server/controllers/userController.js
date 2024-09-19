@@ -57,6 +57,7 @@ const googleLogin = passport.authenticate('google', { scope: ['profile', 'email'
 const googleLoginCallback = (req, res, next) => {
     passport.authenticate('google', { session: false }, (err, user) => {
         if (err || !user) {
+            console.log(err);
             return res.status(400).json({ message: 'Google authentication failed' });
         }
 
@@ -76,11 +77,14 @@ const facebookLogin = passport.authenticate('facebook', { scope: ['email'] });
 // @access  Public
 const facebookLoginCallback = (req, res, next) => {
     passport.authenticate('facebook', { session: false }, (err, user) => {
-        if(!user){
-            return res.status(400).json({ message: 'Facebook authentication user failed' });
-        }
         if (err) {
+            console.log("-------------",err);
             return res.status(400).json({ message: 'Facebook authentication failed' });
+        }
+
+        if(!user){
+            console.log("-------------",user);
+            return res.status(400).json({ message: 'Facebook authentication user failed' });
         }
 
         const token = generateToken(user._id);
@@ -100,6 +104,12 @@ const refreshToken = async (req, res) => {
 
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
         // console.log(decoded);
+        // console.log(Date.now().valueOf() / 1000);
+
+        const currentTime = Date.now().valueOf() / 1000;
+        if (decoded.exp > currentTime) {
+            return res.status(400).json({ message: 'Refresh token has not been expired.' });
+        }
 
         const user = await User.findById(decoded.id);
         if (!user) {
@@ -120,19 +130,26 @@ const refreshToken = async (req, res) => {
 // @access  Private
 const getUserCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ user: req.user._id });
-        if (!courses) {
-            return res.status(404).json({ message: 'No courses found' });
+        let courses;
+        // check if instructor return only courses but if user return only enrolled courses
+        if (req.user.role === 'instructor') {
+            courses = await Course.find({ user: req.user._id });
+            if (!courses) {
+                return res.status(404).json({ message: 'No courses found' });
+            }
+
+        } else {
+            const enrollments = await Enrollment.find({ user: req.user._id });
+            if (!enrollments) {
+                return res.status(404).json({ message: 'No enrollments found' });
+            }
+
+            courses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
+            if (!courses) {
+                return res.status(404).json({ message: 'No enrolled courses found' });
+            }
         }
-        const enrollments = await Enrollment.find({ user: req.user._id });
-        if (!enrollments) {
-            return res.status(404).json({ message: 'No enrollments found' });
-        }
-        const enrolledCourses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
-        if (!enrolledCourses) {
-            return res.status(404).json({ message: 'No enrolled courses found' });
-        }
-        res.status(200).json({ courses, enrolledCourses });
+        res.status(200).json({ courses });
     }
     catch(error) {
         res.status(500).json({ message: error.message });
@@ -140,14 +157,3 @@ const getUserCourses = async (req, res) => {
 }
 
 export { facebookLogin, facebookLoginCallback, getUserCourses, googleLogin, googleLoginCallback, loginUser, refreshToken, registerUser };
-
-
-// const getUserCourses = async (req, res) => {
-//     try {
-//         const courses = await Course.find({ $or: [{ creator: req.params.id }, { students: req.params.id }] });
-//         res.json(courses);
-//     }
-//     catch(error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// }
