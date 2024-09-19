@@ -1,5 +1,5 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
-import App from './App'; // No need to change this import
+import { createBrowserRouter } from "react-router-dom";
+import App from "./App";
 import Guest from "./middleware/Guest";
 import LandingPage from "./Home/LandingPage";
 import Dashboard from './Dashboard/Dashboard';
@@ -9,40 +9,57 @@ import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
 import Loader from "./Components/Shared/Loader";
+import CourseDetails from "./Components/CourseDetails";
 
+// Define routes
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />, // Change nothing here, App is correctly referenced
+    element: <App />,
     children: [
       {
         path: "/",
         element: <LandingPage />,
       },
       {
-        element: <Guest />,
-        children: [
-          {
-            path: "login",
-            element: <Login />,
-          },
-          {
-            path: "signup",
-            element: <Register />,
-          },
-        ],
+        path: "login",
+        element: <Login />,
       },
+      {
+        path: "signup",
+        element: <Register />,
+      },
+      // {
+      //   element: <Guest />,
+      //   children: [
+      //     {
+      //       path: "login",
+      //       element: <Login />,
+      //     },
+      //     {
+      //       path: "signup",
+      //       element: <Register />,
+      //     },
+      //   ],
+      // },
       {
         path: "dashboard",
         element: <Dashboard />,
         children: [
           {
-            path: "home",
+            path: "",
             element: <Home />,
           },
           {
+            path: "course",
+            element: <CourseDetails />,
+          },
+          
+          {
             element: <Auth />,
-            children: [],
+            children: [
+              // Add protected routes here if needed
+            ],
           },
         ],
       },

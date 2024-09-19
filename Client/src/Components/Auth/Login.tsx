@@ -1,35 +1,39 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import Img from "../../assets/img/back.svg";
 
-const Login = () => {
+// Define the shape of the state
+interface LoginState {
+  email: string;
+  password: string;
+  loading: boolean;
+  err: string[];
+}
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
 
-  // const handlerec = () => {
-  //   navigate("/signup");
-  // };
-
-  const [login, setLogin] = useState({
-    email:"",
+  const [login, setLogin] = useState<LoginState>({
+    email: "",
     password: "",
-    loading: "false",
+    loading: false,
     err: [],
   });
 
-  const LoginFun = (e) => {
+  const LoginFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLogin({ ...Login, loading: true, err: [] });
+    setLogin({ ...login, loading: true, err: [] });
     axios
       .post("http://localhost:5000/api/users/login", {
         email: login.email,
         password: login.password,
       })
       .then((resp) => {
-        setLogin({ ...Login, loading: false, err: [] });
+        setLogin({ ...login, loading: false, err: [] });
         setAuthUser(resp.data);
         navigate("/dashboard");
       })
@@ -45,10 +49,18 @@ const Login = () => {
       });
   };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setLogin((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   return (
     <div
       id="login-popup"
-      tabIndex="-1"
+      tabIndex={-1}
       className="fixed right-0 left-0 z-50 h-full flex items-center justify-center"
       style={{
         backgroundImage: `url(${Img})`,
@@ -79,9 +91,13 @@ const Login = () => {
                   className="flex justify-between items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded"
                   role="alert"
                 >
-                  <span>{login.err}</span>
+                  <span>{error}</span>
                   <button
-                    onClick={(e) => e.currentTarget.parentNode.remove()}
+                    onClick={(e) => {
+                      const parent = e.currentTarget
+                        .parentNode as HTMLElement | null;
+                      parent?.remove();
+                    }}
                     className="text-red-700 text-[20px]"
                   >
                     &times;
@@ -105,36 +121,37 @@ const Login = () => {
               <div className="h-px w-full bg-slate-200"></div>
             </div>
 
-            <form  onSubmit={LoginFun} className="w-full">
-              <label for="email" className="sr-only">
+            <form onSubmit={LoginFun} className="w-full">
+              <label htmlFor="email" className="sr-only">
                 Email address
               </label>
               <input
                 name="email"
                 type="email"
-                autocomplete="email"
-                required=""
+                autoComplete="email"
+                required
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
                 placeholder="Email Address"
                 value={login.email}
-                onChange={(e) => setLogin({ ...login, email: e.target.value })}
+                onChange={handleInputChange}
               />
-              <label for="password" className="sr-only">
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
                 name="password"
                 type="password"
-                autocomplete="current-password"
-                required=""
+                autoComplete="current-password"
+                required
                 className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
                 placeholder="Password"
                 value={login.password}
-                onChange={(e) => setLogin({ ...login, password: e.target.value })}
+                onChange={handleInputChange}
               />
               <button
                 type="submit"
                 className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
+                disabled={login.loading}
               >
                 Continue
               </button>

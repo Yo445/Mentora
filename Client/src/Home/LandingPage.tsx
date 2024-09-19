@@ -4,14 +4,12 @@ import Right from "../assets/img/side2.svg";
 import Down from "../assets/img/patternpad.svg";
 import Text from "../assets/img/textBg.svg";
 import { FaChevronRight } from "react-icons/fa";
-import { FaRegHandPointRight } from "react-icons/fa6";
-
 import { Link } from "react-router-dom";
-export default function LandingPage() {
+
+export default function LandingPage(): JSX.Element {
+
   return (
     <section className="relatve">
-      {/* <img src={bg} alt="Background" className="absolute inset-0 w-full h-full object-cover z-[1]" /> */}
-      {/* <!-- Container --> */}
       <div className="mx-auto w-full max-w-7xl px-5 py-16 md:px-10 md:py-24 lg:py-32">
         {/* <!-- Heading Div --> */}
         <div className="mx-auto mb-12 w-full max-w-3xl text-center md:mb-16 lg:mb-20">
@@ -51,11 +49,6 @@ export default function LandingPage() {
                     </span>
                   </button>
                 </Link>
-
-                {/* <Link to={'/login'} className="mr-5 font-semibold text-[1.3em] w-[12em] h-[3em] bg-[#2a2f3f] text-[#ddff7d] border border-[#ddff7d] border-b-4 font-medium overflow-hidden relative px-4 py-2 rounded-md hover:brightness-150 hover:border-t-4 hover:border-b active:opacity-75 outline-none duration-300 group">
-              <span className="bg-[#ddff7d] shadow-[#ddff7d] absolute -top-[150%] left-0 inline-flex w-80 h-[5px] rounded-md opacity-50 group-hover:top-[150%] duration-500 shadow-[0_0_10px_10px_rgba(0,0,0,0.3)]" />
-              <h1 className="text-[1.19em]">Get Started</h1>
-            </Link> */}
               </div>
             </div>
           </div>
