@@ -6,7 +6,13 @@ import logo from "../../assets/img/logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket , faGraduationCap} from '@fortawesome/free-solid-svg-icons';
 
-const SideBar = ({ isOpen, toggleSidebar }) => {
+
+interface SideBarProps {
+  isOpen: boolean;
+  toggleSidebar: () => void;
+}
+
+export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.Element {
   return (
     <>
       <div className="fixed w-full z-30 flex bg-white dark:bg-[#202330] p-2 items-center justify-center h-16 px-10">
@@ -16,10 +22,9 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
         <div className="grow h-full flex items-center justify-center"></div>
         <div className="flex-none h-full text-center flex items-center justify-center">
           <div className="flex space-x-3 items-center px-3">
-            <div className="hidden md:block text-sm md:text-md text-black dark:text-white">
-            <FontAwesomeIcon icon={faRightFromBracket} />
-
-            </div>
+            <button className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full  p-3 rounded-full flex">
+            <h3 className=" mr-2">Logout</h3><FontAwesomeIcon className="mt-1" icon={faRightFromBracket} />
+            </button>
           </div>
         </div>
       </div>
@@ -54,15 +59,15 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
             isOpen ? "flex" : "hidden"
           }`}
         >
-          <div className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          <Link to={"/home"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <div>Home</div>
-          </div>
-          <div className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          </Link>
+          {/* <Link className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <div>Login</div>
-          </div>
-          <div className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          </Link>
+          <Link className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <div>Graph</div>
-          </div>
+          </Link> */}
         </div>
 
         {/* Mini Sidebar */}
@@ -71,24 +76,22 @@ const SideBar = ({ isOpen, toggleSidebar }) => {
             isOpen ? "hidden" : "flex"
           }`}
         >
-          <Link to={"/home"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to={"/"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             {/* Icon */}
             <RiHome6Fill fontSize={"20px"}/>
           </Link >
-          <Link
+          {/* <Link
             to={""}
             className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex"
           >
-            {/* Icon */}
             <FontAwesomeIcon icon={faGraduationCap} />
           </Link>
-          <div className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-            {/* Icon */}
-          </div>
+          <Link className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          </Link> */}
         </div>
       </aside>
     </>
   );
 };
 
-export default SideBar;
+
