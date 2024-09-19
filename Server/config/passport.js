@@ -12,6 +12,10 @@ passport.deserializeUser((id, cb) => {
     User.findById(id, (err, user) => cb(err, user));
 });
 
+const randomPassword = () => {
+    return Math.random().toString(36).slice(-8);
+};
+
 passport.use(
     new GoogleStrategy(
         {
@@ -31,7 +35,7 @@ passport.use(
                     googleId: profile.id,
                     name: profile.displayName,
                     email: profile.emails[0].value,
-                    password: "password",
+                    password: randomPassword(),
                 });
             }
 
@@ -64,12 +68,13 @@ passport.use(
                     facebookId: profile.id,
                     name: profile.displayName,
                     email: profile.emails[0].value,
-                    password: 'password',
+                    password: randomPassword(),
                 });
             }
 
             cb(null, user);
         } catch (error) {
+            console.log(error);
             cb(error, null);
         }
         }

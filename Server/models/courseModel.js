@@ -33,6 +33,11 @@ const courseSchema = new mongoose.Schema({
     materials: [
         {
             title: { type: String, required: true },
+            materialType: {
+                type: String,
+                enum: ['assignment', 'quiz', 'lecture', 'reading', 'other'],
+                required: true
+            },
             url: {
                 type: String,
                 // validate: /^https?:\/\//

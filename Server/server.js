@@ -1,9 +1,7 @@
 import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
-import session from 'express-session';
 import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
 import connectDB from './config/db.js';
 import passport from './config/passport.js';
 import errorHandler from './middleware/errorMiddleware.js';
@@ -11,6 +9,9 @@ import NotFoundMiddleware from './middleware/nofFoundMiddleware.js';
 import courseRoutes from './routes/courseRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+// import swaggerDocument from './swagger-output.json' assert { type: 'json' };
+import session from 'express-session';
+import YAML from 'yamljs';
 
 connectDB();
 
@@ -18,6 +19,12 @@ const app = express();
 const port = process.env.PORT;
 
 const swaggerDocument = YAML.load('./swagger.yaml');
+
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'development' ? '*' : ['https://mentoria.com'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+};
 
 app.use(cors());
 app.use(express.json());

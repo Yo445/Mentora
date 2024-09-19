@@ -21,7 +21,7 @@ const getCourses = async (req, res) => {
                 instructor: { $regex: req.query.instructor, $options: 'i' },
             }),
         }
-        const sortOption = req.query.sortBy || '-createdAt';
+        const sortOption = "-"+(req.query.sortBy || 'createdAt');
         const count = await Course.countDocuments({ ...filters });
         const courses = await Course.find({ ...filters })
                 .sort(sortOption)

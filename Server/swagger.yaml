@@ -11,6 +11,8 @@ tags:
     description: Operations related to courses
   - name: Users
     description: Operations related to users
+  - name: Uploads
+    description: Operations related to file uploads
 paths:
   /api/courses:
     get:
@@ -63,7 +65,9 @@ paths:
       tags:
         - Courses
       summary: Create a course
-      description: Create a new course
+      description: Create a new course (instructor only)
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -119,7 +123,9 @@ paths:
       tags:
         - Courses
       summary: Update a course
-      description: Update a course by its ID
+      description: Update a course by its ID (instructor that create this course only)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -162,7 +168,9 @@ paths:
       tags:
         - Courses
       summary: Delete a course
-      description: Delete a course by its ID
+      description: Delete a course by its ID (instructor that create this course only)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -196,7 +204,9 @@ paths:
       tags:
         - Courses
       summary: Enroll a student in a course
-      description: Enroll a student in a course by its ID
+      description: Enroll a student in a course by its ID (student only)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -240,7 +250,9 @@ paths:
       tags:
         - Courses
       summary: Create a review for a course
-      description: Create a review for a course by its ID
+      description: Create a review for a course by its ID (student only)
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -491,7 +503,9 @@ paths:
         tags:
           - Users
         summary: Get all courses for a user
-        description: Retrieve all courses and enrollments for a user by his ID
+        description: Retrieve all courses for a student or enrollments for an instructor by his ID
+        security:
+          - bearerAuth: []
         parameters:
           - in: path
             name: id
@@ -564,7 +578,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /api/uploads:
+    post:
+      tags:
+        - Uploads
+      summary: Upload a file
+      description: Upload a file (instructor only)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                materialType:
+                  type: string
+                  enum: ['assignment', 'quiz', 'lecture', 'reading', 'other']
+      responses:
+        '201':
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+        '400':
+          description: no file provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Not authorized to upload a file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Course:
       type: object
