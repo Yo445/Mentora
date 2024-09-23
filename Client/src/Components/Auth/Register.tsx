@@ -6,8 +6,9 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa6";
 import Img from "../../assets/img/back2.svg";
 import axios from "axios";
+import FacebookLogin from 'react-facebook-login';
+import GoogleLogin from 'react-google-login';
 
-// Define the type for the register state
 interface RegisterState {
   email: string;
   password: string;
@@ -18,8 +19,7 @@ interface RegisterState {
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-
-  // Define the initial state
+  
   const [register, setRegister] = useState<RegisterState>({
     email: "",
     password: "",
@@ -28,7 +28,6 @@ const Register: React.FC = () => {
     err: [],
   });
 
-  // Handle registration
   const RegisterFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRegister({ ...register, loading: "true", err: [] });
@@ -53,6 +52,34 @@ const Register: React.FC = () => {
       });
   };
 
+  const responseFacebook = (response: any) => {
+    axios.post("http://localhost:5000/api/auth/facebook", { 
+      accessToken: response.accessToken 
+    })
+    .then(resp => {
+      setAuthUser(resp.data);
+      navigate("/dashboard");
+    })
+    .catch(err => {
+      console.log(err);
+      setRegister({ ...register, err: ["Facebook authentication failed."] });
+    });
+  };
+
+  const responseGoogle = (response: any) => {
+    axios.post("http://localhost:5000/api/auth/google", { 
+      id_token: response.tokenId 
+    })
+    .then(resp => {
+      setAuthUser(resp.data);
+      navigate("/dashboard");
+    })
+    .catch(err => {
+      console.log(err);
+      setRegister({ ...register, err: ["Google authentication failed."] });
+    });
+  };
+
   return (
     <div
       id="login-popup"
@@ -66,12 +93,9 @@ const Register: React.FC = () => {
       }}
     >
       <div className="absolute top-0 w-full h-full bg-gray-900 opacity-70"></div>
-
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
         <div className="relative bg-[white] rounded-lg shadow">
           <div className="p-5">
-            <h3 className="text-2xl mb-0.5 font-medium"></h3>
-            <p className="mb-4 text-sm font-normal text-gray-800"></p>
             <div className="text-center">
               <p className="mb-3 text-2xl font-semibold leading-5 text-slate-900">
                 Create your account
@@ -81,9 +105,7 @@ const Register: React.FC = () => {
               </p>
             </div>
 
-            {/* Use Social Media */}
             <div className="mt-7 flex flex-col gap-2">
-              {/* Error Alert */}
               {register.err.map((error, index) => (
                 <div
                   key={index}
@@ -93,8 +115,7 @@ const Register: React.FC = () => {
                   <span>{error}</span>
                   <button
                     onClick={(e) => {
-                      const parent = e.currentTarget
-                        .parentNode as HTMLElement | null;
+                      const parent = e.currentTarget.parentNode as HTMLElement | null;
                       parent?.remove();
                     }}
                     className="text-red-700 text-[20px]"
@@ -103,15 +124,39 @@ const Register: React.FC = () => {
                   </button>
                 </div>
               ))}
-              <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                <FaFacebook fontSize={"23px"} color={"#1877F2"} />
-                Continue with Facebook
-              </button>
 
-              <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
-                <FcGoogle fontSize={"23px"} />
-                Continue with Google
-              </button>
+              <FacebookLogin
+                appId="YOUR_FACEBOOK_APP_ID"
+                autoLoad={false}
+                fields="name,email,picture"
+                callback={responseFacebook}
+                render={renderProps => (
+                  <button
+                    onClick={renderProps.onClick}
+                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <FaFacebook fontSize={"23px"} color={"#1877F2"} />
+                    Continue with Facebook
+                  </button>
+                )}
+              />
+
+              <GoogleLogin
+                clientId="YOUR_GOOGLE_CLIENT_ID"
+                buttonText="Continue with Google"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+                render={renderProps => (
+                  <button
+                    onClick={renderProps.onClick}
+                    className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <FcGoogle fontSize={"23px"} />
+                    Continue with Google
+                  </button>
+                )}
+              />
             </div>
 
             <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
