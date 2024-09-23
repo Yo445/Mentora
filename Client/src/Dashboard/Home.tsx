@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Card from "../../Components/Card";
+import Card from "../Components/Card";
 import axios from "axios";
-import { getAuthUser } from "../../helper/Storage";
-import Loader from "../../Components/Shared/Loader";
+import { getAuthUser } from "../helper/Storage";
+import Loader from "../Components/Shared/Loader";
+import { IoIosSearch } from "react-icons/io";
 
 // Define types for book and card data
 interface CardData {
@@ -132,22 +133,10 @@ const Home: React.FC = () => {
           <div className="">
             <header>
               {/* search bar */}
-              <div className="container mx-auto px-6 py-3">
+              <div className="container mx-auto px-6 py-3 pb-8">
                 <div className="relative mt-6 max-w-lg mx-auto">
                   <span className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                    <svg
-                      className="h-5 w-5 text-gray-500"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <IoIosSearch className="h-5 w-5 text-gray-500"/>
                   </span>
                   <input
                     className="w-full border rounded-md pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:shadow-outline"
@@ -162,79 +151,7 @@ const Home: React.FC = () => {
 
             <main className="my-8">
               <div className="container mx-auto px-6">
-                <div className="md:flex mt-8 md:-mx-4">
-                  {/* Back Pack Section */}
-                  <div
-                    className="w-full h-64 md:mx-4 rounded-[18px] overflow-hidden bg-cover bg-center md:w-1/2"
-                    style={{
-                      backgroundImage:
-                        "url('https://images.unsplash.com/photo-1547949003-9792a18a2601?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80')",
-                    }}
-                  >
-                    <div className="bg-gray-900 bg-opacity-50 flex items-center h-full">
-                      <div className="px-10 max-w-xl">
-                        <h2 className="text-2xl text-white font-semibold">
-                          Back Pack
-                        </h2>
-                        <p className="mt-2 text-gray-400">
-                          Lorem ipsum dolor, sit amet consectetur adipisicing
-                          elit. Tempore facere provident molestias ipsam sint
-                          voluptatum pariatur.
-                        </p>
-                        <button className="flex items-center mt-4 text-white text-sm uppercase font-medium rounded hover:underline focus:outline-none">
-                          <span>Shop Now</span>
-                          <svg
-                            className="h-5 w-5 mx-2"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Games Section */}
-                  <div
-                    className="w-full h-64 mt-8 md:mx-4 rounded-[18px] overflow-hidden bg-cover bg-center md:mt-0 md:w-1/2"
-                    style={{
-                      backgroundImage:
-                        "url('https://images.unsplash.com/photo-1486401899868-0e435ed85128?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80')",
-                    }}
-                  >
-                    <div className="bg-gray-900 bg-opacity-50 flex items-center h-full">
-                      <div className="px-10 max-w-xl">
-                        <h2 className="text-2xl text-white font-semibold">
-                          Games
-                        </h2>
-                        <p className="mt-2 text-gray-400">
-                          Lorem ipsum dolor, sit amet consectetur adipisicing
-                          elit. Tempore facere provident molestias ipsam sint
-                          voluptatum pariatur.
-                        </p>
-                        <button className="flex items-center mt-4 text-white text-sm uppercase font-medium rounded hover:underline focus:outline-none">
-                          <span>Shop Now</span>
-                          <svg
-                            className="h-5 w-5 mx-2"
-                            fill="none"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              
 
                 {/* Display Cards */}
                 <div className="md:flex mt-8 md:-mx-0">
