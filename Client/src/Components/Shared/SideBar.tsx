@@ -82,7 +82,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
         >
           {/* Home */}
 
-          <Link to={"/"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          <Link to={"/home"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <RiHome6Fill fontSize={"20px"} />
             <div>Home</div>
           </Link>
@@ -128,7 +128,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
           className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "hidden" : "flex"
             }`}
         >
-          <Link to={"/"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to={"/home"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
 
             {/* Icon */}
 
