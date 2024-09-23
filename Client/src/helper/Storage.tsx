@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode';
+import * as jwtDecode from 'jwt-decode';
 
 // Define interfaces for user and token data
 interface User {
@@ -11,11 +11,13 @@ interface DecodedToken {
   [key: string]: any; // Other token properties
 }
 
+// Store user and token in localStorage
 export const setAuthUser = (data: User): void => {
   localStorage.setItem("AuthUser", JSON.stringify(data));
-  localStorage.setItem("Token", JSON.stringify(data.token));
+  localStorage.setItem("accessToken", data.token); // Change key to 'accessToken' for consistency
 };
 
+// Retrieve user from localStorage
 export const getAuthUser = (): User | null => {
   const user = localStorage.getItem('AuthUser');
   if (user) {
@@ -31,15 +33,20 @@ export const getAuthUser = (): User | null => {
   return null;
 };
 
+// Remove user and token from localStorage
 export const removeAuthUser = (): void => {
-  if (localStorage.getItem('AuthUser')) {
-    localStorage.removeItem('AuthUser');
-    localStorage.removeItem('Token');
-  }
+  localStorage.removeItem('AuthUser');
+  localStorage.removeItem('accessToken'); 
 };
 
+// Retrieve access token from localStorage
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem("accessToken"); 
+};
+
+// Decode the stored token and return the payload
 // export const getDecodedToken = (): DecodedToken | null => {
-//   const token = localStorage.getItem('Token');
+//   const token = getAccessToken(); // Get token from storage
 //   if (!token) return null;
 
 //   try {
@@ -50,15 +57,17 @@ export const removeAuthUser = (): void => {
 //   }
 // };
 
+
+// Check if the stored token is expired
 // export const isTokenExpired = (): boolean => {
-//   const decodedToken = getDecodedToken();
+  // const decodedToken = getDecodedToken();
 //   if (!decodedToken) return true;
 
 //   const currentTime = Date.now() / 1000; // Current time in seconds
 //   return decodedToken.exp < currentTime;
 // };
 
+// // Get the raw token from localStorage
 export const getToken = (): string | null => {
-  const token = localStorage.getItem('Token');
-  return token ? JSON.parse(token) : null;
+  return getAccessToken(); // Directly call getAccessToken for consistency
 };

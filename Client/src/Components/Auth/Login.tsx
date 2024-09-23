@@ -42,9 +42,7 @@ const Login: React.FC = () => {
         setLogin({
           ...login,
           loading: false,
-          err: errors.response?.data?.errors || [
-            "Invalid user. Please Signup!",
-          ],
+          err: errors.response?.data?.errors || ["Invalid user. Please Signup!"],
         });
       });
   };
@@ -55,6 +53,16 @@ const Login: React.FC = () => {
       ...prevState,
       [name]: value,
     }));
+  };
+
+  // Google login function
+  const googleLogin = () => {
+    window.open("http://localhost:5000/api/auth/google", "_self"); // Assuming your backend handles Google login at this endpoint
+  };
+
+  // Facebook login function
+  const facebookLogin = () => {
+    window.open("http://localhost:5000/api/auth/facebook", "_self"); // Assuming your backend handles Facebook login at this endpoint
   };
 
   return (
@@ -73,7 +81,6 @@ const Login: React.FC = () => {
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
         <div className="relative bg-[white] rounded-lg shadow">
           <div className="p-5">
-            <p className="mb-4 text-sm font-normal text-gray-800"></p>
             <div className="text-center">
               <p className="mb-3 text-2xl font-semibold leading-5 text-slate-900">
                 Login to your account
@@ -94,8 +101,7 @@ const Login: React.FC = () => {
                   <span>{error}</span>
                   <button
                     onClick={(e) => {
-                      const parent = e.currentTarget
-                        .parentNode as HTMLElement | null;
+                      const parent = e.currentTarget.parentNode as HTMLElement | null;
                       parent?.remove();
                     }}
                     className="text-red-700 text-[20px]"
@@ -104,12 +110,18 @@ const Login: React.FC = () => {
                   </button>
                 </div>
               ))}
-              <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
+              <button
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+                onClick={facebookLogin}
+              >
                 <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
               </button>
 
-              <button className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60">
+              <button
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+                onClick={googleLogin}
+              >
                 <FcGoogle fontSize={"23px"} />
                 Continue with Google
               </button>

@@ -1,15 +1,15 @@
 import React from "react";
 import { RiHome6Fill } from "react-icons/ri";
-import { TbLogin2 } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import logo from "../../assets/img/logo.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRightFromBracket, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { MdSettingsSuggest } from "react-icons/md";
 import { MdReviews } from "react-icons/md";
-import { GiNotebook } from "react-icons/gi";
 import { FaGraduationCap } from "react-icons/fa6";
-
+import {jwtDecode} from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import { getAuthUser, getAccessToken } from "../../helper/Storage";
 
 interface SideBarProps {
   isOpen: boolean;
@@ -18,6 +18,24 @@ interface SideBarProps {
 
 export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.Element {
   return (
+    // const navigate = useNavigate();
+    // const auth = getAuthUser();
+
+    // let isAdmin = false;
+
+    // // console.log('accessToken', getAccessToken());
+    // // console.log('authaccess', auth.accessToken)
+    // if (auth && getAccessToken()) {
+    //     try {
+    //         const decodedToken = jwtDecode(getAccessToken());
+    //         isAdmin = decodedToken?.is_superuser || false;
+    //         // console.log('decodedToken', decodedToken);
+    //         // console.log('sidebar', isAdmin);
+    //     } catch (error) {
+    //         console.error("Invalid token:", error);
+    //     }
+    // }
+
     <>
       <div className="fixed w-full z-30 flex bg-white dark:bg-[#202330] p-2 items-center justify-center h-16 px-10">
         <div className="logo ml-12 dark:text-[#e8eeec]  transform ease-in-out duration-500 flex-none h-full flex items-center justify-center">
@@ -60,35 +78,38 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
           className={`max text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "flex" : "hidden"
             }`}
         >
+          {/* Home */}
           <Link to={"/"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <RiHome6Fill fontSize={"20px"} />
             <div>Home</div>
           </Link>
           
+          {/* Enrollments */}
           <Link to={"/enroll"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <FaGraduationCap fontSize={"20px"} />
             <div>Enrollments</div>
           </Link>
 
+          {/* Instructor routes */}
+          {/* Manage Courses */}
           <Link to={"/manage-course"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <MdSettingsSuggest fontSize={"22px"} />
             <div>Manage Courses</div>
           </Link>
 
+          {/* Reviews */}
           <Link to={"/reviews"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <MdReviews fontSize={"20px"} />
             <div>Reviews</div>
           </Link>
 
         </div>
-
         {/* Mini Sidebar */}
         <div
           className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "hidden" : "flex"
             }`}
         >
           <Link to={"/"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-            {/* Icon */}
             <RiHome6Fill fontSize={"20px"} />
           </Link >
 
@@ -99,10 +120,13 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
             <FaGraduationCap fontSize={"20px"} />
           </Link>
 
+          {/* Instructor routes */}
+          {/* Manage Courses */}
           <Link to={"/manage-course"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <MdSettingsSuggest fontSize={"22px"} />
           </Link>
 
+          {/* Reviews */}
           <Link to={"/reviews"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <MdReviews fontSize={"20px"} />
           </Link>
