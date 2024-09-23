@@ -42,15 +42,6 @@ const Instructor: React.FC = () => {
   return <>{isInstructor ? <Outlet /> : <Navigate to="/" />}</>;
 };
 
-export default Instructor;
-import { Navigate, Outlet } from "react-router-dom";
-import { getAuthUser } from "../helper/Storage";
-
-const Instructor: React.FC = () => {
-  return getAuthUser() ? <Outlet /> : <Navigate to="/home" replace />;
-};
-
-export default Instructor;
 
 
 // import React from "react";
