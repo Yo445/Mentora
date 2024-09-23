@@ -1,6 +1,7 @@
 import React from "react";
 import { GoPaperAirplane } from "react-icons/go";
 import { TiStarFullOutline } from "react-icons/ti";
+import { GoZap } from "react-icons/go";
 
 export default function CourseDetails(): JSX.Element {
   return (
@@ -12,9 +13,12 @@ export default function CourseDetails(): JSX.Element {
               <div className="space-y-8">
                 <div className="space-y-4 bg-black p-4 rounded-[10px]">
                   <div className="space-y-2">
-                    <span className="px-4 inline-flex text-[15px] leading-6 font-semibold rounded-full bg-green-100 text-green-800">
+                    <div
+                      className="flex item-start bg-[#2a2f3f] text-[#ddff7d] w-fit px-5 py-1 rounded-full"
+                    >
+                      <GoZap className="mt-1 mr-2" />
                       Easy
-                    </span>
+                    </div>
                     <h1 className="text-2xl font-bold tracking-tight text-[#2a2f3f] sm:text-3xl md:text-4xl">
                       <span className="font-extrabold text-[#ddff7d]">
                         professional UI/UX

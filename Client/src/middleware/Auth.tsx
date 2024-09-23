@@ -4,6 +4,6 @@ import { getAuthUser } from "../helper/Storage";
 
 const Auth: React.FC = () => {
   return getAuthUser() ? <Outlet /> : <Navigate to="/login" replace />;
-};
+};//<Navigate to={"/dashboard"} />
 
 export default Auth;
