@@ -10,11 +10,7 @@ import { FaGraduationCap } from "react-icons/fa6";
 import {jwtDecode} from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { getAuthUser, getAccessToken } from "../../helper/Storage";
-import { faRightFromBracket, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
-import { MdSettingsSuggest } from "react-icons/md";
-import { MdReviews } from "react-icons/md";
-import { GiNotebook } from "react-icons/gi";
-import { FaGraduationCap } from "react-icons/fa6";
+
 
 
 interface SideBarProps {
@@ -127,7 +123,6 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
             <div>Reviews</div>
           </Link>
 
-        </div>
         {/* Mini Sidebar */}
         <div
           className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "hidden" : "flex"
