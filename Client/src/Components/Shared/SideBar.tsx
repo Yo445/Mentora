@@ -7,7 +7,7 @@ import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { MdSettingsSuggest } from "react-icons/md";
 import { MdReviews } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa6";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { getAuthUser, getAccessToken } from "../../helper/Storage";
 
@@ -81,12 +81,11 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
             }`}
         >
           {/* Home */}
-
           <Link to={"/"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <RiHome6Fill fontSize={"20px"} />
             <div>Home</div>
           </Link>
-          
+
           {/* Enrollments */}
           <Link to={"/enroll"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <FaGraduationCap fontSize={"20px"} />
@@ -100,28 +99,14 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
             <div>Manage Courses</div>
           </Link>
 
-          <Link to={"/enroll"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-            <FaGraduationCap fontSize={"20px"} />
-            <div>Enrollments</div>
-          </Link>
-
-          <Link to={"/manage-course"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-            <MdSettingsSuggest fontSize={"22px"} />
-            <div>Manage Courses</div>
-          </Link>
-
-          <Link to={"/reviews"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-            <MdReviews fontSize={"20px"} />
-            <div>Reviews</div>
-          </Link>
-
-        </div>
-
           {/* Reviews */}
           <Link to={"/reviews"} className="hover:ml-4 w-full text-white  dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <MdReviews fontSize={"20px"} />
             <div>Reviews</div>
           </Link>
+        </div>
+
+
 
         {/* Mini Sidebar */}
         <div
@@ -129,9 +114,6 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
             }`}
         >
           <Link to={"/"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-
-            {/* Icon */}
-
             <RiHome6Fill fontSize={"20px"} />
           </Link >
 
@@ -144,13 +126,11 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
 
           {/* Instructor routes */}
           {/* Manage Courses */}
-
           <Link to={"/manage-course"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <MdSettingsSuggest fontSize={"22px"} />
           </Link>
 
           {/* Reviews */}
-
           <Link to={"/reviews"} className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <MdReviews fontSize={"20px"} />
           </Link>
@@ -159,5 +139,4 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps): JSX.El
     </>
   );
 };
-
 
