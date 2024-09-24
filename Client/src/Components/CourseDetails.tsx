@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { GoPaperAirplane } from 'react-icons/go';
+import { GoPaperAirplane, GoZap } from 'react-icons/go';
 import { TiStarFullOutline } from 'react-icons/ti';
-import { GoZap } from 'react-icons/go';
 import { useCourseContext } from '../Context/CourseContext'; // Import useCourseContext from context
 
 const CourseDetails: React.FC = () => {

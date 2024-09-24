@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from "react";
-import Card from "../Components/Card"; // Make sure Card component can display course info
 import axios from "axios";
-import { getAuthUser } from "../helper/Storage";
-import Loader from "../Components/Shared/Loader";
+import React, { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
+import Card from "../Components/Card"; // Make sure Card component can display course info
+import Loader from "../Components/Shared/Loader";
 import { useCourseContext } from '../Context/CourseContext';
+import { getAuthUser } from "../helper/Storage";
 
 // Define types for course data
 interface Course {
   id: string | number;
   title: string;
   description: string;
-  instructor: string;
+  instructor: {
+    name: string;
+    id: string;
+  };
   students: string[];
   category: string;
   difficulty: string;
@@ -93,6 +96,8 @@ const Home: React.FC = () => {
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  console.log("filteredCourses", filteredCourses);
+
   return (
     <div className="home-body">
       {courseState.loading ? (
@@ -129,7 +134,7 @@ const Home: React.FC = () => {
                         id={course.id}
                         title={course.title}
                         description={course.description} // Pass description
-                        instructor={course.instructor} // Pass instructor
+                        instructor={course.instructor.name} // Pass instructor
                         students={course.students} // Pass students
                         category={course.category} // Pass category
                         difficulty={course.difficulty} // Pass difficulty
