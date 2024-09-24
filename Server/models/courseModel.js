@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import User from './userModel.js';
 
 const courseSchema = new mongoose.Schema({
     title: {
@@ -13,6 +14,7 @@ const courseSchema = new mongoose.Schema({
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            required: true,
         },
         name: {
             type: String,
@@ -91,6 +93,14 @@ courseSchema.index({ difficulty: 1 });
 courseSchema.index({ instructor: 1 });
 
 courseSchema.pre('save', function (next) {
+    // get name of instructor by id
+    User.findById(this.instructor.id, (err, user) => {
+        if (err) {
+            return next(err);
+        }
+        this.instructor.name = user.name;
+    });
+    
     this.updatedAt = Date.now();
     next();
 });

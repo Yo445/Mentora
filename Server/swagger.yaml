@@ -650,8 +650,13 @@ components:
           type: string
           required: true
         instructor:
-          type: string
-          required: true
+          type: object
+          properties:
+            id:
+              type: string
+              required: true
+            name:
+              type: string
         students:
           type: array
           items:
