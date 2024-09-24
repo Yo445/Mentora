@@ -57,7 +57,7 @@ const Login: React.FC = () => {
 
   // Google login function
   const googleLogin = () => {
-    window.open("http://localhost:5000/api/auth/google", "_self"); // Assuming your backend handles Google login at this endpoint
+    window.open("http://localhost:5000/api/users/google-login", "_self"); // Assuming your backend handles Google login at this endpoint
   };
 
   // Facebook login function
