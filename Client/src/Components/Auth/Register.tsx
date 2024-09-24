@@ -8,7 +8,7 @@ import axios from "axios";
 interface RegisterState {
   email: string;
   password: string;
-  username: string;
+  name: string;
   loading: string;
   err: string[];
 }
@@ -19,7 +19,7 @@ const Register: React.FC = () => {
   const [register, setRegister] = useState<RegisterState>({
     email: "",
     password: "",
-    username: "",
+    name: "",
     loading: "false",
     err: [],
   });
@@ -28,9 +28,9 @@ const Register: React.FC = () => {
     e.preventDefault();
     setRegister({ ...register, loading: "true", err: [] });
     axios
-      .post("http://localhost:5000/api/auth/register", {
+      .post("http://localhost:5000/api/users/register", {
         email: register.email,
-        username: register.username,
+        name: register.name,
         password: register.password,
       })
       .then((resp) => {
@@ -43,14 +43,14 @@ const Register: React.FC = () => {
         setRegister({
           ...register,
           loading: "false",
-          err: ["Email already registered. Try a different email."],
+          err: errors.message,
         });
       });
   };
 
   // Google login function
   const googleLogin = () => {
-    window.open("http://localhost:5000/api/auth/google", "_self"); // Assuming your backend handles Google login at this endpoint
+    window.open("http://localhost:5000/api/users/google-login", "_self"); // Assuming your backend handles Google login at this endpoint
   };
 
   // Facebook login function
@@ -92,7 +92,7 @@ const Register: React.FC = () => {
                   className="flex justify-between items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded"
                   role="alert"
                 >
-                  <span>{error}</span>
+                  <span>{register.err}</span>
                   <button
                     onClick={(e) => {
                       const parent = e.currentTarget.parentNode as HTMLElement | null;
@@ -129,16 +129,16 @@ const Register: React.FC = () => {
             </div>
 
             <form onSubmit={RegisterFun} className="w-full">
-              <label htmlFor="username" className="sr-only">Username</label>
+              <label htmlFor="name" className="sr-only">name</label>
               <input
-                name="username"
+                name="name"
                 type="text"
-                autoComplete="username"
+                autoComplete="name"
                 required
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
-                placeholder="Username"
-                value={register.username}
-                onChange={(e) => setRegister({ ...register, username: e.target.value })}
+                placeholder="name"
+                value={register.name}
+                onChange={(e) => setRegister({ ...register, name: e.target.value })}
               />
               <label htmlFor="email" className="sr-only">Email address</label>
               <input
