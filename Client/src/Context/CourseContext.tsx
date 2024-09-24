@@ -12,6 +12,7 @@ interface Course {
 interface CourseContextType {
   courses: Course[];
   setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
+  course?: Course;
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);

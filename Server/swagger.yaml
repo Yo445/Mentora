@@ -447,6 +447,8 @@ paths:
         - Users
       summary: Refresh a user's token
       description: Refresh a user's token
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
