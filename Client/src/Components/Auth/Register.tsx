@@ -1,11 +1,11 @@
-import React, { useState, FormEvent } from "react";
-import "../components.css";
-import { useNavigate } from "react-router-dom";
-import { setAuthUser } from "../../helper/Storage";
-import Img from "../../assets/img/back2.svg";
-import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa6";
+import React, { FormEvent, useState } from "react";
+// import "../components.css";
 import axios from "axios";
+import { FaFacebook } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
+import Img from "../../assets/img/back2.svg";
+import { setAuthUser } from "../../helper/Storage";
 
 interface RegisterState {
   email: string;
@@ -57,7 +57,7 @@ const Register: React.FC = () => {
 
   // Facebook login function
   const facebookLogin = () => {
-    window.open("http://localhost:5000/api/auth/facebook", "_self"); // Assuming your backend handles Facebook login at this endpoint
+    window.open("http://localhost:5000/api/users/facebook-login", "_self"); // Assuming your backend handles Facebook login at this endpoint
   };
 
   return (
