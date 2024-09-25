@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Loader from "../../../Components/Shared/Loader";
 import { getToken } from "../../../helper/Storage";
-import { AiTwotoneEdit } from "react-icons/ai";
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { TbLayoutGridAdd } from "react-icons/tb";
+import { RiDeleteBinLine } from "react-icons/ri";
 
 interface Material {
   title: string;
@@ -225,9 +225,9 @@ export default function EditCourse({ courseId }: { courseId: string }) {
             {/* Course Materials */}
             <div>
               <h1 className="text-2xl font-bold text-[black] mb-3 mx-auto flex justify-center">
-            <TbLayoutGridAdd className="mr-1 text-[35px]" />
-            Course Materials
-          </h1>
+                <TbLayoutGridAdd className="mr-1 text-[35px]" />
+                Course Materials
+              </h1>
               {courseData.materials.map((material, index) => (
                 <div key={index} className="border p-4 rounded-md mb-4">
                   {/* Material Title */}
@@ -263,19 +263,17 @@ export default function EditCourse({ courseId }: { courseId: string }) {
                     className="block w-full rounded-md border-gray-300 shadow-sm mb-2 p-2"
                     onChange={(e) => handleMaterialChange(index, e)}
                   />
-                  <button type="button" onClick={() => removeMaterial(index)} className="text-red-500">Remove Material</button>
+                  <button type="button" onClick={() => removeMaterial(index)} className="bg-brown text-white-500"><RiDeleteBinLine className="text-[25px] mr-1 mt-1"/> Remove Material</button>
                 </div>
               ))}
 
               {/* Add Material Button */}
             </div>
-            <button type="button" onClick={addMaterial} className="bg-green-500 text-white p-2 rounded-md ">Add Material</button>
+            <button type="button" onClick={addMaterial} className="bg-[#2a2f3f] text-[ #c9dcd2] p-2 rounded-md ">Add Material</button>
 
 
             {/* Submit Button */}
-            
-              <button type="submit" className="bg-[black] text-[#ddff7d] p-2 rounded-md">Update Course</button>
-            
+            <button type="submit" className="bg-[black] text-[#ddff7d] p-2 rounded-md">Update Course</button>
           </form>
         </>
       )}

@@ -37,22 +37,22 @@ interface CoursesState {
 }
 
 const Home: React.FC = () => {
-  const { courses, setCourses } = useCourseContext(); // Use courses from context
+  // const { courses, setCourses } = useCourseContext(); // Use courses from context
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const [userEmail, setUserEmail] = useState<string | null>(getAuthUser()?.email || null);
 
-  const [courseState, setCourseState] = useState<CoursesState>({
+  const [courses, setCourses] = useState<CoursesState>({
     loading: false,
     results: [],
     err: "",
     reload: false,
   });
 
-  const handleCardClick = (course: any) => {
-    navigate(`/course/${course.id}`);
-  };
+  // const handleCardClick = (course: any) => {
+  //   navigate(`/course/${course.id}`);
+  // };
 
   // Fetch courses from API
   useEffect(() => {
@@ -65,18 +65,18 @@ const Home: React.FC = () => {
         return;
       }
 
-      setCourseState((prevCourses) => ({ ...prevCourses, loading: true }));
+      setCourses({ ...courses, loading: true });
       axios
         .get("http://localhost:5000/api/courses/", {
           params: { searchTerm: "" }, // Adjust as needed for searching
         })
         .then((resp) => {
           setCourses(resp.data.courses); // Update context state
-          setCourseState({ ...courseState, results: resp.data.courses, loading: false });
+          setCourses({ ...courses, results: resp.data , loading: false });
         })
         .catch((err) => {
-          setCourseState({
-            ...courseState,
+          setCourses({
+            ...courses,
             loading: false,
             err: "Something went wrong, please try again later!",
           });
@@ -84,7 +84,7 @@ const Home: React.FC = () => {
     };
 
     fetchCourses();
-  }, [courseState.reload]); // Trigger when 'reload' changes
+  }, [courses.reload]);
 
   // Handle search
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,15 +92,15 @@ const Home: React.FC = () => {
   };
 
   // Filter courses by search term
-  const filteredCourses = courseState.results.filter((course) =>
+  const filteredCourses = courses.results.filter((course) =>
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  console.log("filteredCourses", filteredCourses);
+  // console.log("filteredCourses", filteredCourses);
 
   return (
-    <div className="home-body">
-      {courseState.loading ? (
+    <div className="container">
+      {courses.loading ? (
         <Loader />
       ) : (
         <>
@@ -138,7 +138,6 @@ const Home: React.FC = () => {
                         students={course.students} // Pass students
                         category={course.category} // Pass category
                         difficulty={course.difficulty} // Pass difficulty
-                        onClick={() => handleCardClick(course)} // Handle course click
                       />
                     ))}
                   </div>

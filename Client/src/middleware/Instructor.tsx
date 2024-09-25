@@ -30,7 +30,7 @@ const Instructor: React.FC = () => {
         }
 
         // Check if the user has instructor privileges (assuming is_superuser denotes this)
-        isInstructor = decodedToken?.is_superuser || false;
+        isInstructor = decodedToken.is_superuser || false;
       }
     } catch (error) {
       console.error("Invalid or corrupted token:", error);

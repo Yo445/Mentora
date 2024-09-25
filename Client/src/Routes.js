@@ -8,7 +8,6 @@ import Auth from "./middleware/Auth";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
-import Loader from "./Components/Shared/Loader";
 import CourseDetails from "./Components/CourseDetails";
 import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import AddCourse from "./Dashboard/Instructor/MangeCourse/AddCourse";
@@ -23,18 +22,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      // {
-      //   path: "/",
-      //   element: <LandingPage />,
-      // },
-      // {
-      //   path: "login",
-      //   element: <Login />,
-      // },
-      // {
-      //   path: "signup",
-      //   element: <Register />,
-      // },
+      //for Un Auth Users
       {
         element: <Guest />,
         children: [
@@ -52,6 +40,8 @@ export const router = createBrowserRouter([
           },
         ],
       },
+
+      //for Auth Users
       {
         element: <Auth />,
         children: [
@@ -109,13 +99,10 @@ export const router = createBrowserRouter([
           },
         ],
       },
+      //for Not found Links
       {
         path: "*",
         element: <NotFound />,
-      },
-      {
-        path: "/load",
-        element: <Loader />,
       },
     ],
   },

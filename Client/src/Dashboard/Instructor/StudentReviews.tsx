@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MdReviews } from "react-icons/md";
+import Loader from "../../Components/Shared/Loader";
 
 interface Review {
   email: string;
@@ -44,7 +45,7 @@ const StudentReviews: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {
@@ -76,7 +77,7 @@ const StudentReviews: React.FC = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {courses.map((course) => (
-            <React.Fragment key={course.id}>
+            <div key={course.id}>
               {course.reviews.map((review, index) => (
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{course.name}</td>
@@ -84,7 +85,7 @@ const StudentReviews: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-[coral]">{review.message}</td>
                 </tr>
               ))}
-            </React.Fragment>
+            </div>
           ))}
         </tbody>
       </table>

@@ -3,6 +3,8 @@ import "../components.css";
 import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
 import Img from "../../assets/img/back2.svg";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa6";
 import axios from "axios";
 
 interface RegisterState {
@@ -106,19 +108,19 @@ const Register: React.FC = () => {
               ))}
 
               <button
-                onClick={googleLogin}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
-              >
-                <span className="text-[23px]">🔍</span> {/* Google Icon Placeholder */}
-                Continue with Google
-              </button>
-
-              <button
                 onClick={facebookLogin}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
               >
-                <span className="text-[23px]" style={{ color: '#1877F2' }}>🔵</span> {/* Facebook Icon Placeholder */}
+                <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
+              </button>
+
+              <button
+                onClick={googleLogin}
+                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
+              >
+                <FcGoogle fontSize={"23px"} />
+                Continue with Google
               </button>
             </div>
 
