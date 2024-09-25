@@ -3,6 +3,7 @@ import { GiNotebook } from "react-icons/gi";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import axios from 'axios'; // Ensure you have axios installed
 import { Link } from 'react-router-dom'; // Import Link for navigation
+import Loader from "../../Components/Shared/Loader";
 
 interface Enrollment {
     id: string; // Unique identifier for the course
@@ -30,11 +31,11 @@ const Enrollments: React.FC = () => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; // Loading message or spinner
+        return <Loader />; // Loading message or spinner
     }
 
     return (
-        <>
+        <div className="container mx-auto px-4 mt-8">
             <div className="relative flex items-center justify-center mt-4">
                 <h1 className="absolute flex font-bold tracking-tight text-[#2a2f3f] sm:text-2xl md:text-3xl mt-3">
                     <GiNotebook className="mr-1 text-[35px]" />
@@ -56,23 +57,31 @@ const Enrollments: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                    {enrollments.map((enrollment) => (
-                        <tr key={enrollment.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{enrollment.name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{enrollment.instructor}</td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                                <Link to={`/course-mat/${enrollment.id}`}> {/* Link to the course material page */}
-                                    <button className="px-4 flex py-2 font-medium text-[black] bg-[#ddff7d] hover:bg-[black] focus:outline-none hover:text-[#ddff7d] focus:shadow-outline-black active:bg-[#ddff7d] active:text-[black] transition duration-150 ease-in-out rounded-lg">
-                                        <MdSwitchAccessShortcutAdd className="text-25 mr-2 mt-1" />
-                                        Go to Course
-                                    </button>
-                                </Link>
+                    {enrollments.length > 0 ? (
+                        enrollments.map((enrollment) => (
+                            <tr key={enrollment.id}>
+                                <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{enrollment.name}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{enrollment.instructor}</td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <Link to={`/course-mat/${enrollment.id}`}> {/* Link to the course material page */}
+                                        <button className="px-4 flex py-2 font-medium text-[black] bg-[#ddff7d] hover:bg-[black] focus:outline-none hover:text-[#ddff7d] focus:shadow-outline-black active:bg-[#ddff7d] active:text-[black] transition duration-150 ease-in-out rounded-lg">
+                                            <MdSwitchAccessShortcutAdd className="text-25 mr-2 mt-1" />
+                                            Go to Course
+                                        </button>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan={3} className="px-6 py-4 text-center text-gray-500">
+                                No enrollments found.
                             </td>
                         </tr>
-                    ))}
+                    )}
                 </tbody>
             </table>
-        </>
+        </div>
     );
 };
 

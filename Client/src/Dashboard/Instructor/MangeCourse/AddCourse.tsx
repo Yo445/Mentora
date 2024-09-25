@@ -219,7 +219,7 @@ export default function AddCourse() {
             <button
               type="button"
               onClick={addMaterial}
-              className="p-2 rounded-md bg-blue-500 text-white"
+              className="p-2 rounded-md bg-[#2a2f3f] text-[#c9dcd2]"
             >
               Add More Materials
             </button>
@@ -227,7 +227,7 @@ export default function AddCourse() {
             {/* Submit Button */}
             <button
               type="submit"
-              className="bg-green-500 text-white p-2 rounded-md"
+              className="bg-[black] text-[#ddff7d] p-2 rounded-md"
             >
               Add Course
             </button>

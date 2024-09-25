@@ -13,15 +13,18 @@ interface CourseContextType {
   courses: Course[];
   setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
   course?: Course;
+  setCourse: React.Dispatch<React.SetStateAction<Course | undefined>>;
+
 }
 
 const CourseContext = createContext<CourseContextType | undefined>(undefined);
 
 export const CourseProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [course, setCourse] = useState<Course | undefined>(undefined);
 
   return (
-    <CourseContext.Provider value={{ courses, setCourses }}>
+    <CourseContext.Provider value={{ courses, setCourses, course, setCourse }}>
       {children}
     </CourseContext.Provider>
   );
