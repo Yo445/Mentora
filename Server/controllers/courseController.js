@@ -1,4 +1,6 @@
 import Course from '../models/courseModel.js';
+import Enrollment from '../models/enrollmentModel.js';
+import User from '../models/userModel.js';
 
 // @desc    Get all courses using pagination
 // @route   GET /api/courses
@@ -54,10 +56,24 @@ const getCourseById = async (req, res) => {
 // @access  Private (Instructor)
 const createCourse = async (req, res) => {
     try {
+        const { title, description, instructor, category, difficulty } = req.body;
+
+        const instructorData = await User.findById(instructor.id);
+        if (!instructorData) {
+            return res.status(404).json({ message: "Instructor not found" });
+        }
+        
         const course = new Course({
-            ...req.body,
-            instructor: req.user._id,
+            title,
+            description,
+            category,
+            difficulty,
+            instructor: {
+                id: instructor.id,
+                name: instructorData.name
+            },
         });
+
         await course.save();
         res.status(201).json(course);
     } catch (error) {
