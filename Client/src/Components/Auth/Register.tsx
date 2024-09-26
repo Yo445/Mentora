@@ -10,7 +10,7 @@ interface RegisterState {
   email: string;
   password: string;
   name: string;
-  loading: string;
+  loading: boolean; // Changed from string to boolean for better type management
   err: string[];
 }
 
@@ -21,13 +21,13 @@ const Register: React.FC = () => {
     email: "",
     password: "",
     name: "",
-    loading: "false",
+    loading: false,
     err: [],
   });
 
   const RegisterFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setRegister({ ...register, loading: "true", err: [] });
+    setRegister({ ...register, loading: true, err: [] });
     axios
       .post("http://localhost:5000/api/users/register", {
         email: register.email,
@@ -35,16 +35,17 @@ const Register: React.FC = () => {
         password: register.password,
       })
       .then((resp) => {
-        setRegister({ ...register, loading: "false", err: [] });
         setAuthUser(resp.data);
+        setRegister({ ...register, loading: false, err: [] });
         navigate("/dashboard");
       })
-      .catch((errors) => {
-        console.log(errors);
+      .catch((error) => {
+        console.error(error);
+        const errorMsg = error.response?.data?.message || "An error occurred"; // Improved error handling
         setRegister({
           ...register,
-          loading: "false",
-          err: errors.message,
+          loading: false,
+          err: [errorMsg],
         });
       });
   };
@@ -93,7 +94,7 @@ const Register: React.FC = () => {
                   className="flex justify-between items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded"
                   role="alert"
                 >
-                  <span>{register.err}</span>
+                  <span>{error}</span> {/* Fixed error display */}
                   <button
                     onClick={(e) => {
                       const parent = e.currentTarget.parentNode as HTMLElement | null;
@@ -130,14 +131,14 @@ const Register: React.FC = () => {
             </div>
 
             <form onSubmit={RegisterFun} className="w-full">
-              <label htmlFor="name" className="sr-only">name</label>
+              <label htmlFor="name" className="sr-only">Name</label>
               <input
                 name="name"
                 type="text"
                 autoComplete="name"
                 required
                 className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
-                placeholder="name"
+                placeholder="Name"
                 value={register.name}
                 onChange={(e) => setRegister({ ...register, name: e.target.value })}
               />
@@ -166,14 +167,15 @@ const Register: React.FC = () => {
               <button
                 type="submit"
                 className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
+                disabled={register.loading} // Disable button when loading
               >
-                Continue
+                {register.loading ? "Creating..." : "Continue"}
               </button>
             </form>
 
             <div className="mt-6 text-center text-sm text-slate-600">
-              already have an account!
-              <a href="/login" className="font-medium text-[#4285f4]">Sign in</a>
+              Already have an account?
+              <a href="/login" className="ml-1 font-medium text-[#4285f4]">Sign in</a>
             </div>
           </div>
         </div>
