@@ -1,10 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { GoZap } from "react-icons/go";
+import { Link } from "react-router-dom";
 
 interface CardProps {
-  id: string | number; 
+  id: string | number;
   title: string;
   description: string;
   instructor: string;
@@ -26,7 +26,7 @@ const Card: React.FC<CardProps> = ({
   return (
     <div className="rounded-[25px] bg-black p-3 shadow-lg hover:shadow-xl hover:transform hover:scale-105 duration-300">
       <Link 
-      to={`/course/${id}`}
+      to={`course/${id}`}
       >
         <div className="flex flex-col gap-y-2 rounded-[22px] bg-[#aeca9e] p-4">
           <h4 className="text-2xl font-bold text-black lg:text-left">

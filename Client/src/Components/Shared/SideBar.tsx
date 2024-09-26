@@ -1,14 +1,12 @@
-import React from "react";
-import { RiHome6Fill } from "react-icons/ri";
-import { Link } from "react-router-dom";
-import logo from "../../assets/img/logo.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { MdSettingsSuggest, MdReviews } from "react-icons/md";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 import { FaGraduationCap } from "react-icons/fa6";
-import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
-import { getAuthUser, getAccessToken, removeAuthUser } from "../../helper/Storage";
+import { MdReviews, MdSettingsSuggest } from "react-icons/md";
+import { RiHome6Fill } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+import logo from "../../assets/img/logo.png";
+import { getAuthUser, removeAuthUser } from "../../helper/Storage";
 
 // Define the interface for token payload
 interface MyTokenPayload {
@@ -29,18 +27,10 @@ export default function SideBar({
   const navigate = useNavigate();
   let isInstructor = false;
 
-  // Check for auth user and access token
-  if (getAuthUser() && getAccessToken()) {
-    try {
-      const accessToken = getAccessToken();
-      if (accessToken) {
-        // const decodedToken = jwtDecode<MyTokenPayload>(accessToken);
-        const decodedToken = getAuthUser();
-        isInstructor = (decodedToken?.role === "instructor" ? true : false);
-      }
-    } catch (error) {
-      console.error("Invalid token:", error);
-    }
+  const authUser = getAuthUser();
+
+  if (authUser && authUser.role === "instructor") {
+    isInstructor = true;
   }
 
  //Logout Function
@@ -112,7 +102,7 @@ export default function SideBar({
             <FaGraduationCap fontSize={"20px"} />
           </Link>
 
-          {isInstructor && (
+          {/* {isInstructor && (
             <>
               <Link to="manage-course" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <MdSettingsSuggest fontSize={"22px"} />
@@ -122,7 +112,7 @@ export default function SideBar({
                 <MdReviews fontSize={"20px"} />
               </Link>
             </>
-          )}
+          )} */}
         </div>
       </aside>
     </>
