@@ -73,6 +73,30 @@ const Login: React.FC = () => {
 
   // On component mount, check if token was returned in URL query parameters (for OAuth login)
   useEffect(() => {
+    // backend send me token as json response, i will get token from json response
+    const urlParams = new URLSearchParams(window.location.search);
+    console.log("urlParams", urlParams);
+    // const token = urlParams.get("token");
+    const accessToken = urlParams.get("accessToken");
+    const refreshToken =urlParams.get("refreshToken");
+    const id = urlParams.get("id");
+    const name = urlParams.get("name");
+    const email = urlParams.get("email");
+    const role = urlParams.get("role");
+
+    // console.log("token", token);
+    console.log("accessToken", accessToken);
+    console.log("refreshToken", refreshToken);
+    console.log("id", id);
+
+    if (accessToken && refreshToken) {
+      setAuthUser({
+        token: { accessToken: accessToken || "", refreshToken: refreshToken || "" },
+        id: id || "",
+        name: name || "",
+        email: email || "",
+        role: role || "",
+      });
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
 

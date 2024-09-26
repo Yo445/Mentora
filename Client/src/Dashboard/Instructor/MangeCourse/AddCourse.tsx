@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
 import { AiTwotoneFileAdd } from "react-icons/ai";
-import Loader from "../../../Components/Shared/Loader";
-import { getToken } from "../../../helper/Storage";
 import { TbLayoutGridAdd } from "react-icons/tb";
+import Loader from "../../../Components/Shared/Loader";
+import { getAccessToken } from "../../../helper/Storage";
 
 
 // Define types for course material and state
@@ -87,7 +87,7 @@ export default function AddCourse() {
     try {
       await axios.post("http://localhost:5000/api/courses/", formData, {
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getAccessToken()}`,
           "Content-Type": "multipart/form-data",
         },
       });

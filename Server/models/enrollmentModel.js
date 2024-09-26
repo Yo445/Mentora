@@ -30,13 +30,13 @@ const enrollmentSchema = new mongoose.Schema({
             type: {
                 type: String,
                 enum: ['quiz', 'assignment'],
-                required: true,
+                // required: true,
             },
             score: {
                 type: Number,
                 min: 0,
                 max: 100,
-                required: true,
+                // required: true,
             }
         }
     ],
@@ -52,6 +52,9 @@ const enrollmentSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 enrollmentSchema.pre('save', async function (next) {
+    if (!this.isModified('completedMaterials')) {
+        return next();
+    }
     try {
         const enrollment = this;
         const course = await Course.findById(enrollment.courseId);
@@ -80,7 +83,7 @@ enrollmentSchema.pre('save', async function (next) {
 
         next();
     } catch (error) {
-        console.log(error);
+        console.log("error in enrollmentSchema.pre('save')", error);
         next(error);
     }
 });

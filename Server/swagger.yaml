@@ -498,7 +498,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/users/{id}/courses:
+  /api/users/courses:
     get:
       tags:
         - Users

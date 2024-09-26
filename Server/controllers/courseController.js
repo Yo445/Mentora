@@ -131,17 +131,19 @@ const deleteCourse = async (req, res) => {
 // @access  Private (Student)
 const enrollCourse = async (req, res) => {
     try {
+        console.log("id", req.params.id);
         const course = await Course.findById(req.params.id);
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
-        const enrollment = await Enrollment.findOne({ course: req.params.id, student: req.user._id });
+        const enrollment = await Enrollment.findOne({ courseId: req.params.id, studentId: req.user._id });
         if (enrollment) {
             return res.status(400).json({ message: 'Already enrolled in this course' });
         }
-        const newEnrollment = await Enrollment.create({ course: req.params.id, student: req.user._id });
+        const newEnrollment = await Enrollment.create({ courseId: req.params.id, studentId: req.user._id });
         res.status(201).json(newEnrollment);
     } catch (error) {
+        console.log("error", error);
         res.status(500).json({ message: error.message });
     }
 };

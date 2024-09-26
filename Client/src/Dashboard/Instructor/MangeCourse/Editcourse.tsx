@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Loader from "../../../Components/Shared/Loader";
-import { getToken } from "../../../helper/Storage";
+import React, { useEffect, useState } from "react";
 import { PiNotePencilDuotone } from "react-icons/pi";
-import { TbLayoutGridAdd } from "react-icons/tb";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { TbLayoutGridAdd } from "react-icons/tb";
+import Loader from "../../../Components/Shared/Loader";
+import { getAccessToken } from "../../../helper/Storage";
 
 interface Material {
   title: string;
@@ -39,7 +39,7 @@ export default function EditCourse({ courseId }: { courseId: string }) {
     axios
       .get(`http://localhost:5000/api/courses/${courseId}`, {
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getAccessToken()}`,
         },
       })
       .then((resp) => {
@@ -117,7 +117,7 @@ export default function EditCourse({ courseId }: { courseId: string }) {
     axios
       .put(`http://localhost:5000/api/courses/${courseId}`, formData, {
         headers: {
-          Authorization: `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getAccessToken()}`,
         },
       })
       .then(() => {

@@ -8,7 +8,7 @@ import { getAuthUser } from "../helper/Storage";
 
 // Define types for course data
 interface Course {
-  id: string | number;
+  _id: string | number;
   title: string;
   description: string;
   instructor: {
@@ -99,6 +99,8 @@ const Home: React.FC = () => {
     course.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  console.log(filteredCourses);
+
   // console.log("filteredCourses", filteredCourses);
 
   return (
@@ -133,8 +135,8 @@ const Home: React.FC = () => {
                   <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {filteredCourses.map((course) => (
                       <Card
-                        key={course.id} // Unique key
-                        id={course.id}
+                        key={course._id} // Unique key
+                        id={course._id}
                         title={course.title}
                         description={course.description} // Pass description
                         instructor={course.instructor.name} // Pass instructor
