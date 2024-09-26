@@ -35,7 +35,13 @@ const Login: React.FC = () => {
       })
       .then((resp) => {
         setLogin({ ...login, loading: false, err: [] });
-        setAuthUser(resp.data);
+        // Update this line to set the correct structure
+        setAuthUser({
+          token: {
+            accessToken: resp.data.token.accessToken, // Adjust according to your response structure
+            refreshToken: resp.data.token.refreshToken, // Adjust according to your response structure
+          },
+        });
         navigate("/dashboard");
       })
       .catch((errors) => {
@@ -71,7 +77,7 @@ const Login: React.FC = () => {
     const token = queryParams.get("token");
 
     if (token) {
-      setAuthUser({ token });
+      setAuthUser({ token: { accessToken: token, refreshToken: "" } }); // Adjust as necessary
       navigate("/dashboard");
     }
   }, [navigate]);
@@ -171,21 +177,22 @@ const Login: React.FC = () => {
                 value={login.password}
                 onChange={handleInputChange}
               />
+
               <button
                 type="submit"
-                className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
+                className="mt-4 inline-flex w-full justify-center rounded-lg bg-black px-4 py-2 text-sm font-medium text-white shadow hover:bg-gray-600 focus:ring-2 focus:ring-gray-600 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                 disabled={login.loading}
               >
-                Continue
+                {login.loading ? "Loading..." : "Login"}
               </button>
-            </form>
 
-            <div className="mt-6 text-center text-sm text-slate-600">
-              Don't have an account?
-              <Link to="/signup" className="font-medium text-[#4285f4]">
-                Sign up
-              </Link>
-            </div>
+              <p className="mt-2 text-sm text-center text-gray-600">
+                Don't have an account?{" "}
+                <Link to="/signup" className="ml-1 text-[#4285f4] font-medium hover:underline">
+                  Sign Up
+                </Link>
+              </p>
+            </form>
           </div>
         </div>
       </div>
