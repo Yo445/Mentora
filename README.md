@@ -1,5 +1,5 @@
 
-# <div style="display: flex; align-items: center;"><img src="https://github.com/user-attachments/assets/27508675-a803-4e56-ba23-45a784429362" alt="logo"><span  style=" margin-bottom: 10px;">entoria</span> </div>
+# <div style="display: flex;"><img src="https://github.com/user-attachments/assets/27508675-a803-4e56-ba23-45a784429362" alt="logo"><span">entoria</span></div>
 
 
 
