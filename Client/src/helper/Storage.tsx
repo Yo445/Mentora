@@ -1,7 +1,9 @@
 
 // Define interfaces for user and token data
 interface User {
-  token: string;
+  token: { accessToken: string,
+            refreshToken: string
+  };
   [key: string]: any; // Adjust according to the actual user properties
 }
 
@@ -13,7 +15,7 @@ interface DecodedToken {
 // Store user and token in localStorage
 export const setAuthUser = (data: User): void => {
   localStorage.setItem("AuthUser", JSON.stringify(data));
-  localStorage.setItem("accessToken", data.accessToken); // Change key to 'accessToken' for consistency
+  localStorage.setItem("accessToken", data.token.accessToken); // Change key to 'accessToken' for consistency
 };
 
 // Retrieve user from localStorage

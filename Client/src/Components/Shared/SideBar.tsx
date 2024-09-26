@@ -34,8 +34,9 @@ export default function SideBar({
     try {
       const accessToken = getAccessToken();
       if (accessToken) {
-        const decodedToken = jwtDecode<MyTokenPayload>(accessToken);
-        isInstructor = decodedToken?.is_superuser || false;
+        // const decodedToken = jwtDecode<MyTokenPayload>(accessToken);
+        const decodedToken = getAuthUser();
+        isInstructor = (decodedToken?.role === "instructor" ? true : false);
       }
     } catch (error) {
       console.error("Invalid token:", error);
@@ -83,7 +84,6 @@ export default function SideBar({
           </Link>
 
           <Link to="enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-          <Link to="/enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <FaGraduationCap fontSize={"20px"} />
             <div>Enrollments</div>
           </Link>
@@ -91,14 +91,11 @@ export default function SideBar({
           {isInstructor && (
             <>
               <Link to="manage-course" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-              <Link to="/manage-course" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-                <MdSettingsSuggest fontSize={"22px"} />
+              <MdSettingsSuggest fontSize={"22px"} />
                 <div>Manage Courses</div>
               </Link>
 
               <Link to="reviews" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
-
-              <Link to="/reviews" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
                 <MdReviews fontSize={"20px"} />
                 <div>Reviews</div>
               </Link>
@@ -112,12 +109,6 @@ export default function SideBar({
           </Link>
 
           <Link to="enroll" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-
-          <Link to="/" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-            <RiHome6Fill fontSize={"20px"} />
-          </Link>
-
-          <Link to="/enroll" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <FaGraduationCap fontSize={"20px"} />
           </Link>
 
@@ -128,11 +119,6 @@ export default function SideBar({
               </Link>
 
               <Link to="reviews" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-              <Link to="/manage-course" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
-                <MdSettingsSuggest fontSize={"22px"} />
-              </Link>
-
-              <Link to="/reviews" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <MdReviews fontSize={"20px"} />
               </Link>
             </>

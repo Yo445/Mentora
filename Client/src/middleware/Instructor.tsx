@@ -20,7 +20,8 @@ const Instructor: React.FC = () => {
 
       if (accessToken) {
         // Decode the JWT access token
-        const decodedToken = JWT.jwtDecode<DecodedToken>(accessToken);
+        // const decodedToken = JWT.jwtDecode<DecodedToken>(accessToken);
+        const decodedToken = getAccessToken();
 
         // Check if the token has expired
         const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
@@ -30,7 +31,7 @@ const Instructor: React.FC = () => {
         }
 
         // Check if the user has instructor privileges (assuming is_superuser denotes this)
-        isInstructor = decodedToken.is_superuser || false;
+        isInstructor = (decodedToken?.role === "instructor" ? true : false);
       }
     } catch (error) {
       console.error("Invalid or corrupted token:", error);
