@@ -1,5 +1,6 @@
 
-# <img src="https://github.com/user-attachments/assets/27508675-a803-4e56-ba23-45a784429362" alt="logo"> <div style="margin-bottom: 10px;">entoria</div>
+# <div style="display: flex; align-items: center; margin-bottom: 10px;"><img src="https://github.com/user-attachments/assets/27508675-a803-4e56-ba23-45a784429362" alt="logo"><span>entoria</span> </div>
+
 
 
 # Online Course Platform 🏫
