@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { FaFacebook } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
@@ -24,6 +24,7 @@ const Login: React.FC = () => {
     err: [],
   });
 
+  // Normal email/password login handler
   const LoginFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLogin({ ...login, loading: true, err: [] });
@@ -38,7 +39,6 @@ const Login: React.FC = () => {
         navigate("/dashboard");
       })
       .catch((errors) => {
-        console.log(errors);
         setLogin({
           ...login,
           loading: false,
@@ -57,13 +57,24 @@ const Login: React.FC = () => {
 
   // Google login function
   const googleLogin = () => {
-    window.open("http://localhost:5000/api/users/google-login", "_self"); // Assuming your backend handles Google login at this endpoint
+    window.open("http://localhost:5000/api/users/google-login", "_self");
   };
 
   // Facebook login function
   const facebookLogin = () => {
-    window.open("http://localhost:5000/api/users/facebook-login", "_self"); // Assuming your backend handles Facebook login at this endpoint
+    window.open("http://localhost:5000/api/users/facebook-login", "_self");
   };
+
+  // On component mount, check if token was returned in URL query parameters (for OAuth login)
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get("token");
+
+    if (token) {
+      setAuthUser({ token });
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   return (
     <div

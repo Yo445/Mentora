@@ -4,7 +4,6 @@ import { IoIosSearch } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 import Card from "../Components/Card"; // Make sure Card component can display course info
 import Loader from "../Components/Shared/Loader";
-import { useCourseContext } from '../Context/CourseContext';
 import { getAuthUser } from "../helper/Storage";
 
 // Define types for course data
@@ -37,7 +36,6 @@ interface CoursesState {
 }
 
 const Home: React.FC = () => {
-  // const { courses, setCourses } = useCourseContext(); // Use courses from context
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState<string>("");
 
@@ -50,9 +48,6 @@ const Home: React.FC = () => {
     reload: false,
   });
 
-  // const handleCardClick = (course: any) => {
-  //   navigate(`/course/${course.id}`);
-  // };
 
   // Fetch courses from API
   useEffect(() => {
@@ -64,15 +59,22 @@ const Home: React.FC = () => {
         console.error("User is not authenticated or email is missing.");
         return;
       }
-
+  
       setCourses({ ...courses, loading: true });
       axios
         .get("http://localhost:5000/api/courses/", {
           params: { searchTerm: "" }, // Adjust as needed for searching
         })
         .then((resp) => {
-          setCourses(resp.data.courses); // Update context state
-          setCourses({ ...courses, results: resp.data , loading: false });
+          // Ensure that resp.data.courses is an array
+          const fetchedCourses = Array.isArray(resp.data.courses) ? resp.data.courses : [];
+          
+          // Update the courses state correctly
+          setCourses({
+            ...courses,
+            results: fetchedCourses, // Set fetched courses
+            loading: false,
+          });
         })
         .catch((err) => {
           setCourses({
@@ -82,9 +84,10 @@ const Home: React.FC = () => {
           });
         });
     };
-
+  
     fetchCourses();
   }, [courses.reload]);
+  
 
   // Handle search
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
