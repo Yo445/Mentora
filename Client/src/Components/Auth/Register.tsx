@@ -1,10 +1,13 @@
+import React, { useState, FormEvent } from "react";
 import React, { FormEvent, useState } from "react";
-// import "../components.css";
 import axios from "axios";
 import { FaFacebook } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back2.svg";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa6";
+import axios from "axios";
 import { setAuthUser } from "../../helper/Storage";
 
 interface RegisterState {

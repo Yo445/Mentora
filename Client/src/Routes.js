@@ -3,6 +3,8 @@ import App from "./App";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
+import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
+import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import Dashboard from "./Dashboard/Dashboard";
 import Home from "./Dashboard/Home";
 import AddCourse from "./Dashboard/Instructor/MangeCourse/AddCourse";
