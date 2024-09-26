@@ -82,19 +82,19 @@ export default function SideBar({
             <div>Home</div>
           </Link>
 
-          <Link to="/enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          <Link to="enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <FaGraduationCap fontSize={"20px"} />
             <div>Enrollments</div>
           </Link>
 
           {isInstructor && (
             <>
-              <Link to="/manage-course" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+              <Link to="manage-course" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
                 <MdSettingsSuggest fontSize={"22px"} />
                 <div>Manage Courses</div>
               </Link>
 
-              <Link to="/reviews" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+              <Link to="reviews" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
                 <MdReviews fontSize={"20px"} />
                 <div>Reviews</div>
               </Link>
@@ -103,21 +103,21 @@ export default function SideBar({
         </div>
 
         <div className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "hidden" : "flex"}`}>
-          <Link to="/" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to="" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <RiHome6Fill fontSize={"20px"} />
           </Link>
 
-          <Link to="/enroll" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to="enroll" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
             <FaGraduationCap fontSize={"20px"} />
           </Link>
 
           {isInstructor && (
             <>
-              <Link to="/manage-course" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+              <Link to="manage-course" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <MdSettingsSuggest fontSize={"22px"} />
               </Link>
 
-              <Link to="/reviews" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+              <Link to="reviews" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <MdReviews fontSize={"20px"} />
               </Link>
             </>

@@ -1,5 +1,4 @@
 import React, { useState, FormEvent } from "react";
-import "../components.css";
 import { useNavigate } from "react-router-dom";
 import { setAuthUser } from "../../helper/Storage";
 import Img from "../../assets/img/back2.svg";

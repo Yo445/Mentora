@@ -8,7 +8,7 @@ import Auth from "./middleware/Auth";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
-import CourseDetails from "./Components/CourseDetails";
+import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
 import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import AddCourse from "./Dashboard/Instructor/MangeCourse/AddCourse";
 import Editcourse from "./Dashboard/Instructor/MangeCourse/Editcourse";
