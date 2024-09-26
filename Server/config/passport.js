@@ -12,10 +12,6 @@ passport.deserializeUser((id, cb) => {
     User.findById(id, (err, user) => cb(err, user));
 });
 
-const randomPassword = () => {
-    return Math.random().toString(36).slice(-8);
-};
-
 passport.use(
     new GoogleStrategy(
         {
@@ -34,8 +30,7 @@ passport.use(
                 user = await User.create({
                     googleId: profile.id,
                     name: profile.displayName,
-                    email: profile.emails[0].value,
-                    password: randomPassword(),
+                    email: profile.emails[0].value
                 });
             }
 
@@ -67,8 +62,7 @@ passport.use(
                 user = await User.create({
                     facebookId: profile.id,
                     name: profile.displayName,
-                    email: profile.emails[0].value,
-                    password: randomPassword(),
+                    email: profile.emails[0].value
                 });
             }
 
