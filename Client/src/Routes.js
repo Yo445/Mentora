@@ -1,20 +1,22 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import Guest from "./middleware/Guest";
-import LandingPage from "./Home/LandingPage";
-import Dashboard from "./Dashboard/Dashboard";
-import Home from "./Dashboard/Home";
-import Auth from "./middleware/Auth";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
 import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
 import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
+import Dashboard from "./Dashboard/Dashboard";
+import Home from "./Dashboard/Home";
 import AddCourse from "./Dashboard/Instructor/MangeCourse/AddCourse";
 import Editcourse from "./Dashboard/Instructor/MangeCourse/Editcourse";
+import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import StudentReviews from "./Dashboard/Instructor/StudentReviews";
+import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
 import CourseMat from "./Dashboard/Student Pages/CourseMat";
 import Enrollments from "./Dashboard/Student Pages/Enrollments";
+import LandingPage from "./Home/LandingPage";
+import Auth from "./middleware/Auth";
+import Guest from "./middleware/Guest";
 
 // Define routes
 export const router = createBrowserRouter([

@@ -447,8 +447,6 @@ paths:
         - Users
       summary: Refresh a user's token
       description: Refresh a user's token
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -500,49 +498,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-    /api/users/{id}/courses:
-      get:
-        tags:
-          - Users
-        summary: Get all courses for a user
-        description: Retrieve all courses for a student or enrollments for an instructor by his ID
-        security:
-          - bearerAuth: []
-        parameters:
-          - in: path
-            name: id
-            required: true
-            description: ID of the user to retrieve courses and enrollments for
-            schema:
-              type: string
-        responses:
-          '200':
-            description: A list of courses & enrollments
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    courses:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Course'
-                    enrolledCourses:
-                      type: array
-                      items:
-                        $ref: '#/components/schemas/Course'
-          '404':
-            description: Not found (courses or enrollments or enrolled courses) for this user
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Error'
-          '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Error'
+  /api/users/{id}/courses:
+    get:
+      tags:
+        - Users
+      summary: Get all courses for a user
+      description: Retrieve all courses for a student or enrollments for an instructor by his ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID of the user to retrieve courses and enrollments for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of courses & enrollments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Course'
+                  enrolledCourses:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Course'
+        '404':
+          description: Not found (courses or enrollments or enrolled courses) for this user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /api/users/facebook-login:
     get:
       tags:
