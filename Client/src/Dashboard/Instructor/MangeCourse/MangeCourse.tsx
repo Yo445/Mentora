@@ -109,7 +109,7 @@ const ManageCourse: React.FC = () => {
             ) : (
                 <>
                     {/* header */}
-                    <div className="relative flex items-center justify-center mt-4">
+                    <div className="relative flex items-center justify-center mt-4 mb-10">
                         <h1 className="absolute flex font-bold tracking-tight text-[#2a2f3f] sm:text-2xl md:text-3xl mt-3">
                             <IoSettings className="mr-1 text-[35px]" />
                             Manage Your Courses
