@@ -67,6 +67,8 @@ const googleLoginCallback = (req, res, next) => {
             return res.status(400).json({ message: 'Google authentication failed' });
         }
 
+        // const { accessToken, refreshToken } = generateToken(user._id);
+        // res.redirect(`http://localhost:3000/dashboard?accessToken=${accessToken}&refreshToken=${refreshToken}&id=${user._id}&name=${user.name}&email=${user.email}&role=${user.role}`);
         const token = generateToken(user._id);
         res.status(200).json({ id: user._id, name: user.name, email: user.email, role: user.role, token });
     })(req, res, next);
@@ -103,18 +105,23 @@ const facebookLoginCallback = (req, res, next) => {
 // @access  Private
 const refreshToken = async (req, res) => {
     try {
-        const { refreshToken } = req.body;
-        if (!refreshToken) {
-            return res.status(403).json({ message: 'Refresh Token is required!' });
+        const { accessToken, refreshToken } = req.body;
+        if (!refreshToken || !accessToken) {
+            return res.status(403).json({ message: 'Tokens is required!' });
         }
 
         const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-        // console.log(decoded);
-        // console.log(Date.now().valueOf() / 1000);
+        if (!decoded) {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+        const decodedAccessToken = jwt.verify(accessToken, process.env.JWT_SECRET);
+        if (!decodedAccessToken) {
+            return res.status(401).json({ message: 'Invalid access token' });
+        }
 
         const currentTime = Date.now().valueOf() / 1000;
-        if (decoded.exp > currentTime) {
-            return res.status(400).json({ message: 'Refresh token has not been expired.' });
+        if (decodedAccessToken.exp > currentTime) {
+            return res.status(400).json({ message: 'Access token has not been expired.' });
         }
 
         const user = await User.findById(decoded.id);
@@ -132,25 +139,24 @@ const refreshToken = async (req, res) => {
 }
 
 // @desc    Get all courses created or enrolled in by a specific user
-// @route   GET /api/users/:id/courses
+// @route   GET /api/users/courses
 // @access  Private
 const getUserCourses = async (req, res) => {
     try {
         let courses;
         // check if instructor return only courses but if user return only enrolled courses
         if (req.user.role === 'instructor') {
-            courses = await Course.find({ user: req.user._id });
+            courses = await Course.find({ instructor: { id: req.user._id} });
             if (!courses) {
                 return res.status(404).json({ message: 'No courses found' });
             }
 
         } else {
-            const enrollments = await Enrollment.find({ user: req.user._id });
+            const enrollments = await Enrollment.find({ studentId: req.user._id });
             if (!enrollments) {
                 return res.status(404).json({ message: 'No enrollments found' });
             }
-
-            courses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.course) } });
+            courses = await Course.find({ _id: { $in: enrollments.map(enrollment => enrollment.courseId) } });
             if (!courses) {
                 return res.status(404).json({ message: 'No enrolled courses found' });
             }

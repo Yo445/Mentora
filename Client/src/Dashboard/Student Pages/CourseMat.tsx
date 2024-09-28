@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import axios from 'axios'; // Ensure you have axios installed
+import React, { useEffect, useState } from "react";
 import { BsStopwatchFill } from "react-icons/bs";
-import { MdPlayLesson } from "react-icons/md";
 import { FaGraduationCap } from "react-icons/fa6";
 import { IoSend } from "react-icons/io5";
-import axios from 'axios'; // Ensure you have axios installed
+import { MdPlayLesson } from "react-icons/md";
 
 interface CourseMatProps {
   title: string;
@@ -21,7 +21,7 @@ const CourseMat: React.FC<CourseMatProps> = ({ title, courseId }) => {
     // Function to fetch course materials when component mounts
     const fetchCourseMaterials = async () => {
       try {
-        const response = await axios.get(`/api/courses/${courseId}`);
+        const response = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
         setMaterials(response.data.materials); // Assume the API response contains materials
       } catch (error) {
         console.error("Error fetching course materials:", error);

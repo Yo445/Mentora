@@ -1,10 +1,10 @@
+import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { GoPaperAirplane, GoZap } from 'react-icons/go';
 import { TiStarFullOutline } from 'react-icons/ti';
-import axios from "axios";
-import { getAuthUser, getToken } from '../../helper/Storage';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../Components/Shared/Loader';
+import { getAccessToken, getAuthUser } from '../../helper/Storage';
 
 // Define types for course data
 interface CourseProps {
@@ -37,6 +37,8 @@ interface CourseState {
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [userEmail, setUserEmail] = useState<string | null>(getAuthUser()?.email || null);
 
   const [course, setCourse] = useState<CourseState>({
@@ -62,11 +64,12 @@ const CourseDetails: React.FC = () => {
 
       setCourse({ ...course, loading: true });
       axios
-        .get(`http://localhost:5000/api/course/${id}`)
+        .get(`http://localhost:5000/api/courses/${id}`)
         .then((resp) => {
+          // console.log(resp.data);
           setCourse({
             ...course,
-            result: resp.data.course,
+            result: resp.data,
             loading: false,
           });
         })
@@ -85,14 +88,14 @@ const CourseDetails: React.FC = () => {
   // Function to handle enrollment
 // Function to handle enrollment
 const handleEnroll = () => {
-  const token = getToken(); // Retrieve the token using your function
+  const token = getAccessToken(); // Retrieve the token using your function
   if (!token) {
     setEnrollError("User is not authenticated.");
     return;
   }
 
   axios
-    .post(`http://localhost:5000/api/course/${id}/enroll`, {}, {
+    .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
       headers: {
         Authorization: `Bearer ${token}`, // Use the token in the authorization header
       },
@@ -100,6 +103,8 @@ const handleEnroll = () => {
     .then((resp) => {
       setShowAlert(true); // Show alert upon successful enrollment
       setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
+      navigate(`/enroll/${id}`);// to navigate to  course material
+
     })
     .catch((err) => {
       setEnrollError("Enrollment failed. Please try again.");

@@ -25,7 +25,7 @@ router.route('/google-callback')
 router.route('/refresh-token')
             .post(refreshToken);
 
-router.route('/:id/courses')
+router.route('/courses')
             .get(authMiddleware, getUserCourses); //Get all courses created or enrolled in by a specific user
 
 export default router;

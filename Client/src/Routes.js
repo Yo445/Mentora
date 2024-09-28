@@ -3,18 +3,19 @@ import App from "./App";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
 import NotFound from "./Components/Shared/NotFound";
-import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
-import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import Dashboard from "./Dashboard/Dashboard";
 import Home from "./Dashboard/Home";
 import AddCourse from "./Dashboard/Instructor/MangeCourse/AddCourse";
 import Editcourse from "./Dashboard/Instructor/MangeCourse/Editcourse";
+import MangeCourse from "./Dashboard/Instructor/MangeCourse/MangeCourse";
 import StudentReviews from "./Dashboard/Instructor/StudentReviews";
+import CourseDetails from "./Dashboard/Student Pages/CourseDetails";
 import CourseMat from "./Dashboard/Student Pages/CourseMat";
 import Enrollments from "./Dashboard/Student Pages/Enrollments";
 import LandingPage from "./Home/LandingPage";
 import Auth from "./middleware/Auth";
 import Guest from "./middleware/Guest";
+import Instructor from "./middleware/Instructor";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -62,38 +63,42 @@ export const router = createBrowserRouter([
                 element: <CourseDetails />,
               },
               {
-                path: "manage-course",
-                element: <MangeCourse />,
+                path: "enroll",
+                element: <Enrollments />,
                 children: [
                   {
-                    path: "",
-                    element: <MangeCourse />,
-                  },
-                  {
-                    path: "add",
-                    element: <AddCourse />,
-                  },
-                  {
-                    path: "edit/:id",
-                    element: <Editcourse />,
+                    path: ":id",
+                    element: <CourseMat />,
                   },
                 ],
               },
+              //Instructor Routes
               {
-                path: "reviews",
-                element: <StudentReviews />,
-              },
-              {
-                path: "course-mat/:id",
-                element: <CourseMat />,
-              },
-              {
-                path: "enroll",
-                element: <Enrollments />,
-              },
-              {
-                path: "reviews",
-                element: <StudentReviews />,
+                element: <Instructor />,
+                children: [
+                  {
+                    path: "manage-course",
+                    element: <MangeCourse />,
+                    children: [
+                      {
+                        index: true,
+                        element: <MangeCourse />,
+                      },
+                      {
+                        path: "add",
+                        element: <AddCourse />,
+                      },
+                      {
+                        path: "edit/:id",
+                        element: <Editcourse />,
+                      },
+                    ],
+                  },
+                  {
+                    path: "reviews",
+                    element: <StudentReviews />,
+                  },
+                ]
               },
             ],
           },
