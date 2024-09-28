@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { GoPaperAirplane, GoZap } from 'react-icons/go';
 import { TiStarFullOutline } from 'react-icons/ti';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../Components/Shared/Loader';
 import { getAccessToken, getAuthUser } from '../../helper/Storage';
 
@@ -37,6 +37,8 @@ interface CourseState {
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [userEmail, setUserEmail] = useState<string | null>(getAuthUser()?.email || null);
 
   const [course, setCourse] = useState<CourseState>({
@@ -101,6 +103,8 @@ const handleEnroll = () => {
     .then((resp) => {
       setShowAlert(true); // Show alert upon successful enrollment
       setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
+      navigate(`/enroll/${id}`);// to navigate to  course material
+
     })
     .catch((err) => {
       setEnrollError("Enrollment failed. Please try again.");
