@@ -1,4 +1,13 @@
-# Online Course Platform
+
+# <div style="display: flex;"><img src="https://github.com/user-attachments/assets/27508675-a803-4e56-ba23-45a784429362" alt="logo"><span>entoria</span></div>
+
+
+
+# Online Course Platform 🏫
+![p1](https://github.com/user-attachments/assets/ca049c85-4cdf-43f3-8cc2-f17748602b0a)
+
+![p2](https://github.com/user-attachments/assets/ac7cdc0c-a287-45dd-be6c-b5b37a3265b4)
+
 
 ## Table of Contents
 

@@ -50,12 +50,8 @@ export const router = createBrowserRouter([
             path: "dashboard",
             element: <Dashboard />,
             children: [
-              // {
-              //   index: true,
-              //   element: <Navigate to="home" replace />,
-              // },
               {
-                path: "",
+                index: true,
                 element: <Home />,
               },
               {
