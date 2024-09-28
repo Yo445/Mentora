@@ -89,7 +89,7 @@ const Enrollments: React.FC = () => {
                                 <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{course.title}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{course.instructor.name}</td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                    <Link to={`course-mat/${course._id}`}> {/* Link to the course material page */}
+                                    <Link to={`${course._id}`}> {/* Link to the course material page */}
                                         <button className="px-4 flex py-2 font-medium text-[black] bg-[#ddff7d] hover:bg-[black] focus:outline-none hover:text-[#ddff7d] focus:shadow-outline-black active:bg-[#ddff7d] active:text-[black] transition duration-150 ease-in-out rounded-lg">
                                             <MdSwitchAccessShortcutAdd className="text-25 mr-2 mt-1" />
                                             Go to Course

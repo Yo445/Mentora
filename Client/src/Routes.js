@@ -15,6 +15,7 @@ import Enrollments from "./Dashboard/Student Pages/Enrollments";
 import LandingPage from "./Home/LandingPage";
 import Auth from "./middleware/Auth";
 import Guest from "./middleware/Guest";
+import Instructor from "./middleware/Instructor";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -62,38 +63,42 @@ export const router = createBrowserRouter([
                 element: <CourseDetails />,
               },
               {
-                path: "manage-course",
-                element: <MangeCourse />,
+                path: "enroll",
+                element: <Enrollments />,
                 children: [
                   {
-                    path: "",
-                    element: <MangeCourse />,
-                  },
-                  {
-                    path: "add",
-                    element: <AddCourse />,
-                  },
-                  {
-                    path: "edit/:id",
-                    element: <Editcourse />,
+                    path: ":id",
+                    element: <CourseMat />,
                   },
                 ],
               },
+              //Instructor Routes
               {
-                path: "reviews",
-                element: <StudentReviews />,
-              },
-              {
-                path: "enroll/course-mat/:id",
-                element: <CourseMat />,
-              },
-              {
-                path: "enroll",
-                element: <Enrollments />,
-              },
-              {
-                path: "reviews",
-                element: <StudentReviews />,
+                element: <Instructor />,
+                children: [
+                  {
+                    path: "manage-course",
+                    element: <MangeCourse />,
+                    children: [
+                      {
+                        index: true,
+                        element: <MangeCourse />,
+                      },
+                      {
+                        path: "add",
+                        element: <AddCourse />,
+                      },
+                      {
+                        path: "edit/:id",
+                        element: <Editcourse />,
+                      },
+                    ],
+                  },
+                  {
+                    path: "reviews",
+                    element: <StudentReviews />,
+                  },
+                ]
               },
             ],
           },

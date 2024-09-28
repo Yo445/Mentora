@@ -84,7 +84,7 @@ const Instructor: React.FC = () => {
 
   return <>{isInstructor ? <Outlet /> : <Navigate to="/" />}</>;
 };
-
+export default Instructor;
 
 // const authUser = getAuthUser();
 //     const accessToken = getAccessToken();
