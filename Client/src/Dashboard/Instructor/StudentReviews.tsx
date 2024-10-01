@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MdReviews } from "react-icons/md";
 import Loader from "../../Components/Shared/Loader";
+import { getAccessToken } from "../../helper/Storage";
 
 interface Review {
   email: string;
-  message: string;
+  comment: string;
 }
 
 interface Course {
@@ -24,26 +25,22 @@ const StudentReviews: React.FC = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const coursesResponse = await axios.get("/api/courses");
-        const coursesData: Course[] = await Promise.all(
-          coursesResponse.data.map(async (course: Course) => {
-            const reviewsResponse = await axios.get(`/api/courses/${course.id}/reviews`);
-            return {
-              ...course,
-              reviews: reviewsResponse.data,
-            };
-          })
-        );
-        setCourses(coursesData);
+        const response = await axios.get("http://localhost:5000/api/courses");
+        
+        // Ensure that response.data contains an array of courses
+        const coursesResponse: Course[] = response.data.courses || []; // Adjust to match the actual API response structure
+        
+        setCourses(coursesResponse);
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch courses or reviews.");
         setLoading(false);
       }
     };
-
+  
     fetchCourses();
   }, []);
+  
 
   if (loading) {
     return <Loader />;
@@ -57,19 +54,7 @@ const StudentReviews: React.FC = () => {
 
   return (
     <>
-      {/* Alert for no reviews */}
-      {!hasReviews && showAlert && (
-        <div className="mt-10 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Note:</strong>
-          <span className="block sm:inline"> There are no reviews available.</span>
-          <button
-            onClick={() => setShowAlert(false)} // Dismiss alert
-            className="absolute top-0 right-0 px-4 py-3 text-red-500 font-bold text-xl"
-          >
-            x
-          </button>
-        </div>
-      )}
+
 
       <div className="relative flex items-center justify-center mt-4">
         <h1 className="absolute flex font-bold tracking-tight text-[#2a2f3f] sm:text-2xl md:text-3xl mt-3">
@@ -77,7 +62,19 @@ const StudentReviews: React.FC = () => {
           Students Reviews
         </h1>
       </div>
-
+      {/* Alert for no reviews */}
+      {!hasReviews && showAlert && (
+        <div className="mt-10 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Note:</strong>
+          <span className="block sm:inline"> There are no reviews available.</span>
+          <button
+            onClick={() => setShowAlert(false)} // Dismiss alert
+            className="absolute top-0 right-0 px-4 py-3 text-blue-500 font-bold text-xl"
+          >
+            x
+          </button>
+        </div>
+      )}
       <table className="min-w-full divide-y divide-gray-200 mt-20">
         <thead>
           <tr>
@@ -99,7 +96,7 @@ const StudentReviews: React.FC = () => {
                 <tr key={index}>
                   <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{course.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{review.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-[coral]">{review.message}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[coral]">{review.comment}</td>
                 </tr>
               ))}
             </React.Fragment>

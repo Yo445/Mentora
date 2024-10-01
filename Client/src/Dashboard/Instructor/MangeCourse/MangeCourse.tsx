@@ -47,75 +47,82 @@ const ManageCourse: React.FC = () => {
         reload: false,
     });
 
-    // Add state to control alert visibility
     const [showAlert, setShowAlert] = useState(true);
 
     useEffect(() => {
-        setCourseState({ ...courseState, loading: true });
-        axios
-            .get("http://localhost:5000/api/courses/", {
-                headers: {
-                    Authorization: `Bearer ${getAccessToken()}`,
-                },
-            })
-            .then((resp) => {
-                if (Array.isArray(resp.data)) {
-                    setCourseState({ ...courseState, results: resp.data, loading: false });
-                } else {
-                    setCourseState({
-                        ...courseState,
-                        loading: false,
-                        err: "There are no Courses added ",
-                    });
-                    setShowAlert(true); // Show alert if error
-                }
-            })
-            .catch((err) => {
-                setCourseState({
-                    ...courseState,
-                    loading: false,
-                    err: "Something went wrong, please try again later!",
-                });
-                setShowAlert(true); // Show alert if error
-            });
-    }, [courseState.reload]);
-
-    const deleteCourse = (id: string | number) => {
-        if (window.confirm("Are you sure you want to delete this course?")) {
-            axios
-                .delete(`http://localhost:5000/api/courses/${id}`, {
+        const fetchCourses = async () => {
+            setCourseState(prevState => ({ ...prevState, loading: true }));
+            try {
+                const resp = await axios.get("http://localhost:5000/api/courses/", {
                     headers: {
                         Authorization: `Bearer ${getAccessToken()}`,
                     },
-                })
-                .then((resp) => {
-                    setCourseState({ ...courseState, reload: !courseState.reload });
-                })
-                .catch((err) => {
-                    setCourseState({
-                        ...courseState,
-                        loading: false,
-                        err: "Something went wrong, please try again later!",
-                    });
-                    setShowAlert(true); // Show alert if error
                 });
+
+                if (Array.isArray(resp.data)) {
+                    setCourseState(prevState => ({
+                        ...prevState,
+                        results: resp.data,
+                        loading: false,
+                    }));
+                } else {
+                    setCourseState(prevState => ({
+                        ...prevState,
+                        loading: false,
+                        err: "There are no Courses added ",
+                    }));
+                    setShowAlert(true);
+                }
+            } catch (err) {
+                setCourseState(prevState => ({
+                    ...prevState,
+                    loading: false,
+                    err: "Something went wrong, please try again later!",
+                }));
+                setShowAlert(true);
+            }
+        };
+
+        fetchCourses();
+    }, [courseState.reload]);
+
+    const deleteCourse = async (id: string | number) => {
+        if (window.confirm("Are you sure you want to delete this course?")) {
+            try {
+                await axios.delete(`http://localhost:5000/api/courses/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${getAccessToken()}`,
+                    },
+                });
+                setCourseState(prevState => ({
+                    ...prevState,
+                    reload: !prevState.reload,
+                }));
+            } catch (err) {
+                setCourseState(prevState => ({
+                    ...prevState,
+                    loading: false,
+                    err: "Something went wrong, please try again later!",
+                }));
+                setShowAlert(true);
+            }
         }
     };
 
     return (
         <>
             {courseState.loading ? (
-                <p><Loader /></p>
+                <Loader />
             ) : (
                 <>
-                    {/* header */}
+                    {/* Header */}
                     <div className="relative flex items-center justify-center mt-4 mb-10">
                         <h1 className="absolute flex font-bold tracking-tight text-[#2a2f3f] sm:text-2xl md:text-3xl mt-3">
                             <IoSettings className="mr-1 text-[35px]" />
                             Manage Your Courses
                         </h1>
-                        {/* add course btn */}
-                        <Link to={"add"}
+                        {/* Add course btn */}
+                        <Link to={"/dashboard/manage-course/add"}
                             className="absolute font-semibold text-center group right-0 flex items-center mt-5 rounded-2xl w-48 h-12 cursor-pointer border border-[black] bg-[black] group hover:bg-[black] active:bg-[#ddff7d] active:border-[#ddff7d]"
                         >
                             <div className="bg-[#ddff7d] rounded-xl h-10 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">

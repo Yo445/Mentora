@@ -90,7 +90,7 @@ const CourseDetails: React.FC = () => {
       setEnrollError("User is not authenticated.");
       return;
     }
-
+  
     axios
       .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
         headers: {
@@ -108,7 +108,15 @@ const CourseDetails: React.FC = () => {
         console.error(err);
       });
   };
+  
+  // Listen for enrollment status change to update the button state
+  useEffect(() => {
+    if (isEnrolled) {
+      setShowAlert(true); // Show the alert for successful enrollment
+    }
+  }, [isEnrolled]);
 
+  
   if (course.loading) {
     return <Loader />;
   }
@@ -192,17 +200,10 @@ const CourseDetails: React.FC = () => {
             <div className="flex items-center w-full col-span-6">
               <div className="px-6 h-96 lg:h-100% w-full max-w-2xl col-span-6 flex items-center mx-auto rounded-[10px]">
                 <div className="w-[100%] h-[104%] rounded-[10px]">
-                  <div className="w-[100%] h-[100%] bg-white rounded-[10px] overflow-hidden">
-                    <iframe
+                  <div className="w-[100%] h-[100%] bg-[gray] rounded-[10px] overflow-hidden">
+                    <div
                       className="rounded-[10px]"
-                      frameBorder="0"
-                      allowFullScreen
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowTransparency
-                      height="100%"
-                      width="100%"
-                      src="https://www.youtube.com/embed/ON35nF6x7iU"
-                    ></iframe>
+                    ></div>
                   </div>
                 </div>
               </div>

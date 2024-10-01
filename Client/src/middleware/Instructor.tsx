@@ -1,22 +1,16 @@
-import * as JWT from "jwt-decode";
-import React, { useEffect } from "react";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { getAccessToken, getAuthUser, getRefreshToken, setAuthUser } from "../helper/Storage";
-
-// interface DecodedToken {
-//   exp: number;
-//   role: string;
-//   [key: string]: any;
-// }
+import React, { useMemo } from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { getAuthUser } from "../helper/Storage";
 
 const Instructor: React.FC = () => {
-  let isInstructor = false;
-  const authUser = getAuthUser();
+  // Memoize the value of authUser to avoid unnecessary re-renders
+  const authUser = useMemo(() => getAuthUser(), []);
 
-  if (authUser && authUser.role === "instructor") {
-    isInstructor = true;
-  }
-  return <>{isInstructor ? <Outlet /> : <Navigate to="/" />}</>;
+  // Check if the authUser exists and if the role is "instructor"
+  const isInstructor = authUser?.role === "instructor";
+
+  // If the user is an instructor, render the child routes (Outlet), otherwise redirect to login
+  return isInstructor ? <Outlet /> : <Navigate to="/login" replace />;
 };
-export default Instructor;
 
+export default Instructor;

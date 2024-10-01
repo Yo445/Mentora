@@ -1,7 +1,7 @@
+// 
 {
   "compilerOptions": {
-    "target": "ES6",
-    "esModuleInterop": true,
+    "target": "ESNext", // Use ESNext to get the latest features if you don't need to support older environments
     "lib": [
       "dom",
       "dom.iterable",
@@ -13,14 +13,21 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "module": "ESNext", // Use ESNext for the latest module features
+    "moduleResolution": "Node", // You can specify "node" or "classic"
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react-jsx", // Use "react-jsx" or "react-jsxdev" for React 17+ for better handling of JSX
+    "baseUrl": ".", // Helps with absolute imports
+    "paths": {
+      "*": ["src/*"] // Adjust paths for better module resolution
+    }
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules" // Optionally, exclude node_modules if not already default
   ]
 }
