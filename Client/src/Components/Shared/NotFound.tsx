@@ -104,12 +104,6 @@ export default function Error404(): JSX.Element {
             <p className="text-sm md:text-base text-black p-2 mb-4">
               The stuff you were looking for doesn't exist
             </p>
-            {/* <Link
-              to="/"
-              className="bg-[#ddff7d] hover:bg-transparent text-black hover:text-[#ddff7d] rounded shadow hover:shadow-lg py-2 px-4 border border-[#ddff7d] hover:border-[#ddff7d]"
-            >
-              Retry
-            </Link> */}
           </div>
         </div>
       </div>
