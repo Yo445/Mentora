@@ -1,17 +1,23 @@
 import { faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaGraduationCap } from "react-icons/fa6";
 import { MdReviews, MdSettingsSuggest } from "react-icons/md";
 import { RiHome6Fill } from "react-icons/ri";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import logo from "../../assets/img/logo.png";
-import { getAuthUser, removeAuthUser } from "../../helper/Storage";
+import { getAccessToken, getAuthUser, getRefreshToken, removeAuthUser, setAuthUser } from "../../helper/Storage";
+import { jwtDecode } from "jwt-decode";
 
-// Define the interface for token payload
-interface MyTokenPayload {
-  is_superuser?: boolean;
-  // Add other properties from your token as needed
+
+
+
+interface DecodedToken {
+  [key: string]: any;
+  id: string;
+  iat: number; // Issued at timestamp
+  exp: number; // Expiration timestamp
+  // Removed role from this interface
 }
 
 // Define props for the sidebar
@@ -24,10 +30,97 @@ export default function SideBar({
   isOpen,
   toggleSidebar,
 }: SideBarProps): JSX.Element {
-  const navigate = useNavigate();
+
+
+
+    // let isInstructor = false;
+    const navigate = useNavigate();
+    const accessToken = getAccessToken();
+    const authUser = getAuthUser();        
+    const refreshToken = getRefreshToken();
+
+    // useEffect(() => {
+    //   const checkTokenAndRefresh = async () => {
+    //     if (accessToken) {
+    //       const decodedToken = JWT.jwtDecode<DecodedToken>(accessToken);
+  
+    //       // Check if the token has expired
+    //       const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+    //       if (decodedToken.exp < currentTime) {
+    //         console.error("Access token has expired.");
+    //         if (refreshToken) {
+    //           // Refresh the access token
+    //           try {
+    //             const response = await fetch("http://localhost:5000/api/users/refresh-token", {
+    //               method: "POST",
+    //               body: JSON.stringify({ accessToken, refreshToken }),
+    //             });
+  
+    //             if (response.ok) {
+    //               const data = await response.json();
+  
+    //               const authUser = getAuthUser();
+    //               setAuthUser({
+    //                 token: {
+    //                   accessToken: data.token.accessToken,
+    //                   refreshToken: data.token.refreshToken,
+    //                 },
+    //                 id: authUser?.id || "",
+    //                 name: authUser?.name || "",
+    //                 email: authUser?.email || "",
+    //               });
+  
+    //               console.log("Access token refreshed successfully.");
+    //             } else {
+    //               console.error("Failed to refresh access token.");
+    //               navigate("/login");
+    //             }
+    //           } catch (error) {
+    //             console.error("Failed to refresh access token:", error);
+    //             navigate("/login");
+    //           }
+    //         } else {
+    //           console.error("Refresh token is missing.");
+    //           navigate("/login");
+    //         }
+    //       }
+    //     } else {
+    //       console.error("Access token is missing or invalid.");
+    //       navigate("/login");
+    //     }
+    //   };
+  
+    //   checkTokenAndRefresh();
+    // }, [navigate]);
+  
+
+  
+    if (authUser && accessToken) {
+      try {
+        // Decode the JWT access token
+        const decodedToken = jwtDecode<DecodedToken>(accessToken); // Decode into the DecodedToken type
+  
+        // Check if the token has expired
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        if (decodedToken.exp < currentTime) {
+          console.error("Access token has expired.");
+          return <Navigate to="/login" />; // Redirect to login if token is expired
+        }
+  
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+
+
+
+
+
+
+
+
   let isInstructor = false;
 
-  const authUser = getAuthUser();
 
   if (authUser && authUser.role === "instructor") {
     isInstructor = true;
@@ -68,7 +161,7 @@ export default function SideBar({
         </div>
 
         <div className={`max text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "flex" : "hidden"}`}>
-          <Link to="/" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
+          <Link to="" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] bg-[#000] p-2 pl-8 rounded-full flex flex-row items-center space-x-3">
             <RiHome6Fill fontSize={"20px"} />
             <div>Home</div>
           </Link>
@@ -102,7 +195,7 @@ export default function SideBar({
             <FaGraduationCap fontSize={"20px"} />
           </Link>
 
-          {/* {isInstructor && (
+          {isInstructor && (
             <>
               <Link to="manage-course" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <MdSettingsSuggest fontSize={"22px"} />
@@ -112,7 +205,7 @@ export default function SideBar({
                 <MdReviews fontSize={"20px"} />
               </Link>
             </>
-          )} */}
+          )}
         </div>
       </aside>
     </>
