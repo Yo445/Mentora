@@ -40,16 +40,15 @@ const CourseDetails: React.FC = () => {
   const navigate = useNavigate();
 
   const [userEmail, setUserEmail] = useState<string | null>(getAuthUser()?.email || null);
-
   const [course, setCourse] = useState<CourseState>({
     loading: false,
     result: null,
     err: "",
     reload: false,
   });
-
   const [showAlert, setShowAlert] = useState(false); // State to control the alert visibility
   const [enrollError, setEnrollError] = useState<string | null>(null); // State for handling errors in enrollment
+  const [isEnrolled, setIsEnrolled] = useState(false); // State to track enrollment status
 
   // Fetch course details when component loads
   useEffect(() => {
@@ -66,7 +65,6 @@ const CourseDetails: React.FC = () => {
       axios
         .get(`http://localhost:5000/api/courses/${id}`)
         .then((resp) => {
-          // console.log(resp.data);
           setCourse({
             ...course,
             result: resp.data,
@@ -86,32 +84,30 @@ const CourseDetails: React.FC = () => {
   }, [course.reload]);
 
   // Function to handle enrollment
-// Function to handle enrollment
-const handleEnroll = () => {
-  const token = getAccessToken(); // Retrieve the token using your function
-  if (!token) {
-    setEnrollError("User is not authenticated.");
-    return;
-  }
+  const handleEnroll = () => {
+    const token = getAccessToken(); // Retrieve the token using your function
+    if (!token) {
+      setEnrollError("User is not authenticated.");
+      return;
+    }
 
-  axios
-    .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
-      headers: {
-        Authorization: `Bearer ${token}`, // Use the token in the authorization header
-      },
-    })
-    .then((resp) => {
-      setShowAlert(true); // Show alert upon successful enrollment
-      setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
-      navigate(`/enroll/${id}`);// to navigate to  course material
-
-    })
-    .catch((err) => {
-      setEnrollError("Enrollment failed. Please try again.");
-      console.error(err);
-    });
-};
-
+    axios
+      .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Use the token in the authorization header
+        },
+      })
+      .then((resp) => {
+        setIsEnrolled(true); // Mark as enrolled
+        setShowAlert(true); // Show alert upon successful enrollment
+        setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
+        navigate(`/enroll/${id}`); // Navigate to the course material
+      })
+      .catch((err) => {
+        setEnrollError("Enrollment failed. Please try again.");
+        console.error(err);
+      });
+  };
 
   if (course.loading) {
     return <Loader />;
@@ -181,10 +177,11 @@ const handleEnroll = () => {
                     <div className="flex flex-shrink-0 -space-x-1">
                       <button
                         onClick={handleEnroll}
-                        className="flex overflow-hidden ring-[5px] ring-black w-[5.1rem] hover:w-[6.5rem] items-center gap-2 cursor-pointer bg-black text-white px-5 py-2 rounded-full transition-all ease-in-out hover:scale hover:scale-105 font-[revert] active:scale-100 shadow-lg hover:text-[#ddff7d]"
+                        disabled={isEnrolled} // Disable button if enrolled
+                        className={`flex overflow-hidden ring-[5px] ring-black w-[5.1rem] items-center gap-2 cursor-pointer bg-black text-white px-5 py-2 rounded-full transition-all ease-in-out hover:scale hover:scale-105 font-[revert] active:scale-100 shadow-lg ${isEnrolled ? "opacity-50 cursor-not-allowed" : "hover:text-[#ddff7d]"}`}
                       >
-                        Enroll
-                        <GoPaperAirplane fontSize={"22px"} />
+                        {isEnrolled ? "Enrolled" : "Enroll"} {/* Change button text */}
+                        {!isEnrolled && <GoPaperAirplane fontSize={"22px"} />}
                       </button>
                     </div>
                   </div>
@@ -200,10 +197,11 @@ const handleEnroll = () => {
                       className="rounded-[10px]"
                       frameBorder="0"
                       allowFullScreen
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      width="100%"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowTransparency
                       height="100%"
-                      id="widget2"
+                      width="100%"
+                      src="https://www.youtube.com/embed/ON35nF6x7iU"
                     ></iframe>
                   </div>
                 </div>
