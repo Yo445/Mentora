@@ -85,7 +85,7 @@ const Login: React.FC = () => {
   };
 
   // On component mount, check if token was returned in URL query parameters (for OAuth login)
-useEffect(() => {
+/*useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const accessToken = urlParams.get("accessToken");
   const refreshToken = urlParams.get("refreshToken");
@@ -107,7 +107,7 @@ useEffect(() => {
     });
     navigate("/dashboard");
   }
-}, [navigate]);
+}, [navigate]);*/
 
   return (
     <div

@@ -250,16 +250,13 @@ const CourseMat: React.FC = () => {
           <FaGraduationCap className="mr-1 pb-2 text-[40px]" />
           Course Material
         </h1>
-        <button
-          className="absolute right-0 flex items-center mt-5 rounded-lg w-36 h-10 cursor-pointer border border-[black] bg-[black] group hover:bg-[black] active:bg-[#ddff7d] active:border-[#ddff7d]"
-          onClick={() => setIsModalOpen(true)}
+        <button onClick={() => setIsModalOpen(true)}
+          className="absolute font-semibold text-center group right-0 flex items-center mt-5 rounded-2xl w-48 h-12 cursor-pointer border border-[black] bg-[black] group hover:bg-[black] active:bg-[#ddff7d] active:border-[#ddff7d]"
         >
-          <span className="text-[#ddff7d] font-semibold ml-8 transform group-hover:translate-x-20 transition-all duration-300 hover:text-none">
-            Add Review
-          </span>
-          <span className="absolute right-0 h-full w-10 rounded-lg bg-[#ddff7d] flex items-center justify-center transform group-hover:translate-x-0 group-hover:w-full transition-all duration-300">
-            <h1 className="text-[26px] w-8 text-[black] justify-center text-center">+</h1>
-          </span>
+          <div className="bg-[#ddff7d] rounded-xl h-10 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
+            <h1 className="text-[26px] w-8 text-[black] text-center">+</h1>
+          </div>
+          <p className="translate-x-[4em] text-[#ddff7d]">Add Review</p>
         </button>
       </div>
 
@@ -325,7 +322,7 @@ const CourseMat: React.FC = () => {
 
       {/* Material Modal */}
       {selectedMaterial && (
-        <div className="fixed inset-0 shadow flex justify-center items-center mt-40">
+        <div className="fixed inset-0 shadow flex justify-center items-center mt-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-semibold mb-4">{selectedMaterial.title}</h2>
             <div>

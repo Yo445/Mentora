@@ -1,11 +1,22 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { getAuthUser } from "../helper/Storage";
+import Dashboard from "../Dashboard/Dashboard";
 
 const Auth: React.FC = () => {
-  const authUser = getAuthUser(); // Store result of getAuthUser() once
 
-  return authUser ? <Outlet /> : <Navigate to="/login" replace />;
+  const navigate =useNavigate();
+  useEffect(() => {
+    const authUser = getAuthUser();
+    if(!authUser)
+    {
+      navigate('/login')
+    }
+  }, [navigate]);
+  
+  return <Dashboard />;
 };
 
 export default Auth;
+
+

@@ -90,7 +90,7 @@ const CourseDetails: React.FC = () => {
       setEnrollError("User is not authenticated.");
       return;
     }
-  
+
     axios
       .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
         headers: {
@@ -108,15 +108,15 @@ const CourseDetails: React.FC = () => {
         console.error(err);
       });
   };
-  
-  // Listen for enrollment status change to update the button state
-  useEffect(() => {
-    if (isEnrolled) {
-      setShowAlert(true); // Show the alert for successful enrollment
-    }
-  }, [isEnrolled]);
 
-  
+  // // Listen for enrollment status change to update the button state
+  // useEffect(() => {
+  //   if (isEnrolled) {
+  //     setShowAlert(true); // Show the alert for successful enrollment
+  //   }
+  // }, [isEnrolled]);
+
+
   if (course.loading) {
     return <Loader />;
   }
@@ -124,7 +124,7 @@ const CourseDetails: React.FC = () => {
   if (course.err) {
     return <div>{course.err}</div>;
   }
-
+  console.log(isEnrolled)
   return (
     <div className="container mx-auto px-6 py-3">
       {showAlert && (
@@ -183,12 +183,15 @@ const CourseDetails: React.FC = () => {
                 <div className="flex space-x-4 items-center text-white">
                   <div className="flex items-center space-x-2">
                     <div className="flex flex-shrink-0 -space-x-1">
+
                       <button
                         onClick={handleEnroll}
                         disabled={isEnrolled} // Disable button if enrolled
                         className={`flex overflow-hidden ring-[5px] ring-black w-[5.1rem] items-center gap-2 cursor-pointer bg-black text-white px-5 py-2 rounded-full transition-all ease-in-out hover:scale hover:scale-105 font-[revert] active:scale-100 shadow-lg ${isEnrolled ? "opacity-50 cursor-not-allowed" : "hover:text-[#ddff7d]"}`}
                       >
+
                         {isEnrolled ? "Enrolled" : "Enroll"} {/* Change button text */}
+
                         {!isEnrolled && <GoPaperAirplane fontSize={"22px"} />}
                       </button>
                     </div>

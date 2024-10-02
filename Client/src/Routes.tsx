@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet } from "react-router-dom";
 import App from "./App";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
@@ -16,6 +16,8 @@ import LandingPage from "./Home/LandingPage";
 import Auth from "./middleware/Auth";
 import Guest from "./middleware/Guest";
 import Instructor from "./middleware/Instructor";
+import Layout from "./Layout";
+import Student from "./middleware/Student";
 
 // Define routes
 export const router = createBrowserRouter([
@@ -25,10 +27,11 @@ export const router = createBrowserRouter([
     children: [
       //for Un Auth Users
       {
+        // path:"guest",
         element: <Guest />,
         children: [
           {
-            path: "/",
+            path: "",
             element: <LandingPage />,
           },
           {
@@ -45,62 +48,71 @@ export const router = createBrowserRouter([
       //for Auth Users
       {
         element: <Auth />,
-        children: [
-          {
-            path: "dashboard",
-            element: <Dashboard />,
+        path: "dashboard",
+
             children: [
-              {
-                path:'',
-                element: <Home />,
-              },
-              {
-                path: "course/:id",
-                element: <CourseDetails />,
-              },
-              {
-                path: "enroll",
-                element: <Enrollments />,
-                children: [
-                  {
-                    path: ":id",
-                    element: <CourseMat />,
-                  },
-                ],
-              },
-              // Student routes
               // {
-              //   element: <Student />,
+              //   path:'',
+              //   element: <Home />,
+              // },
+              // {
+              //   path: "course/:id",
+              //   element: <CourseDetails />,
+              // },
+              // {
+              //   path: "enroll",
+              //   element: <Enrollments />,
               //   children: [
               //     {
-              //       path:'',
-              //       element: <Home />,
-              //     },
-              //     {
-              //       path: "course/:id",
-              //       element: <CourseDetails />,
-              //     },
-              //     {
-              //       path: "enroll",
-              //       element: <Enrollments />,
-              //       children: [
-              //         {
-              //           path: ":id",
-              //           element: <CourseMat />,
-              //         },
-              //       ],
+              //       path: ":id",
+              //       element: <CourseMat />,
               //     },
               //   ],
               // },
+              //Student routes
+              {
+                // path:'students',
+                element: <Student />,
+                children: [
+                  {
+                    index:true,
+                    element: <Home />,
+                  },
+                  {
+                    path: "course/:id",
+                    element: <CourseDetails />,
+                  },
+                  {
+                    path: "enroll",
+                    element: <Layout />,
+                    children: [
+                      {
+                        index:true,
+                        element: <Enrollments />,
+                      },
+                      {
+                      
+                        path: ":id",
+                        element: <CourseMat />,
+                      },
+                    ],
+                  },
+                ],
+              },
 
               //Instructor Routes
               {
+                // path:'instructor',
                 element: <Instructor />,
                 children: [
                   {
                     path: "manage-course",
-                    element: <MangeCourse />,
-                    children: [
+                    element: <Layout />,
+                    children: [                      
+                      {
+                        index: true,
+                        element: <MangeCourse />,
+                      },
                       {
                         path: "add",
                         element: <AddCourse />,
@@ -118,8 +130,8 @@ export const router = createBrowserRouter([
                 ],
               },
             ],
-          },
-        ],
+          
+        
       },
 
       //for Not found Links

@@ -120,7 +120,7 @@ const ManageCourse: React.FC = () => {
                             Manage Your Courses
                         </h1>
                         {/* Add course btn */}
-                        <Link to={"/dashboard/manage-course/add"}
+                        <Link to={"add"}
                             className="absolute font-semibold text-center group right-0 flex items-center mt-5 rounded-2xl w-48 h-12 cursor-pointer border border-[black] bg-[black] group hover:bg-[black] active:bg-[#ddff7d] active:border-[#ddff7d]"
                         >
                             <div className="bg-[#ddff7d] rounded-xl h-10 w-1/4 flex items-center justify-center absolute left-1 top-[4px] group-hover:w-[184px] z-10 duration-500">
