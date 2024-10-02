@@ -5,6 +5,7 @@ import { RiDeleteBinLine } from "react-icons/ri";
 import { TbLayoutGridAdd } from "react-icons/tb";
 import Loader from "../../../Components/Shared/Loader";
 import { getAccessToken } from "../../../helper/Storage";
+import { useParams } from "react-router-dom";
 
 interface Material {
   title: string;
@@ -22,7 +23,9 @@ interface CourseData {
   success: string | null;
 }
 
-export default function EditCourse({ courseId }: { courseId: string }) {
+export default function EditCourse() {
+  const { id } = useParams();
+
   const [courseData, setCourseData] = useState<CourseData>({
     title: "",
     description: "",
@@ -37,7 +40,7 @@ export default function EditCourse({ courseId }: { courseId: string }) {
   useEffect(() => {
     setCourseData({ ...courseData, loading: true });
     axios
-      .get(`http://localhost:5000/api/courses/${courseId}`, {
+      .get(`http://localhost:5000/api/courses/${id}`, {
         headers: {
           Authorization: `Bearer ${getAccessToken()}`,
         },
@@ -60,7 +63,7 @@ export default function EditCourse({ courseId }: { courseId: string }) {
           err: "Something went wrong, please try again later!",
         });
       });
-  }, [courseId]);
+  }, [id]);
 
   // Handle input changes for course fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -115,7 +118,7 @@ export default function EditCourse({ courseId }: { courseId: string }) {
     });
 
     axios
-      .put(`http://localhost:5000/api/courses/${courseId}`, formData, {
+      .put(`http://localhost:5000/api/courses/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${getAccessToken()}`,
         },
