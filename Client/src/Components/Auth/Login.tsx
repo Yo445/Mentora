@@ -13,6 +13,16 @@ interface LoginState {
   loading: boolean;
   err: string[];
 }
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  token: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -35,11 +45,14 @@ const Login: React.FC = () => {
       })
       .then((resp) => {
         setLogin({ ...login, loading: false, err: [] });
-        // Update this line to set the correct structure
         setAuthUser({
+          id: resp.data.id,
+          name: resp.data.name,
+          email: resp.data.email,
+          role: resp.data.role,
           token: {
-            accessToken: resp.data.token.accessToken, // Adjust according to your response structure
-            refreshToken: resp.data.token.refreshToken, // Adjust according to your response structure
+            accessToken: resp.data.token.accessToken,
+            refreshToken: resp.data.token.refreshToken,
           },
         });
         navigate("/dashboard");
@@ -72,39 +85,29 @@ const Login: React.FC = () => {
   };
 
   // On component mount, check if token was returned in URL query parameters (for OAuth login)
-  useEffect(() => {
-    // backend send me token as json response, i will get token from json response
-    const urlParams = new URLSearchParams(window.location.search);
-    console.log("urlParams", urlParams);
-    // const token = urlParams.get("token");
-    const accessToken = urlParams.get("accessToken");
-    const refreshToken =urlParams.get("refreshToken");
-    const id = urlParams.get("id");
-    const name = urlParams.get("name");
-    const email = urlParams.get("email");
-    const role = urlParams.get("role");
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const accessToken = urlParams.get("accessToken");
+  const refreshToken = urlParams.get("refreshToken");
+  const id = urlParams.get("id");
+  const name = urlParams.get("name");
+  const email = urlParams.get("email");
+  const role = urlParams.get("role");
 
-    // console.log("token", token);
-    console.log("accessToken", accessToken);
-    console.log("refreshToken", refreshToken);
-    console.log("id", id);
-
-    if (accessToken && refreshToken) {
-      setAuthUser({
-        token: { accessToken: accessToken || "", refreshToken: refreshToken || "" },
-        id: id || "",
-        name: name || "",
-        email: email || "",
-        role: role || "",
-      });
-    const queryParams = new URLSearchParams(window.location.search);
-    const token = queryParams.get("token");
-
-    if (token) {
-      setAuthUser({ token: { accessToken: token, refreshToken: "" } }); // Adjust as necessary
-      navigate("/dashboard");
-    }
-  }, [navigate]);
+  if (accessToken && refreshToken) {
+    setAuthUser({
+      id: id || "",
+      name: name || "",
+      email: email || "",
+      role: role || "",
+      token: {
+        accessToken: accessToken || "",
+        refreshToken: refreshToken || "",
+      },
+    });
+    navigate("/dashboard");
+  }
+}, [navigate]);
 
   return (
     <div
