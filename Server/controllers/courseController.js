@@ -131,7 +131,6 @@ const deleteCourse = async (req, res) => {
 // @access  Private (Student)
 const enrollCourse = async (req, res) => {
     try {
-        console.log("id", req.params.id);
         const course = await Course.findById(req.params.id);
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
