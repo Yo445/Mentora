@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Course from '../models/courseModel.js';
 import Enrollment from '../models/enrollmentModel.js';
 import User from '../models/userModel.js';
@@ -92,7 +93,9 @@ const updateCourse = async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        if (course.instructor.toString() !== req.user._id.toString()) {
+        const instructorId = new mongoose.Types.ObjectId(course.instructor.id);
+
+        if (instructorId.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: 'Not authorized to update this course' });
         }
         Object.assign(course, req.body);
@@ -115,11 +118,14 @@ const deleteCourse = async (req, res) => {
             return res.status(404).json({ message: 'Course not found' });
         }
 
-        if (course.instructor.toString() !== req.user._id.toString()) {
+        const instructorId = new mongoose.Types.ObjectId(course.instructor.id);
+
+        if (instructorId.toString() !== req.user._id.toString()) {
             return res.status(401).json({ message: 'Not authorized to delete this course' });
         }
 
-        await course.remove();
+        await course.deleteOne();
+        await Enrollment.deleteMany({ courseId: req.params.id });
         res.status(204).json({ message: 'Course removed' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -131,7 +137,6 @@ const deleteCourse = async (req, res) => {
 // @access  Private (Student)
 const enrollCourse = async (req, res) => {
     try {
-        console.log("id", req.params.id);
         const course = await Course.findById(req.params.id);
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
