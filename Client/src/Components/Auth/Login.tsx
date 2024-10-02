@@ -5,6 +5,11 @@ import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back.svg";
 import { setAuthUser } from "../../helper/Storage";
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import FacebookLogin, {
+  ReactFacebookLoginInfo,
+  ReactFacebookFailureResponse,
+} from 'react-facebook-login';
 
 // Define the shape of the state
 interface LoginState {
@@ -74,40 +79,107 @@ const Login: React.FC = () => {
     }));
   };
 
-  // Google login function
-  const googleLogin = () => {
-    window.open("http://localhost:5000/api/users/google-login", "_self");
-  };
+  // // Google login function
+  // const googleLogin = () => {
+  //   window.open("http://localhost:5000/api/users/google-login", "_self");
+  // };
 
-  // Facebook login function
-  const facebookLogin = () => {
-    window.open("http://localhost:5000/api/users/facebook-login", "_self");
+  // // Facebook login function
+  // const facebookLogin = () => {
+  //   window.open("http://localhost:5000/api/users/facebook-login", "_self");
+  // };
+
+
+  interface ReactFacebookLoginInfo {
+    accessToken: string;
+    userID: string;
+    expiresIn: number;
+    signedRequest: string;
+    graphDomain: string;
+    data_access_expiration_time: number;
+    email?: string;
+    name?: string;
+    picture?: {
+      data: {
+        height: number;
+        is_silhouette: boolean;
+        url: string;
+        width: number;
+      };
+    };
+  }
+
+  interface ReactFacebookFailureResponse {
+    status?: string;
+  }
+
+  function responseFacebook(
+    userInfo: ReactFacebookLoginInfo | ReactFacebookFailureResponse
+  ): void {
+    if ('accessToken' in userInfo) {
+      // Handle successful login
+      console.log('Logged in successfully:', userInfo);
+    } else {
+      // Handle login failure
+      console.error('Login failed:', userInfo);
+    }
+  }
+
+  // Google api
+  const [credentialResponse, setCredentialResponse] = useState<CredentialResponse | null>(null);
+
+  // useEffect to handle side effects when credentialResponse changes
+  useEffect(() => {
+    const loginUser = async () => {
+      if (credentialResponse?.credential) {
+        const tokenId = credentialResponse.credential; // Extract the Google token
+
+        try {
+          // Send token to your backend for verification and login
+          const response = await axios.post('http://localhost:5000/api/users/google-login', {
+            tokenId,
+          });
+
+          // Handle success (store token, redirect user, etc.)
+          console.log('Login Successful:', response.data);
+        } catch (error) {
+          // Handle error (invalid token, server issue, etc.)
+          console.error('Login failed', error);
+        }
+      }
+    };
+
+    loginUser();
+  }, [credentialResponse]); // Only run this effect when credentialResponse changes
+
+  const handleGoogleLoginSuccess = (response: CredentialResponse) => {
+    setCredentialResponse(response); // Store the credential response in state
   };
 
   // On component mount, check if token was returned in URL query parameters (for OAuth login)
-/*useEffect(() => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const accessToken = urlParams.get("accessToken");
-  const refreshToken = urlParams.get("refreshToken");
-  const id = urlParams.get("id");
-  const name = urlParams.get("name");
-  const email = urlParams.get("email");
-  const role = urlParams.get("role");
-
-  if (accessToken && refreshToken) {
-    setAuthUser({
-      id: id || "",
-      name: name || "",
-      email: email || "",
-      role: role || "",
-      token: {
-        accessToken: accessToken || "",
-        refreshToken: refreshToken || "",
-      },
-    });
-    navigate("/dashboard");
-  }
-}, [navigate]);*/
+  /*useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("accessToken");
+    const refreshToken = urlParams.get("refreshToken");
+    const id = urlParams.get("id");
+    const name = urlParams.get("name");
+    const email = urlParams.get("email");
+    const role = urlParams.get("role");
+  
+    if (accessToken && refreshToken) {
+      setAuthUser({
+        id: id || "",
+        name: name || "",
+        email: email || "",
+        role: role || "",
+        token: {
+          accessToken: accessToken || "",
+          refreshToken: refreshToken || "",
+        },
+      });
+      navigate("/dashboard");
+    }
+  }, [navigate]);*/
 
   return (
     <div
@@ -154,21 +226,36 @@ const Login: React.FC = () => {
                   </button>
                 </div>
               ))}
-              <button
+              {/* <button
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={facebookLogin}
               >
                 <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
-              </button>
+              </button> */}
 
-              <button
+              {/* <FacebookLogin
+                appId="1088597931155576"
+                autoLoad={true}
+                fields="name,email,picture"
+                callback={responseFacebook}
+              /> */}
+
+              {/* <button
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
                 onClick={googleLogin}
               >
                 <FcGoogle fontSize={"23px"} />
                 Continue with Google
-              </button>
+              </button> */}
+
+              <GoogleLogin
+                onSuccess={handleGoogleLoginSuccess}
+                onError={() => {
+                  console.log('Login Failed');
+                }}
+                useOneTap
+              />
             </div>
 
             <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">

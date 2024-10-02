@@ -12,7 +12,6 @@ const Instructor: React.FC = () => {
     }
   }, [navigate]);
 
-  // If the user is an instructor, render the child routes (Outlet), otherwise redirect to login
   return <Outlet />;
 };
 

@@ -237,6 +237,7 @@ import { RiHome6Fill } from "react-icons/ri";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getAccessToken, getAuthUser, getRefreshToken, removeAuthUser, setAuthUser } from "../../helper/Storage";
 import { jwtDecode } from "jwt-decode";
+import { googleLogout } from '@react-oauth/google';
 
 
 
@@ -249,15 +250,16 @@ interface DecodedToken {
   exp: number;  // Expiration time
   iat: number;  // Issued at time
   sub: string;  // Subject (e.g., user ID)
-  // Add other properties based on your JWT structure
 }
 
 
 interface User {
   id: string; // Required
-  name?: string; // Optional
-  email?: string; // Optional
-  role?: string; // Optional
+  name: string;
+  email: string;
+  role: string;
+  loginMethod?: 'google' | 'email' | 'other'; // Add loginMethod as an optional field
+
   token: {
     accessToken: string;
     refreshToken: string;
@@ -270,75 +272,89 @@ export default function SideBar({
 }: SideBarProps): JSX.Element {
   const navigate = useNavigate();
   const authUser = getAuthUser();
-  
+
   const roles = {
     instructor: authUser?.role === "instructor",
     student: authUser?.role === "student",
   };
 
   // Logout Function
+
+
   const logout = () => {
+    // Get the user info from local storage or context
+    const authUser: User | null = getAuthUser();
+
+    if (authUser && authUser.loginMethod === 'google') {
+        // Perform Google logout if the user logged in with Google
+        googleLogout();
+    }
+    
+    // Remove authentication information from local storage
     removeAuthUser();
-    navigate("/login"); // Assuming this is the route for your login page
-  };
 
-// Inside your SideBar component
-// useEffect(() => {
-//   const checkTokenAndRefresh = async () => {
-//     const accessToken = getAccessToken(); // Call the function to get the access token
-//     const refreshToken = getRefreshToken(); // Call the function to get the refresh token
+    // Navigate to the login page
+    navigate("/login");
+};
 
-//     if (accessToken) {
-//       const decodedToken = jwtDecode<DecodedToken>(accessToken);
-//       const currentTime = Math.floor(Date.now() / 1000);
-//       if (decodedToken.exp < currentTime) {
-//         // If token has expired
-//         if (refreshToken) {
-//           // Attempt to refresh
-//           try {
-//             const response = await fetch("http://localhost:5000/api/users/refresh-token", {
-//               method: "POST",
-//               body: JSON.stringify({ refreshToken }), // Only send refresh token
-//               headers: {
-//                 "Content-Type": "application/json"
-//               }
-//             });
 
-//             if (response.ok) {
-//               const data = await response.json();
-              
-//               // Check for missing properties and handle them
-//               setAuthUser({
-//                 id: authUser?.id || "default-id", // Provide a default value for id if undefined
-//                 name: authUser?.name || "Anonymous",
-//                 email: authUser?.email || "no-email@domain.com",
-//                 role: authUser?.role || "guest",
-//                 token: {
-//                   accessToken: data.token.accessToken,
-//                   refreshToken: data.token.refreshToken,
-//                 },
-//               });
-//             } else {
-//               console.error("Failed to refresh access token.");
-//               navigate("/login");
-//             }
-//           } catch (error) {
-//             console.error("Failed to refresh access token:", error);
-//             navigate("/login");
-//           }
-//         } else {
-//           console.error("Refresh token is missing.");
-//           navigate("/login");
-//         }
-//       }
-//     } else {
-//       console.error("Access token is missing or invalid.");
-//       navigate("/login");
-//     }
-//   };
+  // Inside your SideBar component
+  // useEffect(() => {
+  //   const checkTokenAndRefresh = async () => {
+  //     const accessToken = getAccessToken(); // Call the function to get the access token
+  //     const refreshToken = getRefreshToken(); // Call the function to get the refresh token
 
-//   checkTokenAndRefresh();
-// }, [authUser, navigate]); // Update dependencies
+  //     if (accessToken) {
+  //       const decodedToken = jwtDecode<DecodedToken>(accessToken);
+  //       const currentTime = Math.floor(Date.now() / 1000);
+  //       if (decodedToken.exp < currentTime) {
+  //         // If token has expired
+  //         if (refreshToken) {
+  //           // Attempt to refresh
+  //           try {
+  //             const response = await fetch("http://localhost:5000/api/users/refresh-token", {
+  //               method: "POST",
+  //               body: JSON.stringify({ refreshToken }), // Only send refresh token
+  //               headers: {
+  //                 "Content-Type": "application/json"
+  //               }
+  //             });
+
+  //             if (response.ok) {
+  //               const data = await response.json();
+
+  //               // Check for missing properties and handle them
+  //               setAuthUser({
+  //                 id: authUser?.id || "default-id", // Provide a default value for id if undefined
+  //                 name: authUser?.name || "Anonymous",
+  //                 email: authUser?.email || "no-email@domain.com",
+  //                 role: authUser?.role || "guest",
+  //                 token: {
+  //                   accessToken: data.token.accessToken,
+  //                   refreshToken: data.token.refreshToken,
+  //                 },
+  //               });
+  //             } else {
+  //               console.error("Failed to refresh access token.");
+  //               navigate("/login");
+  //             }
+  //           } catch (error) {
+  //             console.error("Failed to refresh access token:", error);
+  //             navigate("/login");
+  //           }
+  //         } else {
+  //           console.error("Refresh token is missing.");
+  //           navigate("/login");
+  //         }
+  //       }
+  //     } else {
+  //       console.error("Access token is missing or invalid.");
+  //       navigate("/login");
+  //     }
+  //   };
+
+  //   checkTokenAndRefresh();
+  // }, [authUser, navigate]); // Update dependencies
 
 
 
@@ -368,19 +384,19 @@ export default function SideBar({
         <div className={`max text-white mt-20 flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "flex" : "hidden"}`}>
           {/* {roles.student && (
             <> */}
-              <Link to="" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] p-2 pl-8 rounded-full flex items-center space-x-3">
-                <RiHome6Fill fontSize={"20px"} />
-                <div>Home</div>
-              </Link>
+          <Link to="" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] p-2 pl-8 rounded-full flex items-center space-x-3">
+            <RiHome6Fill fontSize={"20px"} />
+            <div>Home</div>
+          </Link>
 
-              <Link to="enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] p-2 pl-8 rounded-full flex items-center space-x-3">
-                <FaGraduationCap fontSize={"20px"} />
-                <div>Enrollments</div>
-              </Link>
-            {/* </>
+          <Link to="enroll" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] p-2 pl-8 rounded-full flex items-center space-x-3">
+            <FaGraduationCap fontSize={"20px"} />
+            <div>Enrollments</div>
+          </Link>
+          {/* </>
           )} */}
 
-          {roles.instructor && (
+          {roles.instructor &&(
             <>
               <Link to="manage-course" className="hover:ml-4 w-full text-white dark:hover:text-[#ddff7d] p-2 pl-8 rounded-full flex items-center space-x-3">
                 <MdSettingsSuggest fontSize={"22px"} />
@@ -392,20 +408,20 @@ export default function SideBar({
                 <div>Reviews</div>
               </Link>
             </>
-          )}
+          ) }
         </div>
 
         <div className={`mini mt-20 flex flex-col space-y-2 w-full h-[calc(100vh)] ${isOpen ? "hidden" : "flex"}`}>
           {/* {roles.student && (
             <> */}
-              <Link to="" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
+          <Link to="" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <RiHome6Fill fontSize={"20px"} />
               </Link>
 
               <Link to="enroll" className="hover:ml-4 justify-end pr-5 text-white dark:hover:text-[#ddff7d] w-full bg-[#000] p-3 rounded-full flex">
                 <FaGraduationCap fontSize={"20px"} />
               </Link>
-            {/* </>
+          {/* </>
           )} */}
 
           {roles.instructor && (
