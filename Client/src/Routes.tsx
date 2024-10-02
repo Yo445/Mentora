@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import React from "react"; // Add this import
 import App from "./App";
 import Login from "./Components/Auth/Login";
 import Register from "./Components/Auth/Register";
@@ -17,7 +16,6 @@ import LandingPage from "./Home/LandingPage";
 import Auth from "./middleware/Auth";
 import Guest from "./middleware/Guest";
 import Instructor from "./middleware/Instructor";
-import Student from "./middleware/Student";
 
 // Define routes
 export const router = createBrowserRouter([

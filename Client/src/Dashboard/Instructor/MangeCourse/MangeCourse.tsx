@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { IoSettings } from "react-icons/io5";
-import { Link, useNavigate } from "react-router-dom";
-import { FaRegEdit } from "react-icons/fa";
-import { RiDeleteBinLine } from "react-icons/ri";
-import { GoZap } from "react-icons/go";
 import axios from "axios";
-import { getAuthUser, getAccessToken } from "../../../helper/Storage";
+import React, { useEffect, useState } from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { GoZap } from "react-icons/go";
+import { IoSettings } from "react-icons/io5";
+import { RiDeleteBinLine } from "react-icons/ri";
+import { Link, useNavigate } from "react-router-dom";
+import { getAccessToken, getAuthUser } from "../../../helper/Storage";
 import Loader from './../../../Components/Shared/Loader';
 
 interface Course {
-    id: string | number;
+    _id: string | number;
     title: string;
     description: string;
     instructor: {
@@ -53,16 +53,12 @@ const ManageCourse: React.FC = () => {
         const fetchCourses = async () => {
             setCourseState(prevState => ({ ...prevState, loading: true }));
             try {
-                const resp = await axios.get("http://localhost:5000/api/courses/", {
-                    headers: {
-                        Authorization: `Bearer ${getAccessToken()}`,
-                    },
-                });
+                const resp = await axios.get("http://localhost:5000/api/courses/");
 
-                if (Array.isArray(resp.data)) {
+                if (Array.isArray(resp.data.courses)) {
                     setCourseState(prevState => ({
                         ...prevState,
-                        results: resp.data,
+                        results: resp.data.courses,
                         loading: false,
                     }));
                 } else {
@@ -108,6 +104,8 @@ const ManageCourse: React.FC = () => {
             }
         }
     };
+
+    console.log(courseState.results);
 
     return (
         <>
@@ -162,7 +160,7 @@ const ManageCourse: React.FC = () => {
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {courseState.results.map((course) => (
-                                <tr key={course.id}>
+                                <tr key={course._id}>
                                     <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">
                                         {course.title}
                                     </td>
@@ -177,13 +175,13 @@ const ManageCourse: React.FC = () => {
                                     </td>
                                     <td className="px-6 py-4 flex whitespace-nowrap">
                                         <Link
-                                            to={`edit/${course.id}`}
+                                            to={`edit/${course._id}`}
                                             className="w-9 h-9 text-center transition ease-in-out rounded-full flex items-center dark:hover:bg-[#6a2be266]"
                                         >
                                             <FaRegEdit className="text-[25px] text-[#6a2be2]" />
                                         </Link>
                                         <button
-                                            onClick={() => deleteCourse(course.id)}
+                                            onClick={() => deleteCourse(course._id)}
                                             className="ml-2 w-9 h-9 text-center transition ease-in-out rounded-full flex items-center dark:hover:bg-[#a52a2a8f]"
                                         >
                                             <RiDeleteBinLine className="text-[25px] text-[brown]" />
