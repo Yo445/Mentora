@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { GoPaperAirplane, GoZap } from 'react-icons/go';
 import { TiStarFullOutline } from 'react-icons/ti';
 import { useNavigate, useParams } from 'react-router-dom';
-import Loader from '../../Components/Shared/Loader';
-import { getAccessToken, getAuthUser } from '../../helper/Storage';
+import Loader from '../../../Components/Shared/Loader';
+import { getAccessToken, getAuthUser } from '../../../helper/Storage';
 
 // Define types for course data
 interface CourseProps {

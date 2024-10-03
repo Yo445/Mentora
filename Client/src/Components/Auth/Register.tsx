@@ -1,21 +1,27 @@
 import React, { useState, FormEvent } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios"; // Import AxiosError
 import { FaFacebook } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back2.svg";
 import { setAuthUser } from "../../helper/Storage";
+import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
 
 interface RegisterState {
   email: string;
   password: string;
   name: string;
-  loading: boolean; // Changed from string to boolean for better type management
+  loading: boolean;
   err: string[];
+}
+
+interface ErrorResponse {
+  message: string; // Adjust this to match your API's error response structure
 }
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const [googleCredential, setGoogleCredential] = useState<CredentialResponse | null>(null);
 
   const [register, setRegister] = useState<RegisterState>({
     email: "",
@@ -24,10 +30,10 @@ const Register: React.FC = () => {
     loading: false,
     err: [],
   });
-
   const RegisterFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRegister({ ...register, loading: true, err: [] });
+  
     axios
       .post("http://localhost:5000/api/users/register", {
         email: register.email,
@@ -37,11 +43,16 @@ const Register: React.FC = () => {
       .then((resp) => {
         setAuthUser(resp.data);
         setRegister({ ...register, loading: false, err: [] });
-        navigate("/dashboard");
+  
+        // Role-based redirection
+        if (resp.data.role === 'student') {
+          navigate("/dashboard/students");
+        } else if (resp.data.role === 'instructor') {
+          navigate("/dashboard/instructor");
+        }
       })
       .catch((error) => {
-        console.error(error);
-        const errorMsg = error.response?.data?.message || "An error occurred"; // Improved error handling
+        const errorMsg = error.response?.data?.message || "An error occurred";
         setRegister({
           ...register,
           loading: false,
@@ -49,16 +60,67 @@ const Register: React.FC = () => {
         });
       });
   };
+  
 
-  // Google login function
-  const googleLogin = () => {
-    window.open("http://localhost:5000/api/users/google-login", "_self"); // Assuming your backend handles Google login at this endpoint
-  };
+  // Google Signup
 
-  // Facebook login function
-  const facebookLogin = () => {
-    window.open("http://localhost:5000/api/users/facebook-login", "_self"); // Assuming your backend handles Facebook login at this endpoint
+  const googleSignup = async () => {
+    setRegister({ ...register, loading: true, err: [] });
+  
+    try {
+      const resp = await axios.get("http://localhost:5000/api/users/google-login");
+      setAuthUser(resp.data); // Save user data in local storage
+  
+      // Role-based redirection
+      if (resp.data.role === 'student') {
+        navigate("/dashboard/students");
+      } else if (resp.data.role === 'instructor') {
+        navigate("/dashboard/instructor");
+      }
+    } catch (error) {
+      const err = error as AxiosError<ErrorResponse>;
+      const errorMsg = err.response?.data.message || "Google login/signup failed";
+      setRegister({
+        ...register,
+        loading: false,
+        err: [errorMsg],
+      });
+    }
   };
+  
+
+  // Facebook login or signup using GET
+  const facebookSignup = async () => {
+    setRegister({ ...register, loading: true, err: [] });
+  
+    try {
+      const resp = await axios.get("http://localhost:5000/api/users/facebook-login");
+      setAuthUser(resp.data); // Save user data in local storage
+  
+      // Role-based redirection
+      if (resp.data.role === 'student') {
+        navigate("/dashboard/students");
+      } else if (resp.data.role === 'instructor') {
+        navigate("/dashboard/instructor");
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const errorMsg = error.response?.data?.message || "Facebook login/signup failed";
+        setRegister({
+          ...register,
+          loading: false,
+          err: [errorMsg],
+        });
+      } else {
+        setRegister({
+          ...register,
+          loading: false,
+          err: ["An unexpected error occurred"],
+        });
+      }
+    }
+  };
+  
 
   return (
     <div
@@ -86,7 +148,7 @@ const Register: React.FC = () => {
               </p>
             </div>
 
-            {/* Use Social Media */}
+            {/* Social Media Signup */}
             <div className="mt-7 flex flex-col gap-2">
               {register.err.map((error, index) => (
                 <div
@@ -94,7 +156,7 @@ const Register: React.FC = () => {
                   className="flex justify-between items-center bg-red-100 border border-red-400 text-red-700 px-4 py-3 my-2 rounded"
                   role="alert"
                 >
-                  <span>{error}</span> {/* Fixed error display */}
+                  <span>{error}</span>
                   <button
                     onClick={(e) => {
                       const parent = e.currentTarget.parentNode as HTMLElement | null;
@@ -108,20 +170,26 @@ const Register: React.FC = () => {
               ))}
 
               <button
-                onClick={facebookLogin}
+                onClick={facebookSignup}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
               >
                 <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
               </button>
 
-              <button
-                onClick={googleLogin}
+              {/* <button
+                onClick={googleSignup}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
               >
                 <FcGoogle fontSize={"23px"} />
                 Continue with Google
-              </button>
+              </button> */}
+              <GoogleLogin
+                onSuccess={googleSignup}
+                onError={() => console.log("Google login failed")}
+                useOneTap
+                text="continue_with"
+              />
             </div>
 
             <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
@@ -167,7 +235,7 @@ const Register: React.FC = () => {
               <button
                 type="submit"
                 className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"
-                disabled={register.loading} // Disable button when loading
+                disabled={register.loading}
               >
                 {register.loading ? "Creating..." : "Continue"}
               </button>

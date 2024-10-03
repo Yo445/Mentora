@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import SideBar from "../Components/Shared/SideBar";
 import { Outlet } from "react-router-dom";
+import { getAuthUser } from "helper/Storage";
 
 export default function Dashboard(): JSX.Element {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);

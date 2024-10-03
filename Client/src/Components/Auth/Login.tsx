@@ -6,10 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back.svg";
 import { setAuthUser } from "../../helper/Storage";
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import FacebookLogin, {
-  ReactFacebookLoginInfo,
-  ReactFacebookFailureResponse,
-} from 'react-facebook-login';
+import FacebookLogin, { ReactFacebookLoginInfo, ReactFacebookFailureResponse } from 'react-facebook-login';
 
 // Define the shape of the state
 interface LoginState {
@@ -32,6 +29,7 @@ interface User {
 const Login: React.FC = () => {
   const navigate = useNavigate();
 
+  // State for form-based login
   const [login, setLogin] = useState<LoginState>({
     email: "",
     password: "",
@@ -39,10 +37,17 @@ const Login: React.FC = () => {
     err: [],
   });
 
+  // State for Google login
+  const [googleCredential, setGoogleCredential] = useState<CredentialResponse | null>(null);
+
+  // State for Facebook login
+  const [facebookResponse, setFacebookResponse] = useState<ReactFacebookLoginInfo | null>(null);
+
   // Normal email/password login handler
   const LoginFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLogin({ ...login, loading: true, err: [] });
+
     axios
       .post("http://localhost:5000/api/users/login", {
         email: login.email,
@@ -60,7 +65,14 @@ const Login: React.FC = () => {
             refreshToken: resp.data.token.refreshToken,
           },
         });
-        navigate("/dashboard");
+
+        // Redirect based on user role
+        if (resp.data.role === 'student') {
+          navigate("/dashboard/students");
+        } else if (resp.data.role === 'instructor') {
+          navigate("/dashboard/instructor");
+        }
+        // You can add additional roles if needed
       })
       .catch((errors) => {
         setLogin({
@@ -71,6 +83,91 @@ const Login: React.FC = () => {
       });
   };
 
+
+  // Handle Facebook login response
+  const handleFacebookLogin = (response: ReactFacebookLoginInfo | ReactFacebookFailureResponse) => {
+    if ('accessToken' in response) {
+      setFacebookResponse(response); // Store the Facebook login response
+      axios
+        .get("http://localhost:5000/api/users/facebook-login", {
+          params: {
+            accessToken: response.accessToken,
+          },
+        })
+        .then((resp) => {
+          setAuthUser({
+            id: resp.data.id,
+            name: resp.data.name,
+            email: resp.data.email,
+            role: resp.data.role,
+            token: {
+              accessToken: resp.data.token.accessToken,
+              refreshToken: resp.data.token.refreshToken,
+            },
+          });
+
+          // Redirect based on user role
+          if (resp.data.role === 'student') {
+            navigate("/dashboard/students");
+          } else if (resp.data.role === 'instructor') {
+            navigate("/dashboard/instructor");
+          }
+          // No default redirect to /dashboard
+        })
+        .catch((err) => {
+          console.error("Facebook login failed", err);
+        });
+    } else {
+      console.error("Facebook login failed", response);
+    }
+  };
+
+  // Handle Google login response
+  const handleGoogleLogin = (response: CredentialResponse) => {
+    setGoogleCredential(response); // Store the Google credential response
+  };
+
+  // useEffect to handle Google login after getting the credential response
+  useEffect(() => {
+    const loginUserWithGoogle = async () => {
+      if (googleCredential?.credential) {
+        const tokenId = googleCredential.credential; // Extract the Google token
+
+        try {
+          const resp = await axios.get("http://localhost:5000/api/users/google-login", {
+            params: {
+              tokenId, // Pass tokenId as a query parameter
+            },
+          });
+          setAuthUser({
+            id: resp.data.id,
+            name: resp.data.name,
+            email: resp.data.email,
+            role: resp.data.role,
+            token: {
+              accessToken: resp.data.token.accessToken,
+              refreshToken: resp.data.token.refreshToken,
+            },
+          });
+
+          // Redirect based on user role
+          if (resp.data.role === 'student') {
+            navigate("/dashboard/students");
+          } else if (resp.data.role === 'instructor') {
+            navigate("/dashboard/instructor");
+          }
+          // No default redirect to /dashboard
+        } catch (error) {
+          console.error("Google login failed", error);
+        }
+      }
+    };
+
+    if (googleCredential) {
+      loginUserWithGoogle();
+    }
+  }, [googleCredential, navigate]);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLogin((prevState) => ({
@@ -78,108 +175,6 @@ const Login: React.FC = () => {
       [name]: value,
     }));
   };
-
-  // // Google login function
-  // const googleLogin = () => {
-  //   window.open("http://localhost:5000/api/users/google-login", "_self");
-  // };
-
-  // // Facebook login function
-  // const facebookLogin = () => {
-  //   window.open("http://localhost:5000/api/users/facebook-login", "_self");
-  // };
-
-
-  interface ReactFacebookLoginInfo {
-    accessToken: string;
-    userID: string;
-    expiresIn: number;
-    signedRequest: string;
-    graphDomain: string;
-    data_access_expiration_time: number;
-    email?: string;
-    name?: string;
-    picture?: {
-      data: {
-        height: number;
-        is_silhouette: boolean;
-        url: string;
-        width: number;
-      };
-    };
-  }
-
-  interface ReactFacebookFailureResponse {
-    status?: string;
-  }
-
-  function responseFacebook(
-    userInfo: ReactFacebookLoginInfo | ReactFacebookFailureResponse
-  ): void {
-    if ('accessToken' in userInfo) {
-      // Handle successful login
-      console.log('Logged in successfully:', userInfo);
-    } else {
-      // Handle login failure
-      console.error('Login failed:', userInfo);
-    }
-  }
-
-  // Google api
-  const [credentialResponse, setCredentialResponse] = useState<CredentialResponse | null>(null);
-
-  // useEffect to handle side effects when credentialResponse changes
-  useEffect(() => {
-    const loginUser = async () => {
-      if (credentialResponse?.credential) {
-        const tokenId = credentialResponse.credential; // Extract the Google token
-
-        try {
-          // Send token to your backend for verification and login
-          const response = await axios.post('http://localhost:5000/api/users/google-login', {
-            tokenId,
-          });
-
-          // Handle success (store token, redirect user, etc.)
-          console.log('Login Successful:', response.data);
-        } catch (error) {
-          // Handle error (invalid token, server issue, etc.)
-          console.error('Login failed', error);
-        }
-      }
-    };
-
-    loginUser();
-  }, [credentialResponse]); // Only run this effect when credentialResponse changes
-
-  const handleGoogleLoginSuccess = (response: CredentialResponse) => {
-    setCredentialResponse(response); // Store the credential response in state
-  };
-
-  // On component mount, check if token was returned in URL query parameters (for OAuth login)
-  /*useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("accessToken");
-    const refreshToken = urlParams.get("refreshToken");
-    const id = urlParams.get("id");
-    const name = urlParams.get("name");
-    const email = urlParams.get("email");
-    const role = urlParams.get("role");
-  
-    if (accessToken && refreshToken) {
-      setAuthUser({
-        id: id || "",
-        name: name || "",
-        email: email || "",
-        role: role || "",
-        token: {
-          accessToken: accessToken || "",
-          refreshToken: refreshToken || "",
-        },
-      });
-      navigate("/dashboard");
-    }
-  }, [navigate]);*/
 
   return (
     <div
@@ -195,7 +190,7 @@ const Login: React.FC = () => {
     >
       <div className="absolute top-0 w-full h-full bg-gray-900 opacity-70"></div>
       <div className="relative p-4 w-full max-w-md h-full md:h-auto">
-        <div className="relative bg-[white] rounded-lg shadow">
+        <div className="relative bg-white rounded-lg shadow">
           <div className="p-5">
             <div className="text-center">
               <p className="mb-3 text-2xl font-semibold leading-5 text-slate-900">
@@ -226,36 +221,20 @@ const Login: React.FC = () => {
                   </button>
                 </div>
               ))}
-              {/* <button
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={facebookLogin}
-              >
-                <FaFacebook fontSize={"23px"} color={"#1877F2"} />
-                Continue with Facebook
-              </button> */}
 
-              {/* <FacebookLogin
-                appId="1088597931155576"
-                autoLoad={true}
+              <FacebookLogin
+                appId="540494355054611"
                 fields="name,email,picture"
-                callback={responseFacebook}
-              /> */}
-
-              {/* <button
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
-                onClick={googleLogin}
-              >
-                <FcGoogle fontSize={"23px"} />
-                Continue with Google
-              </button> */}
+                callback={handleFacebookLogin}
+              />
 
               <GoogleLogin
-                onSuccess={handleGoogleLoginSuccess}
-                onError={() => {
-                  console.log('Login Failed');
-                }}
+                onSuccess={handleGoogleLogin}
+                onError={() => console.log("Google login failed")}
                 useOneTap
+                text="continue_with"
               />
+
             </div>
 
             <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
