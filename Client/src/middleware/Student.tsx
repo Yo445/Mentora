@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { getAuthUser } from "../helper/Storage";
+import { getAuthUser, removeAuthUser } from "../helper/Storage";
 
 const Student: React.FC = () => {
 
@@ -8,6 +8,7 @@ const Student: React.FC = () => {
   useEffect(() => {
     const authUser = getAuthUser();
     if (authUser?.role !== "student") {
+      removeAuthUser();
       navigate('/login')
     }
   }, [navigate]); // Empty dependency array ensures this runs only once

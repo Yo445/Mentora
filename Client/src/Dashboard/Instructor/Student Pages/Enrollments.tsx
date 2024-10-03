@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { GiNotebook } from "react-icons/gi";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { Link } from 'react-router-dom'; // Import Link for navigation
-import Loader from "../../Components/Shared/Loader";
-import { getAccessToken } from '../../helper/Storage';
+import Loader from "../../../Components/Shared/Loader";
+import { getAccessToken } from '../../../helper/Storage';
 
 interface Enrollment {
     _id: string; // Unique identifier for the course
@@ -17,21 +17,21 @@ interface CourseProps {
     title: string;
     description: string;
     instructor: {
-      name: string;
-      id: string;
+        name: string;
+        id: string;
     };
     students: string[];
     category: string;
     difficulty: string;
     materials: {
-      title: string;
-      url: string;
-      fileType: string;
-      fileSize: string;
+        title: string;
+        url: string;
+        fileType: string;
+        fileSize: string;
     }[];
     createdAt: string;
     updatedAt: string;
-  }
+}
 
 
 const Enrollments: React.FC = () => {
