@@ -70,6 +70,9 @@ const courseSchema = new mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'User',
             },
+            username: {
+                type: String,
+            },
             rating: {
                 type: Number,
                 min: 1,

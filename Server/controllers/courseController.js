@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 import Course from '../models/courseModel.js';
 import Enrollment from '../models/enrollmentModel.js';
-import User from '../models/userModel.js';
 
 // @desc    Get all courses using pagination
 // @route   GET /api/courses
@@ -57,11 +56,9 @@ const getCourseById = async (req, res) => {
 // @access  Private (Instructor)
 const createCourse = async (req, res) => {
     try {
-        const { title, description, instructor, category, difficulty } = req.body;
-
-        const instructorData = await User.findById(instructor.id);
-        if (!instructorData) {
-            return res.status(404).json({ message: "Instructor not found" });
+        const { title, description, category, difficulty } = req.body;
+        if (!title || !description || !category || !difficulty) {
+            return res.status(400).json({ message: 'Please fill in all fields' });
         }
         
         const course = new Course({
@@ -70,14 +67,15 @@ const createCourse = async (req, res) => {
             category,
             difficulty,
             instructor: {
-                id: instructor.id,
-                name: instructorData.name
+                id: req.user._id,
+                name: req.user.name
             },
         });
 
         await course.save();
         res.status(201).json(course);
     } catch (error) {
+        console.log("error", error);
         res.status(500).json({ message: error.message });
     }
 };
@@ -162,7 +160,7 @@ const reviewCourse = async (req, res) => {
         if (!course) {
             return res.status(404).json({ message: 'Course not found' });
         }
-        const enrollment = await Enrollment.findOne({ course: req.params.id, student: req.user._id });
+        const enrollment = await Enrollment.findOne({ courseId: req.params.id, studentId: req.user._id });
         if (!enrollment) {
             return res.status(400).json({ message: 'Not enrolled in this course' });
         }
@@ -170,7 +168,7 @@ const reviewCourse = async (req, res) => {
         if (review) {
             return res.status(400).json({ message: 'Already reviewed this course' });
         }
-        course.reviews.push({ user: req.user._id, ...req.body });
+        course.reviews.push({ user: req.user._id, username: req.user.name, ...req.body });
         await course.save();
         res.status(201).json(course);
     } catch (error) {

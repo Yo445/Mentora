@@ -245,7 +245,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /api/courses/{id}/reviews:
+  /api/courses/{id}/review:
     post:
       tags:
         - Courses
