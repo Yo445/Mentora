@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { MdReviews } from "react-icons/md";
 import Loader from "../../Components/Shared/Loader";
-import { getAccessToken } from "../../helper/Storage";
 
 interface Review {
-  email: string;
+  rating: string;
   comment: string;
+  createdAt: string;
+  username: string;
 }
 
 interface Course {
-  id: string;
-  name: string;
+  _id: string;
+  title: string;
   reviews: Review[];
 }
 
@@ -82,21 +83,25 @@ const StudentReviews: React.FC = () => {
               Course Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Student Email
+              Student Name
             </th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Review Message
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Rating
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {courses.map((course) => (
-            <React.Fragment key={course.id}>
+            <React.Fragment key={course._id}>
               {course.reviews.map((review, index) => (
                 <tr key={index}>
-                  <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{course.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{review.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[darkcyan]">{course.title}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[darkmagenta]">{review.username}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-[coral]">{review.comment}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-[coral]">{review.rating}</td>
                 </tr>
               ))}
             </React.Fragment>

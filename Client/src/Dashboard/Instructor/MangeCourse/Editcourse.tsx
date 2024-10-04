@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { TbLayoutGridAdd } from "react-icons/tb";
+import { useParams } from "react-router-dom";
 import Loader from "../../../Components/Shared/Loader";
 import { getAccessToken } from "../../../helper/Storage";
-import { useParams } from "react-router-dom";
 
 interface Material {
   title: string;
@@ -16,7 +16,8 @@ interface Material {
 interface CourseData {
   title: string;
   description: string;
-  instructor: string;
+  category: string;
+  difficulty: string;
   materials: Material[];
   loading: boolean;
   err: string;
@@ -29,7 +30,8 @@ export default function EditCourse() {
   const [courseData, setCourseData] = useState<CourseData>({
     title: "",
     description: "",
-    instructor: "",
+    category: "",
+    difficulty: "",
     materials: [],
     loading: false,
     err: "",
@@ -51,7 +53,8 @@ export default function EditCourse() {
           ...courseData,
           title: course.title,
           description: course.description,
-          instructor: course.instructor,
+          category: course.category,
+          difficulty: course.difficulty,
           materials: course.materials || [],
           loading: false,
         });
@@ -66,7 +69,7 @@ export default function EditCourse() {
   }, [id]);
 
   // Handle input changes for course fields
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setCourseData({ ...courseData, [name]: value });
   };
@@ -108,7 +111,8 @@ export default function EditCourse() {
     const formData = new FormData();
     formData.append("title", courseData.title);
     formData.append("description", courseData.description);
-    formData.append("instructor", courseData.instructor);
+    formData.append("category", courseData.category);
+    formData.append("difficulty", courseData.difficulty);
     courseData.materials.forEach((material, index) => {
       formData.append(`materials[${index}][title]`, material.title);
       formData.append(`materials[${index}][materialType]`, material.materialType);
@@ -116,9 +120,23 @@ export default function EditCourse() {
         formData.append(`materials[${index}][file]`, material.file);
       }
     });
+    console.log('formData entries:');
+formData.forEach((value, key) => {
+  console.log(key, value);
+});
+
+console.log('formData:', formData.entries());
 
     axios
-      .put(`http://localhost:5000/api/courses/${id}`, formData, {
+      .put(`http://localhost:5000/api/courses/${id}`,
+        {
+          title: courseData.title,
+          description: courseData.description,
+          category: courseData.category,
+          difficulty: courseData.difficulty,
+          materials: courseData.materials,
+        },
+        {
         headers: {
           Authorization: `Bearer ${getAccessToken()}`,
         },
@@ -210,20 +228,46 @@ export default function EditCourse() {
                 onChange={handleChange}
               ></textarea>
             </div>
-
-            {/* Instructor Info */}
+              
+              {/* Course Category */}
             <div className="p-2">
-              <input
-                type="text"
-                id="instructor"
-                name="instructor"
-                placeholder="Instructor Name"
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 p-2"
-                value={courseData.instructor}
+              <select
+                name="category"
+                value={courseData.category}
                 onChange={handleChange}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 p-2"
                 required
-              />
+              >
+                <option value="">Select Category</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Mobile Development">Mobile Development</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Machine Learning">Machine Learning</option>
+              <option value="Artificial Intelligence">Artificial Intelligence</option>
+              <option value="Blockchain">Blockchain</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Cloud Computing">Cloud Computing</option>
+              <option value="DevOps">DevOps</option>
+              <option value="Other">Other</option>
+              </select>
             </div>
+              
+              {/* Course Difficulty */}
+            <div className="p-2">
+              <select
+                name="difficulty"
+                value={courseData.difficulty}
+                onChange={handleChange}
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-[#8c0327] focus:ring-[#8c0327] focus:ring-opacity-50 p-2"
+                required
+              >
+                <option value="">Select Difficulty</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+            
 
             {/* Course Materials */}
             <div>
