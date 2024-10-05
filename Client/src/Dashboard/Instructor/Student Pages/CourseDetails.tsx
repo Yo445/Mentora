@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { GoPaperAirplane, GoZap } from 'react-icons/go';
-import { TiStarFullOutline } from 'react-icons/ti';
+import { GoZap } from 'react-icons/go';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loader from '../../../Components/Shared/Loader';
 import { getAccessToken, getAuthUser } from '../../../helper/Storage';
@@ -32,8 +31,39 @@ interface CourseState {
   loading: boolean;
   result: CourseProps | null;
   err: string;
-  reload: boolean;
 }
+
+const Alert: React.FC<{ message: string; type: "success" | "error"; onClose: () => void }> = ({ message, type, onClose }) => {
+  const alertClasses = type === "success" 
+    ? "bg-green-100 border border-green-400 text-green-700"
+    : "bg-red-100 border border-red-400 text-red-700";
+
+  return (
+    <div className={`flex p-4 rounded-lg ${alertClasses} mb-4`} role="alert">
+      <div className="flex-shrink-0">
+        <svg
+          className={`w-5 h-5 ${type === "success" ? "text-green-600" : "text-red-600"}`}
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d={type === "success" ? "M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" : "M10 18a8 8 0 100-16 8 8 0 000 16zm3.536-10.464a1 1 0 010 1.414l-3.536 3.536a1 1 0 01-1.414-1.414L10.586 9l-3.536-3.536a1 1 0 111.414-1.414l3.536 3.536z"}
+            clipRule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <div className="ml-3">
+        <p className="text-sm">{message}</p>
+      </div>
+      <button onClick={onClose} className="ml-auto bg-transparent text-gray-500 hover:text-gray-700">
+        &times;
+      </button>
+    </div>
+  );
+};
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams();
@@ -44,78 +74,100 @@ const CourseDetails: React.FC = () => {
     loading: false,
     result: null,
     err: "",
-    reload: false,
   });
-  const [showAlert, setShowAlert] = useState(false); // State to control the alert visibility
-  const [enrollError, setEnrollError] = useState<string | null>(null); // State for handling errors in enrollment
-  const [isEnrolled, setIsEnrolled] = useState(false); // State to track enrollment status
+  const [showAlert, setShowAlert] = useState(false);
+  const [enrollError, setEnrollError] = useState<string | null>(null);
+  const [isEnrolled, setIsEnrolled] = useState(() => {
+    // Retrieve the enrollment status from localStorage
+    return localStorage.getItem(`enrolled-${id}`) === "true";
+  });
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<"success" | "error" | null>(null);
 
   // Fetch course details when component loads
   useEffect(() => {
-    const fetchCourse = () => {
-      const user = getAuthUser();
-      if (user) {
-        setUserEmail(user.email);
-      } else {
-        console.error("User is not authenticated or email is missing.");
-        return;
-      }
+    const fetchCourseDetails = async () => {
+      setCourse({ loading: true, result: null, err: "" });
 
-      setCourse({ ...course, loading: true });
-      axios
-        .get(`http://localhost:5000/api/courses/${id}`)
-        .then((resp) => {
-          setCourse({
-            ...course,
-            result: resp.data,
-            loading: false,
-          });
-        })
-        .catch((err) => {
-          setCourse({
-            ...course,
-            loading: false,
-            err: "Something went wrong, please try again later!",
-          });
-        });
+      try {
+        // Fetch course details
+        const courseResp = await axios.get(`http://localhost:5000/api/courses/${id}`);
+        setCourse({ loading: false, result: courseResp.data, err: "" });
+      } catch (err) {
+        setCourse({ loading: false, result: null, err: "Something went wrong, please try again later!" });
+      }
     };
 
-    fetchCourse();
-  }, [course.reload]);
+    fetchCourseDetails();
+  }, [id]);
+
+  // Check enrollment status after fetching course details
+  useEffect(() => {
+    const checkEnrollmentStatus = async () => {
+      const token = getAccessToken();
+      if (!token) return;
+
+      try {
+        await axios.get(`http://localhost:5000/api/courses/${id}/enroll`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        // If the request succeeds, it means the user is not enrolled
+        setIsEnrolled(false);
+      } catch (error) {
+        // If a 400 error occurs, the user is already enrolled
+        if (axios.isAxiosError(error) && error.response?.status === 400) {
+          setIsEnrolled(true);
+        }
+      }
+    };
+
+    checkEnrollmentStatus();
+  }, [id]);
 
   // Function to handle enrollment
-  const handleEnroll = () => {
-    const token = getAccessToken(); // Retrieve the token using your function
+  const handleEnroll = async () => {
+    const token = getAccessToken();
     if (!token) {
       setEnrollError("User is not authenticated.");
       return;
     }
 
-    axios
-      .post(`http://localhost:5000/api/courses/${id}/enroll`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Use the token in the authorization header
-        },
-      })
-      .then((resp) => {
-        setIsEnrolled(true); // Mark as enrolled
-        setShowAlert(true); // Show alert upon successful enrollment
-        setTimeout(() => setShowAlert(false), 3000); // Hide alert after 3 seconds
-        navigate(`/enroll/${id}`); // Navigate to the course material
-      })
-      .catch((err) => {
+    try {
+      await axios.post(
+        `http://localhost:5000/api/courses/${id}/enroll`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setIsEnrolled(true);
+      localStorage.setItem(`enrolled-${id}`, "true"); // Store the enrollment status in localStorage
+      setAlertMessage(`You have successfully enrolled in ${course.result?.title}.`);
+      setAlertType("success");
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 3000);
+      navigate(`/dashboard/students/enroll/${id}`);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setEnrollError("You are already enrolled in this course.");
+        setAlertMessage("You are already enrolled in this course.");
+        setAlertType("error");
+        setShowAlert(true);
+        setIsEnrolled(true); // Set enrollment status to true if already enrolled
+      } else {
         setEnrollError("Enrollment failed. Please try again.");
-        console.error(err);
-      });
+        setAlertMessage("Enrollment failed. Please try again.");
+        setAlertType("error");
+        setShowAlert(true);
+        console.error(error);
+      }
+    }
   };
-
-  // // Listen for enrollment status change to update the button state
-  // useEffect(() => {
-  //   if (isEnrolled) {
-  //     setShowAlert(true); // Show the alert for successful enrollment
-  //   }
-  // }, [isEnrolled]);
-
 
   if (course.loading) {
     return <Loader />;
@@ -124,29 +176,16 @@ const CourseDetails: React.FC = () => {
   if (course.err) {
     return <div>{course.err}</div>;
   }
-  console.log(isEnrolled)
+
   return (
     <div className="container mx-auto px-6 py-3">
-      {showAlert && (
-        <div className="relative items-center w-full px-5 py-12 mx-auto md:px-12 lg:px-24 max-w-7xl">
-          <div className="p-6 border-l-4 border-green-500 rounded-r-xl bg-green-50">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="w-5 h-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                </svg>
-              </div>
-              <div className="ml-3">
-                <div className="text-sm text-green-600">
-                  <p>You have successfully enrolled in <strong>{course.result?.title}</strong>.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      {showAlert && alertMessage && alertType && (
+        <Alert 
+          message={alertMessage}
+          type={alertType}
+          onClose={() => setShowAlert(false)}
+        />
       )}
-
-      {enrollError && <div className="text-red-500">{enrollError}</div>}
 
       {course.result && (
         <div className="mx-auto max-w-7xl pt-16 sm:pt-24">
@@ -167,49 +206,29 @@ const CourseDetails: React.FC = () => {
                   <h3 className="text-xl mt-5 text-white">
                     by <span>{course.result.instructor.name}</span>
                   </h3>
-                  <p className="text-base text-[gray] sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                    {course.result.description}
-                  </p>
-                  <div className="flex items-center space-x-2">
-                    <h2 className="text-white">Ratings</h2>
-                    <h3 className="text-[#cda400] flex items-center">
-                      3.5 <TiStarFullOutline />
-                    </h3>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-700"></div>
-
-                <div className="flex space-x-4 items-center text-white">
-                  <div className="flex items-center space-x-2">
-                    <div className="flex flex-shrink-0 -space-x-1">
-
-                      <button
-                        onClick={handleEnroll}
-                        disabled={isEnrolled} // Disable button if enrolled
-                        className={`flex overflow-hidden ring-[5px] ring-black w-[5.1rem] items-center gap-2 cursor-pointer bg-black text-white px-5 py-2 rounded-full transition-all ease-in-out hover:scale hover:scale-105 font-[revert] active:scale-100 shadow-lg ${isEnrolled ? "opacity-50 cursor-not-allowed" : "hover:text-[#ddff7d]"}`}
-                      >
-
-                        {isEnrolled ? "Enrolled" : "Enroll"} {/* Change button text */}
-
-                        {!isEnrolled && <GoPaperAirplane fontSize={"22px"} />}
-                      </button>
-                    </div>
-                  </div>
+                  <p className="text-sm text-gray-400">{course.result.category}</p>
+                  <p className="text-base text-gray-300">{course.result.description}</p>
+                  <button
+                    className={`bg-[#ddff7d] hover:bg-[#c0cc1e] text-black rounded-lg px-5 py-2 ${
+                      isEnrolled ? "hidden" : ""
+                    }`}
+                    onClick={handleEnroll}
+                  >
+                    Enroll Now
+                  </button>
+                  {isEnrolled && (
+                    <span className="text-green-500 font-bold">You are already enrolled!</span>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center w-full col-span-6">
-              <div className="px-6 h-96 lg:h-100% w-full max-w-2xl col-span-6 flex items-center mx-auto rounded-[10px]">
-                <div className="w-[100%] h-[104%] rounded-[10px]">
-                  <div className="w-[100%] h-[100%] bg-[gray] rounded-[10px] overflow-hidden">
-                    <div
-                      className="rounded-[10px]"
-                    ></div>
-                  </div>
-                </div>
-              </div>
+            <div className="lg:col-span-6 px-10">
+              <img
+                className="w-full rounded-lg"
+                src="https://img-c.udemycdn.com/course/750x422/1565838_e54e_12.jpg"
+                alt="Course visual"
+              />
             </div>
           </div>
         </div>

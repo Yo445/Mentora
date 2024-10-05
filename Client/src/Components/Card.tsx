@@ -29,10 +29,10 @@ const Card: React.FC<CardProps> = ({
       difficultyClass = "text-[#ddff7d]"; // Green for beginner
       break;
     case "intermediate":
-      difficultyClass = "text-orange-500"; // Orange for intermediate
+      difficultyClass = "text-[#f9c216]"; // yellow for intermediate
       break;
     case "advanced":
-      difficultyClass = "text-red-500"; // Red for advanced
+      difficultyClass = "text-orange-500"; // Orange for advanced
       break;
     default:
       difficultyClass = "text-gray-400"; // Default color for unknown difficulty
