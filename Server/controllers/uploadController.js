@@ -26,9 +26,10 @@ const uploadFileToMinio = async (req, res) => {
             return res.status(500).json({ message: 'Invalid bucket name'});
         }
 
-        const url = await minioClient.presignedPutObject(params.bucket, params.ObjectName, (err, url) => {
+        const expires = 7 * 24 * 60 * 60; // URL expires in 7 days
+        minioClient.presignedPutObject(params.bucket, params.ObjectName, expires, async (err, url) => {
             if (err) throw err
-            console.log('Presigned put url:', url, err)});
+            console.log('Presigned put url:', url, err)
 
         const course = await Course.findById(req.body.courseId);
         if (!course) {
@@ -36,7 +37,7 @@ const uploadFileToMinio = async (req, res) => {
         }
 
         course.materials.push({
-            title: file.originalname,
+            title: req.body.title,
             materialType: req.body.materialType,
             url,
             fileType: file.mimetype.split('/')[0],
@@ -50,6 +51,7 @@ const uploadFileToMinio = async (req, res) => {
         console.log("course", course);
 
         res.status(201).json({ url });
+    });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to upload file to Minio' });
