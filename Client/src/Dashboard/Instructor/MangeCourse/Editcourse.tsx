@@ -11,9 +11,12 @@ interface Material {
   title: string;
   materialType: string;
   file?: File | null;
+  url?: string;
+  fileSize?: string;
 }
 
 interface CourseData {
+  _id: string;
   title: string;
   description: string;
   category: string;
@@ -28,6 +31,7 @@ export default function EditCourse() {
   const { id } = useParams();
 
   const [courseData, setCourseData] = useState<CourseData>({
+    _id: "",
     title: "",
     description: "",
     category: "",
@@ -51,6 +55,7 @@ export default function EditCourse() {
         const course = resp.data;
         setCourseData({
           ...courseData,
+          _id: course._id,
           title: course.title,
           description: course.description,
           category: course.category,
@@ -103,29 +108,41 @@ export default function EditCourse() {
     setCourseData({ ...courseData, materials: updatedMaterials });
   };
 
+  const uploadFileToMinio = async (file: File, i: number) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("materialType", courseData.materials[i].materialType);
+    formData.append("title", courseData.materials[i].title);
+    formData.append("courseId", courseData._id);
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/uploads/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${getAccessToken()}`,
+        },
+      });
+      return response.data.url;
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      return null;
+    }
+  };
   // Submit updated course
-  const updateCourse = (e: React.FormEvent<HTMLFormElement>) => {
+  const updateCourse = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCourseData({ ...courseData, loading: true });
 
-    const formData = new FormData();
-    formData.append("title", courseData.title);
-    formData.append("description", courseData.description);
-    formData.append("category", courseData.category);
-    formData.append("difficulty", courseData.difficulty);
-    courseData.materials.forEach((material, index) => {
-      formData.append(`materials[${index}][title]`, material.title);
-      formData.append(`materials[${index}][materialType]`, material.materialType);
-      if (material.file) {
-        formData.append(`materials[${index}][file]`, material.file);
-      }
-    });
-    console.log('formData entries:');
-formData.forEach((value, key) => {
-  console.log(key, value);
-});
-
-console.log('formData:', formData.entries());
+    const updatedMaterials = await Promise.all(
+      // i want to pass index to uploadFileToMinio function
+      courseData.materials.map(async (material, i) => {
+        if (material.file) {
+          const url = await uploadFileToMinio(material.file, i);
+          return { ...material, url };
+        }
+        return material;
+      })
+    );
 
     axios
       .put(`http://localhost:5000/api/courses/${id}`,
@@ -134,7 +151,7 @@ console.log('formData:', formData.entries());
           description: courseData.description,
           category: courseData.category,
           difficulty: courseData.difficulty,
-          materials: courseData.materials,
+          // materials: updatedMaterials,
         },
         {
         headers: {
@@ -295,12 +312,10 @@ console.log('formData:', formData.entries());
                     required
                   >
                     <option value="">Select Type</option>
-                    <option value="video">Video</option>
-                    <option value="audio">Audio</option>
-                    <option value="pdf">PDF</option>
-                    <option value="image">Image</option>
-                    <option value="zip">ZIP</option>
-                    <option value="doc">Document</option>
+                    <option value="assignment">Assignment</option>
+                    <option value="quiz">Quiz</option>
+                    <option value="lecture">Lecture</option>
+                    <option value="reading">Reading</option>
                     <option value="other">Other</option>
                   </select>
                   {/* Material File Upload */}
@@ -327,3 +342,26 @@ console.log('formData:', formData.entries());
     </div>
   );
 }
+
+
+
+
+
+
+//     const formData = new FormData();
+//     formData.append("title", courseData.title);
+//     formData.append("description", courseData.description);
+//     formData.append("category", courseData.category);
+//     formData.append("difficulty", courseData.difficulty);
+//     courseData.materials.forEach((material, index) => {
+//       formData.append(`materials[${index}][title]`, material.title);
+//       formData.append(`materials[${index}][materialType]`, material.materialType);
+//       if (material.file) {
+//         formData.append(`materials[${index}][file]`, material.file);
+//       }
+//     });
+//     console.log('formData entries:');
+// formData.forEach((value, key) => {
+//   console.log(key, value);
+// });
+// console.log('formData:', formData.entries());

@@ -144,6 +144,8 @@ const enrollCourse = async (req, res) => {
             return res.status(400).json({ message: 'Already enrolled in this course' });
         }
         const newEnrollment = await Enrollment.create({ courseId: req.params.id, studentId: req.user._id });
+        course.students.push(req.user._id);
+        await course.save();
         res.status(201).json(newEnrollment);
     } catch (error) {
         console.log("error", error);

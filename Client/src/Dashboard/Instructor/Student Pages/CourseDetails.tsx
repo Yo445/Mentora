@@ -7,7 +7,7 @@ import { getAccessToken, getAuthUser } from '../../../helper/Storage';
 
 // Define types for course data
 interface CourseProps {
-  id: string | number;
+  _id: string | number;
   title: string;
   description: string;
   instructor: {
@@ -34,7 +34,7 @@ interface CourseState {
 }
 
 const Alert: React.FC<{ message: string; type: "success" | "error"; onClose: () => void }> = ({ message, type, onClose }) => {
-  const alertClasses = type === "success" 
+  const alertClasses = type === "success"
     ? "bg-green-100 border border-green-400 text-green-700"
     : "bg-red-100 border border-red-400 text-red-700";
 
@@ -77,10 +77,7 @@ const CourseDetails: React.FC = () => {
   });
   const [showAlert, setShowAlert] = useState(false);
   const [enrollError, setEnrollError] = useState<string | null>(null);
-  const [isEnrolled, setIsEnrolled] = useState(() => {
-    // Retrieve the enrollment status from localStorage
-    return localStorage.getItem(`enrolled-${id}`) === "true";
-  });
+  const [isEnrolled, setIsEnrolled] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<"success" | "error" | null>(null);
 
@@ -108,18 +105,15 @@ const CourseDetails: React.FC = () => {
       if (!token) return;
 
       try {
-        await axios.get(`http://localhost:5000/api/courses/${id}/enroll`, {
+        const resp = await axios.get(`http://localhost:5000/api/users/courses`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        // If the request succeeds, it means the user is not enrolled
-        setIsEnrolled(false);
+        // if the id of course in the response from this api then set isEnrolled to true
+        setIsEnrolled(resp.data.courses.some((course: CourseProps) => course._id === id));
       } catch (error) {
-        // If a 400 error occurs, the user is already enrolled
-        if (axios.isAxiosError(error) && error.response?.status === 400) {
-          setIsEnrolled(true);
-        }
+        console.error("Error fetching enrollment status:", error);
       }
     };
 
@@ -146,7 +140,7 @@ const CourseDetails: React.FC = () => {
       );
 
       setIsEnrolled(true);
-      localStorage.setItem(`enrolled-${id}`, "true"); // Store the enrollment status in localStorage
+      // localStorage.setItem(`enrolled-${id}`, "true"); // Store the enrollment status in localStorage
       setAlertMessage(`You have successfully enrolled in ${course.result?.title}.`);
       setAlertType("success");
       setShowAlert(true);
