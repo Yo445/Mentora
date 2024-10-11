@@ -29,3 +29,32 @@ html, body {
 body::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
+
+
+/* for facebook button */
+.facebook-button {
+  background-color: #fff; /* White background */
+  border: 0.5px solid 	#d3d8dc; /* Facebook's blue border */
+  color: 	black; /* Facebook's blue for text */
+  padding: 10px 25px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 16px;
+  width: 100%;
+}
+
+.facebook-button:hover {
+  background-color: #f0f0f0; /* Light grey background on hover */
+  color: 	#1877F2; /* Ensure the text color remains Facebook blue */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow on hover */
+}
+
+.facebook-button i {
+  margin-right: 8px; /* Spacing between the icon and text */
+  font-size: 20px; /* Larger icon */
+  color: 	#1877F2; /* Facebook blue for the icon */
+}
