@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back2.svg";
 import { setAuthUser } from "../../helper/Storage";
 import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
+import FacebookLogin, { ReactFacebookLoginInfo, ReactFacebookFailureResponse } from 'react-facebook-login';
 
 interface RegisterState {
   email: string;
@@ -33,7 +34,7 @@ const Register: React.FC = () => {
   const RegisterFun = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setRegister({ ...register, loading: true, err: [] });
-  
+
     axios
       .post("http://localhost:5000/api/users/register", {
         email: register.email,
@@ -43,7 +44,7 @@ const Register: React.FC = () => {
       .then((resp) => {
         setAuthUser(resp.data);
         setRegister({ ...register, loading: false, err: [] });
-  
+
         // Role-based redirection
         if (resp.data.role === 'student') {
           navigate("/dashboard/students");
@@ -60,17 +61,17 @@ const Register: React.FC = () => {
         });
       });
   };
-  
+
 
   // Google Signup
 
   const googleSignup = async () => {
     setRegister({ ...register, loading: true, err: [] });
-  
+
     try {
       const resp = await axios.get("http://localhost:5000/api/users/google-login");
       setAuthUser(resp.data); // Save user data in local storage
-  
+
       // Role-based redirection
       if (resp.data.role === 'student') {
         navigate("/dashboard/students");
@@ -87,16 +88,16 @@ const Register: React.FC = () => {
       });
     }
   };
-  
+
 
   // Facebook login or signup using GET
   const facebookSignup = async () => {
     setRegister({ ...register, loading: true, err: [] });
-  
+
     try {
       const resp = await axios.get("http://localhost:5000/api/users/facebook-login");
       setAuthUser(resp.data); // Save user data in local storage
-  
+
       // Role-based redirection
       if (resp.data.role === 'student') {
         navigate("/dashboard/students");
@@ -120,7 +121,7 @@ const Register: React.FC = () => {
       }
     }
   };
-  
+
 
   return (
     <div
@@ -169,26 +170,35 @@ const Register: React.FC = () => {
                 </div>
               ))}
 
-              <button
+              {/* <button
                 onClick={facebookSignup}
                 className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
               >
                 <FaFacebook fontSize={"23px"} color={"#1877F2"} />
                 Continue with Facebook
               </button>
-
-              {/* <button
-                onClick={googleSignup}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded border border-slate-300 bg-white p-2 text-sm font-medium text-black outline-none focus:ring-2 focus:ring-[#333] focus:ring-offset-1"
-              >
-                <FcGoogle fontSize={"23px"} />
-                Continue with Google
-              </button> */}
               <GoogleLogin
                 onSuccess={googleSignup}
                 onError={() => console.log("Google login failed")}
                 useOneTap
                 text="continue_with"
+              /> */}
+
+
+              <FacebookLogin
+                appId="540494355054611"
+                fields="email"
+                callback={facebookSignup}
+                cssClass="facebook-button"
+                textButton="Continue with Facebook"
+                icon="fa-facebook"
+              />
+
+              <GoogleLogin
+                onSuccess={googleSignup}
+                onError={() => console.log("Google Sirnup failed")}
+                useOneTap
+                text="signup_with"
               />
             </div>
 

@@ -224,8 +224,11 @@ const Login: React.FC = () => {
 
               <FacebookLogin
                 appId="540494355054611"
-                fields="name,email,picture"
+                fields="email"
                 callback={handleFacebookLogin}
+                cssClass="facebook-button"
+                textButton="Continue with Facebook"
+                icon="fa-facebook" // Optional: Add Font Awesome Facebook icon
               />
 
               <GoogleLogin
@@ -234,7 +237,6 @@ const Login: React.FC = () => {
                 useOneTap
                 text="continue_with"
               />
-
             </div>
 
             <div className="flex w-full items-center gap-2 py-6 text-sm text-slate-600">
