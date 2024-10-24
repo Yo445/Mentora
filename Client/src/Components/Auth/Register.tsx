@@ -1,12 +1,10 @@
-import React, { useState, FormEvent } from "react";
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import axios, { AxiosError } from "axios"; // Import AxiosError
-import { FaFacebook } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
+import React, { FormEvent, useState } from "react";
+import FacebookLogin from 'react-facebook-login';
 import { useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back2.svg";
 import { setAuthUser } from "../../helper/Storage";
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import FacebookLogin, { ReactFacebookLoginInfo, ReactFacebookFailureResponse } from 'react-facebook-login';
 
 interface RegisterState {
   email: string;
@@ -64,7 +62,6 @@ const Register: React.FC = () => {
 
 
   // Google Signup
-
   const googleSignup = async () => {
     setRegister({ ...register, loading: true, err: [] });
 
@@ -95,7 +92,7 @@ const Register: React.FC = () => {
     setRegister({ ...register, loading: true, err: [] });
 
     try {
-      const resp = await axios.get("http://localhost:5000/api/users/facebook-login");
+      const resp = await axios.post("http://localhost:5000/api/users/facebook-login");
       setAuthUser(resp.data); // Save user data in local storage
 
       // Role-based redirection

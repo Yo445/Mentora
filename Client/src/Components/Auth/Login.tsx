@@ -1,12 +1,10 @@
+import { CredentialResponse, GoogleLogin } from '@react-oauth/google';
 import axios from "axios";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { FaFacebook } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
+import FacebookLogin, { ReactFacebookFailureResponse, ReactFacebookLoginInfo } from 'react-facebook-login';
 import { Link, useNavigate } from "react-router-dom";
 import Img from "../../assets/img/back.svg";
 import { setAuthUser } from "../../helper/Storage";
-import { GoogleLogin, CredentialResponse } from '@react-oauth/google';
-import FacebookLogin, { ReactFacebookLoginInfo, ReactFacebookFailureResponse } from 'react-facebook-login';
 
 // Define the shape of the state
 interface LoginState {
@@ -89,7 +87,7 @@ const Login: React.FC = () => {
     if ('accessToken' in response) {
       setFacebookResponse(response); // Store the Facebook login response
       axios
-        .get("http://localhost:5000/api/users/facebook-login", {
+        .post("http://localhost:5000/api/users/facebook-login", {
           params: {
             accessToken: response.accessToken,
           },
@@ -134,7 +132,7 @@ const Login: React.FC = () => {
         const tokenId = googleCredential.credential; // Extract the Google token
 
         try {
-          const resp = await axios.get("http://localhost:5000/api/users/google-login", {
+          const resp = await axios.post("http://localhost:5000/api/users/google-login", {
             params: {
               tokenId, // Pass tokenId as a query parameter
             },

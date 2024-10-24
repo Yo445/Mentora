@@ -4,6 +4,8 @@ import Course from '../models/courseModel.js';
 
 const uploadFileToMinio = async (req, res) => {
     try {
+        // console.log("req.body", req.body);
+        // console.log("req.file", req.file);
         const file = req.file;
         if (!file){
             return res.status(400).json({message: 'No file provided'});
@@ -16,20 +18,28 @@ const uploadFileToMinio = async (req, res) => {
         // }
 
         const params = {
-            bucket: process.env.MINIO_BUCKET_NAME,
-            ObjectName: `${req.user.id}/${Date.now()}_${file.originalname}`,
+            bucketName: process.env.MINIO_BUCKET_NAME,
+            objectName: `${req.user.id}/${Date.now()}_${file.originalname}`,
             fileBuffer: file.buffer,
             mimeType: file.mimetype,
         };
 
-        if (!params.bucket || typeof params.bucket !== 'string'){
+        if (!params.bucketName || typeof params.bucketName !== 'string'){
             return res.status(500).json({ message: 'Invalid bucket name'});
         }
 
+        if (!params.objectName || typeof params.objectName !== 'string') {
+            return res.status(500).json({ message: 'Invalid object name' });
+        }
+
+        // console.log("params", params);
+        // console.log("params.objctName", params.objectName);
+``
         const expires = 7 * 24 * 60 * 60; // URL expires in 7 days
-        minioClient.presignedPutObject(params.bucket, params.ObjectName, expires, async (err, url) => {
-            if (err) throw err
-            console.log('Presigned put url:', url, err)
+
+        await minioClient.putObject(params.bucketName, params.objectName, params.fileBuffer);
+
+        const url = await minioClient.presignedGetObject(params.bucketName, params.objectName, expires);
 
         const course = await Course.findById(req.body.courseId);
         if (!course) {
@@ -51,7 +61,6 @@ const uploadFileToMinio = async (req, res) => {
         console.log("course", course);
 
         res.status(201).json({ url });
-    });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to upload file to Minio' });

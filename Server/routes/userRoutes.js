@@ -11,10 +11,10 @@ router.route('/login')
             .post(loginUser);
 
 router.route('/facebook-login')
-            .get(facebookLogin);
+            .post(facebookLogin);
 
 router.route('/facebook-callback')
-            .get(facebookLoginCallback);
+            .post(facebookLoginCallback);
 
 router.route('/google-login')
             .get(googleLogin);
