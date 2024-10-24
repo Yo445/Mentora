@@ -62,30 +62,28 @@ const Register: React.FC = () => {
 
 
   // Google Signup
+  const googleSignup = async () => {
+    setRegister({ ...register, loading: true, err: [] });
 
-  const googleSignup = async (...prop: any[]) => {
-    console.log("Google Signup", prop);
-    // setRegister({ ...register, loading: true, err: [] });
+    try {
+      const resp = await axios.get("http://localhost:5000/api/users/google-login");
+      setAuthUser(resp.data); // Save user data in local storage
 
-    // try {
-    //   // const resp = await axios.post("http://localhost:5000/api/users/google-login");
-    //   setAuthUser(resp.data); // Save user data in local storage
-
-    //   // Role-based redirection
-    //   if (resp.data.role === 'student') {
-    //     navigate("/dashboard/students");
-    //   } else if (resp.data.role === 'instructor') {
-    //     navigate("/dashboard/instructor");
-    //   }
-    // } catch (error) {
-    //   const err = error as AxiosError<ErrorResponse>;
-    //   const errorMsg = err.response?.data.message || "Google login/signup failed";
-    //   setRegister({
-    //     ...register,
-    //     loading: false,
-    //     err: [errorMsg],
-    //   });
-    // }
+      // Role-based redirection
+      if (resp.data.role === 'student') {
+        navigate("/dashboard/students");
+      } else if (resp.data.role === 'instructor') {
+        navigate("/dashboard/instructor");
+      }
+    } catch (error) {
+      const err = error as AxiosError<ErrorResponse>;
+      const errorMsg = err.response?.data.message || "Google login/signup failed";
+      setRegister({
+        ...register,
+        loading: false,
+        err: [errorMsg],
+      });
+    }
   };
 
 
