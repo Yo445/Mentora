@@ -245,7 +245,7 @@ const CourseMat: React.FC = () => {
                   Your browser does not support the audio tag.
                 </audio>
               )}
-              {selectedMaterial.fileType === 'pdf' && (
+              {selectedMaterial.fileType === 'application' && (
                 <iframe src={selectedMaterial.url} className="w-full h-96" title="PDF Viewer" />
               )}
               {selectedMaterial.fileType === 'image' && (
